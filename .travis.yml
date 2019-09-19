@@ -4,7 +4,6 @@ cache: npm
 matrix:
   include:
     - os: linux
-      dist: bionic
       node_js: "lts/dubnium"
     - os: osx
       osx_image: xcode11
