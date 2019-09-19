@@ -1,0 +1,53 @@
+{
+  "name": "libnut",
+  "version": "1.0.0",
+  "description": "libnut is an N-API module for desktop automation with node",
+  "main": "index.js",
+  "typings": "index.d.ts",
+  "scripts": {
+    "test": "run-script-os",
+    "test:darwin:linux": "jasmine 'test/**/*.js'",
+    "test:win32": "jasmine test/**/*.js",
+    "clean": "cmake-js clean",
+    "patch": "node ./patch-packagename.js",
+    "build:debug": "cmake-js rebuild --debug",
+    "build:debug:win": "cmake-js rebuild --debug -G \"Visual Studio 15 2017 Win64\"",
+    "build:release": "cmake-js rebuild",
+    "build:release:win": "cmake-js rebuild -G \"Visual Studio 15 2017 Win64\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nut-tree/libnut.git"
+  },
+  "keywords": [
+    "GUI",
+    "Automation",
+    "mouse",
+    "keyboard",
+    "screenshot",
+    "image",
+    "desktop",
+    "screen",
+    "recognition",
+    "autohotkey"
+  ],
+  "author": "Simon Hofmann <dev@simon-hofmann.org>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/nut-tree/libnut/issues"
+  },
+  "homepage": "https://github.com/nut-tree/libnut",
+  "dependencies": {
+    "bindings": "^1.5.0",
+    "cmake-js": "^5.3.2",
+    "nan": "^2.14.0"
+  },
+  "devDependencies": {
+    "jasmine": "^3.4.0",
+    "run-script-os": "^1.0.7",
+    "targetpractice": "0.0.7"
+  },
+  "engines": {
+    "node": ">=10.15.3"
+  }
+}

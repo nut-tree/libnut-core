@@ -1,0 +1,39 @@
+# http://www.appveyor.com/docs/appveyor-yml
+
+environment:
+  matrix:
+  # node.js
+    - nodejs_version: 10
+    - nodejs_version: 11
+    - nodejs_version: 12
+
+cache:
+  - node_modules
+
+clone_depth: 5
+
+platform:
+  - x86
+  - x64
+
+# Install scripts. (runs after repo cloning)
+install:
+  - ps: Install-Product node $env:nodejs_version $env:platform
+  - npm -g install npm
+  - set PATH=%APPDATA%\npm;%PATH%
+  # Typical npm stuff.
+  - npm install
+  - npm run build:release:win
+
+# test_script:
+  # Output useful info for debugging.
+  # - node --version
+  # - npm --version
+  # run tests
+  # - npm test
+
+on_success:
+  - IF defined APPVEYOR_REPO_TAG_NAME npm run prebuild -- -u %GITHUB_TOKEN%
+
+build: off
+version: "{build}"
