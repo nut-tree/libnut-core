@@ -1,0 +1,14 @@
+.idea
+.vscode
+build/CMakeFiles
+build/cmake_install.cmake
+build/CMakeCache.txt
+build/Makefile
+CMakeFiles
+src
+test
+.travis.yml
+CMakeLists.txt
+GPATH
+GRTAGS
+GTAGS
