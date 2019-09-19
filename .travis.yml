@@ -23,6 +23,9 @@ addons:
       - g++-4.8
       - gcc-4.8
 
+services:
+  - xvfb
+
 before_install:
   # print versions
   - node --version
@@ -30,6 +33,12 @@ before_install:
 
   # use g++-4.8 on Linux
   - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export CXX=g++-4.8; fi
+
+before_script:
+  # Start xvfb
+  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export DISPLAY=:99.0; fi
+  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then sh -e /etc/init.d/xvfb start; fi
+  - sleep 3 # give xvfb some time to start
 
 install: true
 
