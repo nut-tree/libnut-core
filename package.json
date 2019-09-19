@@ -5,9 +5,6 @@
   "main": "index.js",
   "typings": "index.d.ts",
   "scripts": {
-    "test": "run-script-os",
-    "test:darwin:linux": "jasmine 'test/**/*.js'",
-    "test:win32": "jasmine test/**/*.js",
     "clean": "cmake-js clean",
     "patch": "node ./patch-packagename.js",
     "build:debug": "cmake-js rebuild --debug",
