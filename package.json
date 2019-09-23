@@ -40,7 +40,7 @@
     "node-addon-api": "^1.7.1"
   },
   "devDependencies": {
-    "jasmine": "^3.4.0",
+    "jasmine": "^3.5.0",
     "run-script-os": "^1.0.7",
     "targetpractice": "0.0.7"
   },
