@@ -43,13 +43,13 @@ void XCloseMainDisplay(void)
 	}
 }
 
-std::string getXDisplay(void)
+char * getXDisplay(void)
 {
-	return std::string(displayName);
+	return displayName;
 }
 
 void setXDisplay(const char *name)
 {
-	displayName = strdup(name.c_str());
+	displayName = strdup(name);
 	hasDisplayNameChanged = 1;
 }
