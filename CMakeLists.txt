@@ -48,7 +48,7 @@ set(LIBS ${LIBS} ${CMAKE_JS_LIB})
 message(STATUS "Libs: ${LIBS}")
 
 # N-API
-# target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/node_modules/node-addon-api")
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_SOURCE_DIR}/node_modules/node-addon-api")
 
 # Change suffix to *.node
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".node")
