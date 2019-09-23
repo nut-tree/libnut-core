@@ -17,7 +17,7 @@
 //Global delays.
 int mouseDelay = 10;
 int keyboardDelay = 10;
-BufferFinalizer<char> finalizer;
+static BufferFinalizer<char> finalizer;
 
 /*
  __  __
@@ -697,7 +697,7 @@ Napi::String _getXDisplayName(const Napi::CallbackInfo &info)
 #endif
 }
 
-Napi::String _setXDisplayName(const Napi::CallbackInfo &info)
+Napi::Number _setXDisplayName(const Napi::CallbackInfo &info)
 {
 	Napi::Env env = info.Env();
 
