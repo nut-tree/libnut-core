@@ -275,350 +275,344 @@ Napi::Number _scrollMouse(const Napi::CallbackInfo &info)
 |_|\_\___|\__, |_.__/ \___/ \__,_|_|  \__,_|
           |___/
 */
-// struct KeyNames
-// {
-// 	const char *name;
-// 	MMKeyCode key;
-// };
+struct KeyNames
+{
+	const char *name;
+	MMKeyCode key;
+};
 
-// static KeyNames key_names[] =
-// 	{
-// 		{"backspace", K_BACKSPACE},
-// 		{"delete", K_DELETE},
-// 		{"enter", K_RETURN},
-// 		{"tab", K_TAB},
-// 		{"escape", K_ESCAPE},
-// 		{"up", K_UP},
-// 		{"down", K_DOWN},
-// 		{"right", K_RIGHT},
-// 		{"left", K_LEFT},
-// 		{"home", K_HOME},
-// 		{"end", K_END},
-// 		{"pageup", K_PAGEUP},
-// 		{"pagedown", K_PAGEDOWN},
-// 		{"f1", K_F1},
-// 		{"f2", K_F2},
-// 		{"f3", K_F3},
-// 		{"f4", K_F4},
-// 		{"f5", K_F5},
-// 		{"f6", K_F6},
-// 		{"f7", K_F7},
-// 		{"f8", K_F8},
-// 		{"f9", K_F9},
-// 		{"f10", K_F10},
-// 		{"f11", K_F11},
-// 		{"f12", K_F12},
-// 		{"f13", K_F13},
-// 		{"f14", K_F14},
-// 		{"f15", K_F15},
-// 		{"f16", K_F16},
-// 		{"f17", K_F17},
-// 		{"f18", K_F18},
-// 		{"f19", K_F19},
-// 		{"f20", K_F20},
-// 		{"f21", K_F21},
-// 		{"f22", K_F22},
-// 		{"f23", K_F23},
-// 		{"f24", K_F24},
-// 		{"command", K_META},
-// 		{"alt", K_ALT},
-// 		{"control", K_CONTROL},
-// 		{"shift", K_SHIFT},
-// 		{"right_shift", K_RIGHTSHIFT},
-// 		{"space", K_SPACE},
-// 		{"printscreen", K_PRINTSCREEN},
-// 		{"insert", K_INSERT},
-// 		{"menu", K_MENU},
+static KeyNames key_names[] =
+	{
+		{"backspace", K_BACKSPACE},
+		{"delete", K_DELETE},
+		{"enter", K_RETURN},
+		{"tab", K_TAB},
+		{"escape", K_ESCAPE},
+		{"up", K_UP},
+		{"down", K_DOWN},
+		{"right", K_RIGHT},
+		{"left", K_LEFT},
+		{"home", K_HOME},
+		{"end", K_END},
+		{"pageup", K_PAGEUP},
+		{"pagedown", K_PAGEDOWN},
+		{"f1", K_F1},
+		{"f2", K_F2},
+		{"f3", K_F3},
+		{"f4", K_F4},
+		{"f5", K_F5},
+		{"f6", K_F6},
+		{"f7", K_F7},
+		{"f8", K_F8},
+		{"f9", K_F9},
+		{"f10", K_F10},
+		{"f11", K_F11},
+		{"f12", K_F12},
+		{"f13", K_F13},
+		{"f14", K_F14},
+		{"f15", K_F15},
+		{"f16", K_F16},
+		{"f17", K_F17},
+		{"f18", K_F18},
+		{"f19", K_F19},
+		{"f20", K_F20},
+		{"f21", K_F21},
+		{"f22", K_F22},
+		{"f23", K_F23},
+		{"f24", K_F24},
+		{"command", K_META},
+		{"alt", K_ALT},
+		{"control", K_CONTROL},
+		{"shift", K_SHIFT},
+		{"right_shift", K_RIGHTSHIFT},
+		{"space", K_SPACE},
+		{"printscreen", K_PRINTSCREEN},
+		{"insert", K_INSERT},
+		{"menu", K_MENU},
 
-// 		{"audio_mute", K_AUDIO_VOLUME_MUTE},
-// 		{"audio_vol_down", K_AUDIO_VOLUME_DOWN},
-// 		{"audio_vol_up", K_AUDIO_VOLUME_UP},
-// 		{"audio_play", K_AUDIO_PLAY},
-// 		{"audio_stop", K_AUDIO_STOP},
-// 		{"audio_pause", K_AUDIO_PAUSE},
-// 		{"audio_prev", K_AUDIO_PREV},
-// 		{"audio_next", K_AUDIO_NEXT},
-// 		{"audio_rewind", K_AUDIO_REWIND},
-// 		{"audio_forward", K_AUDIO_FORWARD},
-// 		{"audio_repeat", K_AUDIO_REPEAT},
-// 		{"audio_random", K_AUDIO_RANDOM},
+		{"audio_mute", K_AUDIO_VOLUME_MUTE},
+		{"audio_vol_down", K_AUDIO_VOLUME_DOWN},
+		{"audio_vol_up", K_AUDIO_VOLUME_UP},
+		{"audio_play", K_AUDIO_PLAY},
+		{"audio_stop", K_AUDIO_STOP},
+		{"audio_pause", K_AUDIO_PAUSE},
+		{"audio_prev", K_AUDIO_PREV},
+		{"audio_next", K_AUDIO_NEXT},
+		{"audio_rewind", K_AUDIO_REWIND},
+		{"audio_forward", K_AUDIO_FORWARD},
+		{"audio_repeat", K_AUDIO_REPEAT},
+		{"audio_random", K_AUDIO_RANDOM},
 
-// 		{"numpad_0", K_NUMPAD_0},
-// 		{"numpad_1", K_NUMPAD_1},
-// 		{"numpad_2", K_NUMPAD_2},
-// 		{"numpad_3", K_NUMPAD_3},
-// 		{"numpad_4", K_NUMPAD_4},
-// 		{"numpad_5", K_NUMPAD_5},
-// 		{"numpad_6", K_NUMPAD_6},
-// 		{"numpad_7", K_NUMPAD_7},
-// 		{"numpad_8", K_NUMPAD_8},
-// 		{"numpad_9", K_NUMPAD_9},
+		{"numpad_0", K_NUMPAD_0},
+		{"numpad_1", K_NUMPAD_1},
+		{"numpad_2", K_NUMPAD_2},
+		{"numpad_3", K_NUMPAD_3},
+		{"numpad_4", K_NUMPAD_4},
+		{"numpad_5", K_NUMPAD_5},
+		{"numpad_6", K_NUMPAD_6},
+		{"numpad_7", K_NUMPAD_7},
+		{"numpad_8", K_NUMPAD_8},
+		{"numpad_9", K_NUMPAD_9},
 
-// 		{"lights_mon_up", K_LIGHTS_MON_UP},
-// 		{"lights_mon_down", K_LIGHTS_MON_DOWN},
-// 		{"lights_kbd_toggle", K_LIGHTS_KBD_TOGGLE},
-// 		{"lights_kbd_up", K_LIGHTS_KBD_UP},
-// 		{"lights_kbd_down", K_LIGHTS_KBD_DOWN},
+		{"lights_mon_up", K_LIGHTS_MON_UP},
+		{"lights_mon_down", K_LIGHTS_MON_DOWN},
+		{"lights_kbd_toggle", K_LIGHTS_KBD_TOGGLE},
+		{"lights_kbd_up", K_LIGHTS_KBD_UP},
+		{"lights_kbd_down", K_LIGHTS_KBD_DOWN},
 
-// 		{NULL, K_NOT_A_KEY} /* end marker */
-// };
+		{NULL, K_NOT_A_KEY} /* end marker */
+};
 
-// int CheckKeyCodes(char *k, MMKeyCode *key)
-// {
-// 	if (!key)
-// 		return -1;
+int CheckKeyCodes(std::string &keyName, MMKeyCode *key)
+{
+	if (!key)
+		return -1;
 
-// 	if (strlen(k) == 1)
-// 	{
-// 		*key = keyCodeForChar(*k);
-// 		return 0;
-// 	}
+	if (keyName.length() == 1)
+	{
+		*key = keyCodeForChar(*keyName.c_str());
+		return 0;
+	}
 
-// 	*key = K_NOT_A_KEY;
+	*key = K_NOT_A_KEY;
 
-// 	KeyNames *kn = key_names;
-// 	while (kn->name)
-// 	{
-// 		if (strcmp(k, kn->name) == 0)
-// 		{
-// 			*key = kn->key;
-// 			break;
-// 		}
-// 		kn++;
-// 	}
+	KeyNames *kn = key_names;
+	while (kn->name)
+	{
+		if (keyName.compare(kn->name) == 0)
+		{
+			*key = kn->key;
+			break;
+		}
+		kn++;
+	}
 
-// 	if (*key == K_NOT_A_KEY)
-// 	{
-// 		return -2;
-// 	}
+	if (*key == K_NOT_A_KEY)
+	{
+		return -2;
+	}
 
-// 	return 0;
-// }
+	return 0;
+}
 
-// int CheckKeyFlags(char *f, MMKeyFlags *flags)
-// {
-// 	if (!flags)
-// 		return -1;
+int CheckKeyFlags(std::string &flagString, MMKeyFlags *flags)
+{
+	if (!flags)
+		return -1;
 
-// 	if (strcmp(f, "alt") == 0)
-// 	{
-// 		*flags = MOD_ALT;
-// 	}
-// 	else if (strcmp(f, "command") == 0)
-// 	{
-// 		*flags = MOD_META;
-// 	}
-// 	else if (strcmp(f, "control") == 0)
-// 	{
-// 		*flags = MOD_CONTROL;
-// 	}
-// 	else if (strcmp(f, "shift") == 0)
-// 	{
-// 		*flags = MOD_SHIFT;
-// 	}
-// 	else if (strcmp(f, "none") == 0)
-// 	{
-// 		*flags = MOD_NONE;
-// 	}
-// 	else
-// 	{
-// 		return -2;
-// 	}
+	if (flagString.compare("alt") == 0)
+	{
+		*flags = MOD_ALT;
+	}
+	else if (flagString.compare("command") == 0)
+	{
+		*flags = MOD_META;
+	}
+	else if (flagString.compare("control") == 0)
+	{
+		*flags = MOD_CONTROL;
+	}
+	else if (flagString.compare("shift") == 0)
+	{
+		*flags = MOD_SHIFT;
+	}
+	else if (flagString.compare("none") == 0)
+	{
+		*flags = MOD_NONE;
+	}
+	else
+	{
+		return -2;
+	}
 
-// 	return 0;
-// }
+	return 0;
+}
 
-// int GetFlagsFromString(v8::Handle<v8::Value> value, MMKeyFlags *flags)
-// {
-// 	v8::String::Utf8Value fstr(value->ToString());
-// 	return CheckKeyFlags(*fstr, flags);
-// }
+int GetFlagsFromString(Napi::Value value, MMKeyFlags *flags)
+{
+	std::string fstr = value.As<Napi::String>();
+	return CheckKeyFlags(fstr, flags);
+}
 
-// int GetFlagsFromValue(v8::Handle<v8::Value> value, MMKeyFlags *flags)
-// {
-// 	if (!flags)
-// 		return -1;
+int GetFlagsFromValue(Napi::Value value, MMKeyFlags *flags)
+{
+	if (!flags)
+		return -1;
 
-// 	//Optionally allow an array of flag strings to be passed.
-// 	if (value->IsArray())
-// 	{
-// 		v8::Handle<v8::Array> a = v8::Handle<v8::Array>::Cast(value);
-// 		for (uint32_t i = 0; i < a->Length(); i++)
-// 		{
-// 			v8::Handle<v8::Value> v(a->Get(i));
-// 			if (!v->IsString())
-// 				return -2;
+	//Optionally allow an array of flag strings to be passed.
+	if (value.IsArray())
+	{
+		Napi::Array a = value.As<Napi::Array>();
+		for (uint32_t i = 0; i < a.Length(); ++i)
+		{
+			Napi::Value v = a.Get(i);
+			if (!v.IsString())
+				return -2;
 
-// 			MMKeyFlags f = MOD_NONE;
-// 			const int rv = GetFlagsFromString(v, &f);
-// 			if (rv)
-// 				return rv;
+			std::string a = value.As<Napi::String>();
+			MMKeyFlags f = MOD_NONE;
+			const int rv = GetFlagsFromString(v, &f);
+			if (rv)
+				return rv;
 
-// 			*flags = (MMKeyFlags)(*flags | f);
-// 		}
-// 		return 0;
-// 	}
+			*flags = (MMKeyFlags)(*flags | f);
+		}
+		return 0;
+	}
 
-// 	//If it's not an array, it should be a single string value.
-// 	return GetFlagsFromString(value, flags);
-// }
+	//If it's not an array, it should be a single string value.
+	return GetFlagsFromString(value, flags);
+}
 
-// NAN_METHOD(keyTap)
-// {
-// 	MMKeyFlags flags = MOD_NONE;
-// 	MMKeyCode key;
+Napi::Number _keyTap(const Napi::CallbackInfo &info)
+{
+	Napi::Env env = info.Env();
 
-// 	char *k;
+	MMKeyFlags flags = MOD_NONE;
+	MMKeyCode key;
 
-// 	v8::String::Utf8Value kstr(info[0]->ToString());
-// 	k = *kstr;
+	std::string keyName = info[0].As<Napi::String>();
 
-// 	switch (info.Length())
-// 	{
-// 	case 2:
-// 		switch (GetFlagsFromValue(info[1], &flags))
-// 		{
-// 		case -1:
-// 			return Nan::ThrowError("Null pointer in key flag.");
-// 			break;
-// 		case -2:
-// 			return Nan::ThrowError("Invalid key flag specified.");
-// 			break;
-// 		}
-// 		break;
-// 	case 1:
-// 		break;
-// 	default:
-// 		return Nan::ThrowError("Invalid number of arguments.");
-// 	}
+	switch (info.Length())
+	{
+	case 2:
+		switch (GetFlagsFromValue(info[1], &flags))
+		{
+		case -1:
+			throw Napi::Error::New(env, "Null pointer in key flag.");
+			break;
+		case -2:
+			throw Napi::Error::New(env, "Invalid key flag specified.");
+			break;
+		}
+		break;
+	case 1:
+		break;
+	default:
+		throw Napi::Error::New(env, "Invalid number of arguments.");
+	}
 
-// 	switch (CheckKeyCodes(k, &key))
-// 	{
-// 	case -1:
-// 		return Nan::ThrowError("Null pointer in key code.");
-// 		break;
-// 	case -2:
-// 		return Nan::ThrowError("Invalid key code specified.");
-// 		break;
-// 	default:
-// 		tapKeyCode(key, flags);
-// 		microsleep(keyboardDelay);
-// 	}
+	switch (CheckKeyCodes(keyName, &key))
+	{
+	case -1:
+		throw Napi::Error::New(env, "Null pointer in key code.");
+		break;
+	case -2:
+		throw Napi::Error::New(env, "Invalid key code specified.");
+		break;
+	default:
+		tapKeyCode(key, flags);
+		microsleep(keyboardDelay);
+	}
 
-// 	info.GetReturnValue().Set(Nan::New(1));
-// }
+	return Napi::Number::New(env, 1);
+}
 
-// NAN_METHOD(keyToggle)
-// {
-// 	MMKeyFlags flags = MOD_NONE;
-// 	MMKeyCode key;
+Napi::Number _keyToggle(const Napi::CallbackInfo &info)
+{
+	Napi::Env env = info.Env();
 
-// 	bool down;
-// 	char *k;
+	MMKeyFlags flags = MOD_NONE;
+	MMKeyCode key;
 
-// 	//Get arguments from JavaScript.
-// 	Nan::Utf8String kstr(info[0]);
+	bool down;
 
-// 	//Convert arguments to chars.
-// 	k = *kstr;
+	//Get arguments from JavaScript.
+	std::string keyName = info[0].As<Napi::String>();
 
-// 	//Check and confirm number of arguments.
-// 	switch (info.Length())
-// 	{
-// 	case 3:
-// 		//Get key modifier.
-// 		switch (GetFlagsFromValue(info[2], &flags))
-// 		{
-// 		case -1:
-// 			return Nan::ThrowError("Null pointer in key flag.");
-// 			break;
-// 		case -2:
-// 			return Nan::ThrowError("Invalid key flag specified.");
-// 			break;
-// 		}
-// 		break;
-// 	case 2:
-// 		break;
-// 	default:
-// 		return Nan::ThrowError("Invalid number of arguments.");
-// 	}
+	//Check and confirm number of arguments.
+	switch (info.Length())
+	{
+	case 3:
+		//Get key modifier.
+		switch (GetFlagsFromValue(info[2], &flags))
+		{
+		case -1:
+			throw Napi::Error::New(env, "Null pointer in key flag.");
+			break;
+		case -2:
+			throw Napi::Error::New(env, "Invalid key flag specified.");
+			break;
+		}
+		break;
+	case 2:
+		break;
+	default:
+		throw Napi::Error::New(env, "Invalid number of arguments.");
+	}
 
-// 	//Get down value if provided.
-// 	if (info.Length() > 1)
-// 	{
-// 		char *d;
+	//Get down value if provided.
+	if (info.Length() > 1)
+	{
+		std::string directionString = info[1].As<Napi::String>();
 
-// 		Nan::Utf8String dstr(info[1]);
-// 		d = *dstr;
+		if (directionString.compare("down") == 0)
+		{
+			down = true;
+		}
+		else if (directionString.compare("up") == 0)
+		{
+			down = false;
+		}
+		else
+		{
+			throw Napi::Error::New(env, "Invalid key state specified.");
+		}
+	}
 
-// 		if (strcmp(d, "down") == 0)
-// 		{
-// 			down = true;
-// 		}
-// 		else if (strcmp(d, "up") == 0)
-// 		{
-// 			down = false;
-// 		}
-// 		else
-// 		{
-// 			return Nan::ThrowError("Invalid key state specified.");
-// 		}
-// 	}
+	//Get the acutal key.
+	switch (CheckKeyCodes(keyName, &key))
+	{
+	case -1:
+		throw Napi::Error::New(env, "Null pointer in key code.");
+		break;
+	case -2:
+		throw Napi::Error::New(env, "Invalid key code specified.");
+		break;
+	default:
+		toggleKeyCode(key, down, flags);
+		microsleep(keyboardDelay);
+	}
 
-// 	//Get the acutal key.
-// 	switch (CheckKeyCodes(k, &key))
-// 	{
-// 	case -1:
-// 		return Nan::ThrowError("Null pointer in key code.");
-// 		break;
-// 	case -2:
-// 		return Nan::ThrowError("Invalid key code specified.");
-// 		break;
-// 	default:
-// 		toggleKeyCode(key, down, flags);
-// 		microsleep(keyboardDelay);
-// 	}
+	return Napi::Number::New(env, 1);
+}
 
-// 	info.GetReturnValue().Set(Nan::New(1));
-// }
+Napi::Number _typeString(const Napi::CallbackInfo &info)
+{
+	Napi::Env env = info.Env();
 
-// NAN_METHOD(typeString)
-// {
-// 	char *str;
-// 	Nan::Utf8String string(info[0]);
+	std::string stringToType = info[0].As<Napi::String>();
 
-// 	str = *string;
+	typeString(stringToType.c_str());
 
-// 	typeString(str);
+	return Napi::Number::New(env, 1);
+}
 
-// 	info.GetReturnValue().Set(Nan::New(1));
-// }
+Napi::Number _typeStringDelayed(const Napi::CallbackInfo &info)
+{
+	Napi::Env env = info.Env();
 
-// NAN_METHOD(typeStringDelayed)
-// {
-// 	char *str;
-// 	Nan::Utf8String string(info[0]);
+	std::string stringToType = info[0].As<Napi::String>();
+	size_t cpm = info[1].As<Napi::Number>().Int32Value();
 
-// 	str = *string;
+	typeStringDelayed(stringToType.c_str(), cpm);
 
-// 	size_t cpm = info[1]->Int32Value();
+	return Napi::Number::New(env, 1);
+}
 
-// 	typeStringDelayed(str, cpm);
+Napi::Number _setKeyboardDelay(const Napi::CallbackInfo &info)
+{
+	Napi::Env env = info.Env();
 
-// 	info.GetReturnValue().Set(Nan::New(1));
-// }
+	if (info.Length() != 1)
+	{
+		throw Napi::Error::New(env, "Invalid number of arguments.");
+	}
 
-// NAN_METHOD(setKeyboardDelay)
-// {
-// 	if (info.Length() != 1)
-// 	{
-// 		return Nan::ThrowError("Invalid number of arguments.");
-// 	}
+	keyboardDelay = info[0].As<Napi::Number>().Int32Value();
 
-// 	keyboardDelay = info[0]->Int32Value();
-
-// 	info.GetReturnValue().Set(Nan::New(1));
-// }
+	return Napi::Number::New(env, 1);
+}
 
 // /*
 //   ____
@@ -837,28 +831,19 @@ Napi::Object Init(Napi::Env env, Napi::Object exports)
 	exports.Set(Napi::String::New(env, "scrollMouse"), Napi::Function::New(env, _scrollMouse));
 	exports.Set(Napi::String::New(env, "setMouseDelay"), Napi::Function::New(env, _setMouseDelay));
 
+	exports.Set(Napi::String::New(env, "keyTap"), Napi::Function::New(env, _keyTap));
+	exports.Set(Napi::String::New(env, "keyToggle"), Napi::Function::New(env, _keyToggle));
+	exports.Set(Napi::String::New(env, "typeString"), Napi::Function::New(env, _typeString));
+	exports.Set(Napi::String::New(env, "typeStringDelayed"), Napi::Function::New(env, _typeStringDelayed));
+	exports.Set(Napi::String::New(env, "setKeyboardDelay"), Napi::Function::New(env, _setKeyboardDelay));
+
 	return exports;
 }
 
-NODE_API_MODULE(robotjs, Init)
+NODE_API_MODULE(libnut, Init)
 
 // NAN_MODULE_INIT(InitAll)
 // {
-// 	Nan::Set(target, Nan::New("keyTap").ToLocalChecked(),
-// 			 Nan::GetFunction(Nan::New<FunctionTemplate>(keyTap)).ToLocalChecked());
-
-// 	Nan::Set(target, Nan::New("keyToggle").ToLocalChecked(),
-// 			 Nan::GetFunction(Nan::New<FunctionTemplate>(keyToggle)).ToLocalChecked());
-
-// 	Nan::Set(target, Nan::New("typeString").ToLocalChecked(),
-// 			 Nan::GetFunction(Nan::New<FunctionTemplate>(typeString)).ToLocalChecked());
-
-// 	Nan::Set(target, Nan::New("typeStringDelayed").ToLocalChecked(),
-// 			 Nan::GetFunction(Nan::New<FunctionTemplate>(typeStringDelayed)).ToLocalChecked());
-
-// 	Nan::Set(target, Nan::New("setKeyboardDelay").ToLocalChecked(),
-// 			 Nan::GetFunction(Nan::New<FunctionTemplate>(setKeyboardDelay)).ToLocalChecked());
-
 // 	Nan::Set(target, Nan::New("getPixelColor").ToLocalChecked(),
 // 			 Nan::GetFunction(Nan::New<FunctionTemplate>(getPixelColor)).ToLocalChecked());
 
