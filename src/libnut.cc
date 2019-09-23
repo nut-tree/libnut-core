@@ -690,7 +690,7 @@ Napi::String _getXDisplayName(const Napi::CallbackInfo &info)
 	Napi::Env env = info.Env();
 
 #if defined(USE_X11)
-	const char *display = getXDisplay();
+	std::string display = getXDisplay();
 	return Napi::String::New(env, display);
 #else
 	Napi::Error::New(env, "getXDisplayName is only supported on Linux").ThrowAsJavaScriptException();
@@ -703,7 +703,7 @@ Napi::Number _setXDisplayName(const Napi::CallbackInfo &info)
 
 #if defined(USE_X11)
 	std::string displayName = info[0].As<Napi::String>();
-	setXDisplay(displayName.c_str());
+	setXDisplay(displayName);
 	return Napi::Number::New(env, 1);
 #else
 	throw Napi::Error::New(env, "setXDisplayName is only supported on Linux");
