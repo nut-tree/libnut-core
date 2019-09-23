@@ -26,7 +26,7 @@ describe("Mouse", () => {
       libnut.moveMouse(0);
     }).toThrowError(/Invalid number/);
 
-    expect(libnut.moveMouse("0", "0") === 1).toBeTruthy();
+    expect(libnut.moveMouse(0, 0) === 1).toBeTruthy();
   });
 
   it("Move the mouse smoothly.", function() {
@@ -44,7 +44,7 @@ describe("Mouse", () => {
       libnut.moveMouseSmooth(0);
     }).toThrowError(/Invalid number/);
 
-    expect(libnut.moveMouseSmooth("0", "0") === 1).toBeTruthy();
+    expect(libnut.moveMouseSmooth(0, 0) === 1).toBeTruthy();
   });
 
   it("Click the mouse.", function() {
@@ -53,7 +53,7 @@ describe("Mouse", () => {
     expect(libnut.mouseClick("middle") === 1).toBeTruthy();
     expect(libnut.mouseClick("right") === 1).toBeTruthy();
 
-    expect(libnut.mouseClick("left", 1)).toBeTruthy();
+    expect(libnut.mouseClick("left", true)).toBeTruthy();
 
     expect(function() {
       libnut.mouseClick("party");
