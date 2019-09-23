@@ -7,6 +7,9 @@
   "scripts": {
     "clean": "cmake-js clean",
     "patch": "node ./patch-packagename.js",
+    "test": "run-script-os",
+    "test:darwin:linux": "jasmine 'test/**/*.js'",
+    "test:win32": "jasmine test/**/*.js",
     "build:debug": "cmake-js rebuild --debug",
     "build:debug:win": "cmake-js rebuild --debug -G \"Visual Studio 15 2017 Win64\"",
     "build:release": "cmake-js rebuild",
