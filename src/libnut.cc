@@ -829,7 +829,7 @@ Napi::Number _scrollMouse(const Napi::CallbackInfo &info)
 Napi::Object Init(Napi::Env env, Napi::Object exports)
 {
 	exports.Set(Napi::String::New(env, "dragMouse"), Napi::Function::New(env, _dragMouse));
-	exports.Set(Napi::String::New(env, "mouseMove"), Napi::Function::New(env, _moveMouse));
+	exports.Set(Napi::String::New(env, "moveMouse"), Napi::Function::New(env, _moveMouse));
 	exports.Set(Napi::String::New(env, "moveMouseSmooth"), Napi::Function::New(env, _moveMouseSmooth));
 	exports.Set(Napi::String::New(env, "getMousePos"), Napi::Function::New(env, _getMousePos));
 	exports.Set(Napi::String::New(env, "mouseClick"), Napi::Function::New(env, _mouseClick));
