@@ -7,7 +7,7 @@ describe("Keyboard", () => {
   it("Tap a key.", function() {
     expect(() => libnut.keyTap("a")).not.toThrow();
     expect(() => libnut.keyTap("a", "control")).not.toThrow();
-    expect(() => libnut.keyTap()).toThrowError(/Invalid number/);
+    expect(() => libnut.keyTap()).toThrowError(/A string was expected/);
   });
 
   // This it won't fail if there's an issue, but it will help you identify an issue if ran locally.
