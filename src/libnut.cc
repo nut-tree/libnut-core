@@ -1,6 +1,8 @@
 #include <napi.h>
 #include <vector>
+#include <sstream>
 #include "mouse.h"
+#include "buffer_finalizer.h"
 #include "deadbeef_rand.h"
 #include "keypress.h"
 #include "screen.h"
@@ -15,6 +17,7 @@
 //Global delays.
 int mouseDelay = 10;
 int keyboardDelay = 10;
+BufferFinalizer<char> finalizer;
 
 /*
  __  __
@@ -74,7 +77,6 @@ Napi::Number _dragMouse(const Napi::CallbackInfo &info)
 			break;
 		case -2:
 			throw Napi::Error::New(env, "Invalid mouse button specified.");
-			break;
 		}
 	}
 
@@ -614,211 +616,243 @@ Napi::Number _setKeyboardDelay(const Napi::CallbackInfo &info)
 	return Napi::Number::New(env, 1);
 }
 
-// /*
-//   ____
-//  / ___|  ___ _ __ ___  ___ _ __
-//  \___ \ / __| '__/ _ \/ _ \ '_ \
-//   ___) | (__| | |  __/  __/ | | |
-//  |____/ \___|_|  \___|\___|_| |_|
+/*
+  ____
+ / ___|  ___ _ __ ___  ___ _ __
+ \___ \ / __| '__/ _ \/ _ \ '_ \
+  ___) | (__| | |  __/  __/ | | |
+ |____/ \___|_|  \___|\___|_| |_|
 
-// */
+*/
 
-// /**
-//  * Pad hex color code with leading zeros.
-//  * @param color Hex value to pad.
-//  * @param hex   Hex value to output.
-//  */
-// void padHex(MMRGBHex color, char *hex)
-// {
-// 	//Length needs to be 7 because snprintf includes a terminating null.
-// 	//Use %06x to pad hex value with leading 0s.
-// 	snprintf(hex, 7, "%06x", color);
-// }
+/**
+ * Pad hex color code with leading zeros.
+ * @param color Hex value to pad.
+ * @param hex   Hex value to output.
+ */
+void padHex(MMRGBHex color, char *hex)
+{
+	//Length needs to be 7 because snprintf includes a terminating null.
+	//Use %06x to pad hex value with leading 0s.
+	snprintf(hex, 7, "%06x", color);
+}
 
-// NAN_METHOD(getPixelColor)
-// {
-// 	if (info.Length() != 2)
-// 	{
-// 		return Nan::ThrowError("Invalid number of arguments.");
-// 	}
+Napi::String _getPixelColor(const Napi::CallbackInfo &info)
+{
+	Napi::Env env = info.Env();
 
-// 	MMBitmapRef bitmap;
-// 	MMRGBHex color;
+	if (info.Length() != 2)
+	{
+		throw Napi::Error::New(env, "Invalid number of arguments.");
+	}
 
-// 	size_t x = info[0]->Int32Value();
-// 	size_t y = info[1]->Int32Value();
+	MMBitmapRef bitmap;
+	MMRGBHex color;
 
-// 	if (!pointVisibleOnMainDisplay(MMPointMake(x, y)))
-// 	{
-// 		return Nan::ThrowError("Requested coordinates are outside the main screen's dimensions.");
-// 	}
+	size_t x = info[0].As<Napi::Number>().Int32Value();
+	size_t y = info[1].As<Napi::Number>().Int32Value();
 
-// 	bitmap = copyMMBitmapFromDisplayInRect(MMRectMake(x, y, 1, 1));
+	if (!pointVisibleOnMainDisplay(MMPointMake(x, y)))
+	{
+		throw Napi::Error::New(env, "Requested coordinates are outside the main screen's dimensions.");
+	}
 
-// 	color = MMRGBHexAtPoint(bitmap, 0, 0);
+	bitmap = copyMMBitmapFromDisplayInRect(MMRectMake(x, y, 1, 1));
 
-// 	char hex[7];
+	color = MMRGBHexAtPoint(bitmap, 0, 0);
 
-// 	padHex(color, hex);
+	char hex[7];
 
-// 	destroyMMBitmap(bitmap);
+	padHex(color, hex);
 
-// 	info.GetReturnValue().Set(Nan::New(hex).ToLocalChecked());
-// }
+	destroyMMBitmap(bitmap);
 
-// NAN_METHOD(getScreenSize)
-// {
-// 	//Get display size.
-// 	MMSize displaySize = getMainDisplaySize();
+	return Napi::String::New(env, hex);
+}
 
-// 	//Create our return object.
-// 	Local<Object> obj = Nan::New<Object>();
-// 	Nan::Set(obj, Nan::New("width").ToLocalChecked(), Nan::New<Number>(displaySize.width));
-// 	Nan::Set(obj, Nan::New("height").ToLocalChecked(), Nan::New<Number>(displaySize.height));
+Napi::Object _getScreenSize(const Napi::CallbackInfo &info)
+{
+	Napi::Env env = info.Env();
 
-// 	//Return our object with .width and .height.
-// 	info.GetReturnValue().Set(obj);
-// }
+	//Get display size.
+	MMSize displaySize = getMainDisplaySize();
 
-// NAN_METHOD(getXDisplayName)
-// {
-// #if defined(USE_X11)
-// 	const char *display = getXDisplay();
-// 	info.GetReturnValue().Set(Nan::New<String>(display).ToLocalChecked());
-// #else
-// 	Nan::ThrowError("getXDisplayName is only supported on Linux");
-// #endif
-// }
+	//Create our return object.
+	Napi::Object obj = Napi::Object::New(env);
+	obj.Set(Napi::String::New(env, "width"), Napi::Number::New(env, displaySize.width));
+	obj.Set(Napi::String::New(env, "height"), Napi::Number::New(env, displaySize.height));
 
-// NAN_METHOD(setXDisplayName)
-// {
-// #if defined(USE_X11)
-// 	Nan::Utf8String string(info[0]);
-// 	setXDisplay(*string);
-// 	info.GetReturnValue().Set(Nan::New(1));
-// #else
-// 	Nan::ThrowError("setXDisplayName is only supported on Linux");
-// #endif
-// }
+	return obj;
+}
 
-// NAN_METHOD(captureScreen)
-// {
-// 	size_t x;
-// 	size_t y;
-// 	size_t w;
-// 	size_t h;
+Napi::String _getXDisplayName(const Napi::CallbackInfo &info)
+{
+	Napi::Env env = info.Env();
 
-// 	//If user has provided screen coords, use them!
-// 	if (info.Length() == 4)
-// 	{
-// 		//TODO: Make sure requested coords are within the screen bounds, or we get a seg fault.
-// 		// 		An error message is much nicer!
+#if defined(USE_X11)
+	const char *display = getXDisplay();
+	return Napi::String::New(env, display);
+#else
+	Napi::Error::New(env, "getXDisplayName is only supported on Linux").ThrowAsJavaScriptException();
+#endif
+}
 
-// 		x = info[0]->Int32Value();
-// 		y = info[1]->Int32Value();
-// 		w = info[2]->Int32Value();
-// 		h = info[3]->Int32Value();
-// 	}
-// 	else
-// 	{
-// 		//We're getting the full screen.
-// 		x = 0;
-// 		y = 0;
+Napi::String _setXDisplayName(const Napi::CallbackInfo &info)
+{
+	Napi::Env env = info.Env();
 
-// 		//Get screen size.
-// 		MMSize displaySize = getMainDisplaySize();
-// 		w = displaySize.width;
-// 		h = displaySize.height;
-// 	}
+#if defined(USE_X11)
+	std::string displayName = info[0].As<Napi::String>();
+	setXDisplay(displayName.c_str());
+	return Napi::Number::New(env, 1);
+#else
+	throw Napi::Error::New(env, "setXDisplayName is only supported on Linux");
+#endif
+}
 
-// 	MMBitmapRef bitmap = copyMMBitmapFromDisplayInRect(MMRectMake(x, y, w, h));
+Napi::Object _captureScreen(const Napi::CallbackInfo &info)
+{
+	Napi::Env env = info.Env();
 
-// 	uint32_t bufferSize = bitmap->bytewidth * bitmap->height;
-// 	Local<Object> buffer = Nan::NewBuffer((char *)bitmap->imageBuffer, bufferSize, destroyMMBitmapBuffer, NULL).ToLocalChecked();
+	size_t x;
+	size_t y;
+	size_t w;
+	size_t h;
 
-// 	Local<Object> obj = Nan::New<Object>();
-// 	Nan::Set(obj, Nan::New("width").ToLocalChecked(), Nan::New<Number>(bitmap->width));
-// 	Nan::Set(obj, Nan::New("height").ToLocalChecked(), Nan::New<Number>(bitmap->height));
-// 	Nan::Set(obj, Nan::New("byteWidth").ToLocalChecked(), Nan::New<Number>(bitmap->bytewidth));
-// 	Nan::Set(obj, Nan::New("bitsPerPixel").ToLocalChecked(), Nan::New<Number>(bitmap->bitsPerPixel));
-// 	Nan::Set(obj, Nan::New("bytesPerPixel").ToLocalChecked(), Nan::New<Number>(bitmap->bytesPerPixel));
-// 	Nan::Set(obj, Nan::New("image").ToLocalChecked(), buffer);
+	MMSize displaySize = getMainDisplaySize();
+	//If user has provided screen coords, use them!
+	if (info.Length() == 4)
+	{
+		x = info[0].As<Napi::Number>().Int32Value();
+		y = info[1].As<Napi::Number>().Int32Value();
+		w = info[2].As<Napi::Number>().Int32Value();
+		h = info[3].As<Napi::Number>().Int32Value();
 
-// 	info.GetReturnValue().Set(obj);
-// }
+		if (!(x >= 0 && x < displaySize.width))
+		{
+			std::stringstream s;
+			s << "x coordinate is out of bounds. Should be within 0 and " << displaySize.width << " but is: " << x;
+			throw Napi::Error::New(env, s.str());
+		}
+		if (!(y >= 0 && y < displaySize.height))
+		{
+			std::stringstream s;
+			s << "y coordinate is out of bounds. Should be within 0 and " << displaySize.height << " but is: " << y;
+			throw Napi::Error::New(env, s.str());
+		}
+		if (!((x + w) >= 0 && (x + w) < displaySize.width))
+		{
+			std::stringstream s;
+			s << "Rect is out of bounds. Should be within 0 and " << displaySize.width << " but is: (" << x << "," << x + w << ")";
+			throw Napi::Error::New(env, s.str());
+		}
+		if (!((y + h) >= 0 && (y + h) < displaySize.height))
+		{
+			std::stringstream s;
+			s << "Rect is out of bounds. Should be within 0 and " << displaySize.height << " but is: (" << y << "," << y + h << ")";
+			throw Napi::Error::New(env, s.str());
+		}
+	}
+	else
+	{
+		//We're getting the full screen.
+		x = 0;
+		y = 0;
 
-// /*
-//  ____  _ _
-// | __ )(_) |_ _ __ ___   __ _ _ __
-// |  _ \| | __| '_ ` _ \ / _` | '_ \
-// | |_) | | |_| | | | | | (_| | |_) |
-// |____/|_|\__|_| |_| |_|\__,_| .__/
-//                             |_|
-//  */
+		//Get screen size.
+		w = displaySize.width;
+		h = displaySize.height;
+	}
 
-// class BMP
-// {
-// public:
-// 	size_t width;
-// 	size_t height;
-// 	size_t byteWidth;
-// 	uint8_t bitsPerPixel;
-// 	uint8_t bytesPerPixel;
-// 	uint8_t *image;
-// };
+	MMBitmapRef bitmap = copyMMBitmapFromDisplayInRect(MMRectMake(x, y, w, h));
 
-// //Convert object from Javascript to a C++ class (BMP).
-// BMP buildBMP(Local<Object> info)
-// {
-// 	Local<Object> obj = Nan::To<v8::Object>(info).ToLocalChecked();
+	uint32_t bufferSize = bitmap->bytewidth * bitmap->height;
+	Napi::Buffer<char> buffer = Napi::Buffer<char>::New(env, (char *)bitmap->imageBuffer, bufferSize, finalizer);
 
-// 	BMP img;
+	Napi::Object obj = Napi::Object::New(env);
+	obj.Set(Napi::String::New(env, "width"), Napi::Number::New(env, bitmap->width));
+	obj.Set(Napi::String::New(env, "height"), Napi::Number::New(env, bitmap->height));
+	obj.Set(Napi::String::New(env, "byteWidth"), Napi::Number::New(env, bitmap->bytewidth));
+	obj.Set(Napi::String::New(env, "bitsPerPixel"), Napi::Number::New(env, bitmap->bitsPerPixel));
+	obj.Set(Napi::String::New(env, "bytesPerPixel"), Napi::Number::New(env, bitmap->bytesPerPixel));
+	obj.Set(Napi::String::New(env, "image"), buffer);
 
-// 	img.width = obj->Get(Nan::New("width").ToLocalChecked())->Uint32Value();
-// 	img.height = obj->Get(Nan::New("height").ToLocalChecked())->Uint32Value();
-// 	img.byteWidth = obj->Get(Nan::New("byteWidth").ToLocalChecked())->Uint32Value();
-// 	img.bitsPerPixel = obj->Get(Nan::New("bitsPerPixel").ToLocalChecked())->Uint32Value();
-// 	img.bytesPerPixel = obj->Get(Nan::New("bytesPerPixel").ToLocalChecked())->Uint32Value();
+	return obj;
+}
 
-// 	char *buf = node::Buffer::Data(obj->Get(Nan::New("image").ToLocalChecked()));
+/*
+ ____  _ _
+| __ )(_) |_ _ __ ___   __ _ _ __
+|  _ \| | __| '_ ` _ \ / _` | '_ \
+| |_) | | |_| | | | | | (_| | |_) |
+|____/|_|\__|_| |_| |_|\__,_| .__/
+                            |_|
+ */
 
-// 	//Convert the buffer to a uint8_t which createMMBitmap requires.
-// 	img.image = (uint8_t *)malloc(img.byteWidth * img.height);
-// 	memcpy(img.image, buf, img.byteWidth * img.height);
+class BMP
+{
+public:
+	size_t width;
+	size_t height;
+	size_t byteWidth;
+	uint8_t bitsPerPixel;
+	uint8_t bytesPerPixel;
+	uint8_t *image;
+};
 
-// 	return img;
-// }
+//Convert object from Javascript to a C++ class (BMP).
+BMP buildBMP(const Napi::Object &info)
+{
+	BMP img;
 
-// NAN_METHOD(getColor)
-// {
-// 	MMBitmapRef bitmap;
-// 	MMRGBHex color;
+	img.width = info.Get("width").As<Napi::Number>().Uint32Value();
+	img.height = info.Get("height").As<Napi::Number>().Uint32Value();
+	img.byteWidth = info.Get("byteWidth").As<Napi::Number>().Uint32Value();
+	img.bitsPerPixel = info.Get("bitsPerPixel").As<Napi::Number>().Uint32Value();
+	img.bytesPerPixel = info.Get("bytesPerPixel").As<Napi::Number>().Uint32Value();
 
-// 	size_t x = info[1]->Int32Value();
-// 	size_t y = info[2]->Int32Value();
+	Napi::Buffer<char> imageBuffer = info.Get("image").As<Napi::Buffer<char>>();
+	char *buf = imageBuffer.Data();
 
-// 	//Get our image object from JavaScript.
-// 	BMP img = buildBMP(Nan::To<v8::Object>(info[0]).ToLocalChecked());
+	//Convert the buffer to a uint8_t which createMMBitmap requires.
+	img.image = (uint8_t *)malloc(img.byteWidth * img.height);
+	memcpy(img.image, buf, img.byteWidth * img.height);
 
-// 	//Create the bitmap.
-// 	bitmap = createMMBitmap(img.image, img.width, img.height, img.byteWidth, img.bitsPerPixel, img.bytesPerPixel);
+	return img;
+}
 
-// 	// Make sure the requested pixel is inside the bitmap.
-// 	if (!MMBitmapPointInBounds(bitmap, MMPointMake(x, y)))
-// 	{
-// 		return Nan::ThrowError("Requested coordinates are outside the bitmap's dimensions.");
-// 	}
+Napi::String _getColor(const Napi::CallbackInfo &info)
+{
+	Napi::Env env = info.Env();
 
-// 	color = MMRGBHexAtPoint(bitmap, x, y);
+	MMBitmapRef bitmap;
+	MMRGBHex color;
 
-// 	char hex[7];
+	size_t x = info[1].As<Napi::Number>().Int32Value();
+	size_t y = info[2].As<Napi::Number>().Int32Value();
 
-// 	padHex(color, hex);
+	//Get our image object from JavaScript.
+	BMP img = buildBMP(info[0].As<Napi::Object>());
 
-// 	destroyMMBitmap(bitmap);
+	//Create the bitmap.
+	bitmap = createMMBitmap(img.image, img.width, img.height, img.byteWidth, img.bitsPerPixel, img.bytesPerPixel);
 
-// 	info.GetReturnValue().Set(Nan::New(hex).ToLocalChecked());
-// }
+	// Make sure the requested pixel is inside the bitmap.
+	if (!MMBitmapPointInBounds(bitmap, MMPointMake(x, y)))
+	{
+		throw Napi::Error::New(env, "Requested coordinates are outside the bitmap's dimensions.");
+	}
+
+	color = MMRGBHexAtPoint(bitmap, x, y);
+
+	char hex[7];
+
+	padHex(color, hex);
+
+	destroyMMBitmap(bitmap);
+
+	return Napi::String::New(env, hex);
+}
 
 Napi::Object Init(Napi::Env env, Napi::Object exports)
 {
@@ -837,30 +871,14 @@ Napi::Object Init(Napi::Env env, Napi::Object exports)
 	exports.Set(Napi::String::New(env, "typeStringDelayed"), Napi::Function::New(env, _typeStringDelayed));
 	exports.Set(Napi::String::New(env, "setKeyboardDelay"), Napi::Function::New(env, _setKeyboardDelay));
 
+	exports.Set(Napi::String::New(env, "getPixelColor"), Napi::Function::New(env, _getPixelColor));
+	exports.Set(Napi::String::New(env, "getScreenSize"), Napi::Function::New(env, _getScreenSize));
+	exports.Set(Napi::String::New(env, "captureScreen"), Napi::Function::New(env, _captureScreen));
+	exports.Set(Napi::String::New(env, "getColor"), Napi::Function::New(env, _getColor));
+	exports.Set(Napi::String::New(env, "getXDisplayName"), Napi::Function::New(env, _getXDisplayName));
+	exports.Set(Napi::String::New(env, "setXDisplayName"), Napi::Function::New(env, _setXDisplayName));
+
 	return exports;
 }
 
 NODE_API_MODULE(libnut, Init)
-
-// NAN_MODULE_INIT(InitAll)
-// {
-// 	Nan::Set(target, Nan::New("getPixelColor").ToLocalChecked(),
-// 			 Nan::GetFunction(Nan::New<FunctionTemplate>(getPixelColor)).ToLocalChecked());
-
-// 	Nan::Set(target, Nan::New("getScreenSize").ToLocalChecked(),
-// 			 Nan::GetFunction(Nan::New<FunctionTemplate>(getScreenSize)).ToLocalChecked());
-
-// 	Nan::Set(target, Nan::New("captureScreen").ToLocalChecked(),
-// 			 Nan::GetFunction(Nan::New<FunctionTemplate>(captureScreen)).ToLocalChecked());
-
-// 	Nan::Set(target, Nan::New("getColor").ToLocalChecked(),
-// 			 Nan::GetFunction(Nan::New<FunctionTemplate>(getColor)).ToLocalChecked());
-
-// 	Nan::Set(target, Nan::New("getXDisplayName").ToLocalChecked(),
-// 			 Nan::GetFunction(Nan::New<FunctionTemplate>(getXDisplayName)).ToLocalChecked());
-
-// 	Nan::Set(target, Nan::New("setXDisplayName").ToLocalChecked(),
-// 			 Nan::GetFunction(Nan::New<FunctionTemplate>(setXDisplayName)).ToLocalChecked());
-// }
-
-// NODE_MODULE(robotjs, InitAll)
