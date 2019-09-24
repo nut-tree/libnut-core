@@ -56,7 +56,7 @@ install: true
 script:
   - npm run patch && npm i
   - if [[ $TRAVIS_OS_NAME = "windows" ]]; then npm run build:release:win; else npm run build:release; fi
-  - xvfb-run npm test
+  - npm test
 
 before_deploy:
   - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
