@@ -4,12 +4,20 @@ cache: npm
 matrix:
   include:
     - os: linux
-      node_js: "lts/dubnium"
+      node_js: "10"
     - os: osx
       osx_image: xcode11
-      node_js: "lts/dubnium"
-    # - os: windows
-    #   node_js: "lts/dubnium"
+      node_js: "10"
+    - os: linux
+      node_js: "11"
+    - os: osx
+      osx_image: xcode11
+      node_js: "11"
+    - os: linux
+      node_js: "12"
+    - os: osx
+      osx_image: xcode11
+      node_js: "12"
 
 addons:
   apt:
@@ -54,3 +62,5 @@ deploy:
     script: npm publish --access public
     on:
       tags: true
+      node_js: '12'
+
