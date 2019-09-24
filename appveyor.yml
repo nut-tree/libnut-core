@@ -1,0 +1,39 @@
+# http://www.appveyor.com/docs/appveyor-yml
+
+# Test against these versions of Io.js and Node.js.
+environment:
+  matrix:
+  # node.js
+    - nodejs_version: "10"
+    - nodejs_version: "11"
+
+cache:
+  - node_modules
+
+clone_depth: 5
+
+platform:
+  - x64
+
+# Install scripts. (runs after repo cloning)
+install:
+  # Get the latest stable version of Node 0.STABLE.latest
+  - ps: Install-Product node $env:nodejs_version
+  - npm -g install npm
+  - set PATH=%APPDATA%\npm;%PATH%
+  - ps: '"//registry.npmjs.org/:_authToken=$env:npm_auth_token`n" | out-file "$env:userprofile\.npmrc" -Encoding ASCII'
+  - npm whoami
+  - npm run patch && npm install
+
+test_script:
+  # Output useful info for debugging.
+  - node --version
+  - npm --version
+  # run tests
+  - npm test
+
+on_success:
+  - IF defined APPVEYOR_REPO_TAG_NAME npm publish
+
+build: off
+version: "{build}"
