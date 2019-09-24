@@ -24,6 +24,7 @@ install:
   - ps: '"//registry.npmjs.org/:_authToken=$env:npm_auth_token`n" | out-file "$env:userprofile\.npmrc" -Encoding ASCII'
   - npm whoami
   - npm run patch && npm install
+  - npm run build:release:win
 
 test_script:
   # Output useful info for debugging.
