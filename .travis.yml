@@ -5,19 +5,19 @@ cache: npm
 matrix:
   include:
     - os: linux
-      dist: trusty
+      dist: bionic
       node_js: "10"
     - os: osx
       osx_image: xcode11
       node_js: "10"
     - os: linux
-      dist: trusty
+      dist: bionic
       node_js: "11"
     - os: osx
       osx_image: xcode11
       node_js: "11"
     - os: linux
-      dist: trusty
+      dist: bionic
       node_js: "12"
     - os: osx
       osx_image: xcode11
@@ -28,12 +28,16 @@ addons:
     sources:
       - ubuntu-toolchain-r-test
     packages:
+      - cmake
       - libx11-dev
       - zlib1g-dev
-      - libpng12-dev
+      - libpng-dev
       - libxtst-dev
       - g++-4.8
       - gcc-4.8
+
+services:
+  - xvfb
 
 before_install:
   - node --version
@@ -42,17 +46,17 @@ before_install:
   - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export CXX=g++-4.8; fi
   - $CXX --version
 
-before_script:
+# before_script:
   # Start xvfb
-  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export DISPLAY=:99.0; fi
-  - if [[ $TRAVIS_OS_NAME == "linux" ]]; then sh -e /etc/init.d/xvfb start; fi
+  # - if [[ $TRAVIS_OS_NAME == "linux" ]]; then export DISPLAY=:99.0; fi
+  # - if [[ $TRAVIS_OS_NAME == "linux" ]]; then sh -e /etc/init.d/xvfb start; fi
 
 install: true
 
 script:
   - npm run patch && npm i
   - if [[ $TRAVIS_OS_NAME = "windows" ]]; then npm run build:release:win; else npm run build:release; fi
-  - npm test
+  - xvfb-run npm test
 
 before_deploy:
   - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
