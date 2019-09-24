@@ -8,8 +8,8 @@ matrix:
     - os: osx
       osx_image: xcode11
       node_js: "lts/dubnium"
-    - os: windows
-      node_js: "lts/dubnium"
+    # - os: windows
+    #   node_js: "lts/dubnium"
 
 addons:
   apt:
