@@ -32,7 +32,7 @@ addons:
       - gcc-4.8
 
 before_install:
-  - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh
+  - rm -rf ~/.nvm && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
   - nvm install $TRAVIS_NODE_VERSION
   - PATH=$PATH:`pwd`/node_modules/.bin
 
