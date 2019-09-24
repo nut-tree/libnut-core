@@ -1,4 +1,5 @@
-language: cpp
+sudo: false
+language: node_js
 cache: npm
 
 matrix:
@@ -32,10 +33,6 @@ addons:
       - gcc-4.8
 
 before_install:
-  - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh
-  - nvm install $node_js
-  - PATH=$PATH:`pwd`/node_modules/.bin
-
   - node --version
   - npm --version
 
