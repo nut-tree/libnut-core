@@ -5,16 +5,19 @@ cache: npm
 matrix:
   include:
     - os: linux
+      dist: trusty
       node_js: "10"
     - os: osx
       osx_image: xcode11
       node_js: "10"
     - os: linux
+      dist: trusty
       node_js: "11"
     - os: osx
       osx_image: xcode11
       node_js: "11"
     - os: linux
+      dist: trusty
       node_js: "12"
     - os: osx
       osx_image: xcode11
