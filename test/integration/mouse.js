@@ -6,23 +6,17 @@ const os = require("os");
 libnut.setMouseDelay(100);
 
 let target, elements;
-let originalTimeout;
 
 describe("Integration/Mouse", () => {
   beforeEach(done => {
-    originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 15000;
-
     target = targetpractice.start();
     target.once("elements", message => {
       elements = message;
-      console.log(elements);
       done();
     });
   });
 
   afterEach(() => {
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
     targetpractice.stop();
     target = null;
   });
