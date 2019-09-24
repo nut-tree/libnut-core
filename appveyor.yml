@@ -1,5 +1,7 @@
 # http://www.appveyor.com/docs/appveyor-yml
 
+image: Visual Studio 2017
+
 # Test against these versions of Io.js and Node.js.
 environment:
   matrix:
