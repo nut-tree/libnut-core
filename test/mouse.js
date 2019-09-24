@@ -12,7 +12,7 @@ describe("Mouse", () => {
       expect(lastKnownPos.y !== undefined).toBeTruthy();
     });
 
-    it("move the mouse to valid coordinates", () => {
+    xit("move the mouse to valid coordinates", () => {
       lastKnownPos = libnut.moveMouse(0, 0);
       expect(libnut.moveMouse(100, 100) === 1).toBeTruthy();
       currentPos = libnut.getMousePos();
@@ -31,7 +31,7 @@ describe("Mouse", () => {
   });
 
   describe("smooth movement", () => {
-    it("move the mouse smoothly.", () => {
+    xit("move the mouse smoothly.", () => {
       lastKnownPos = libnut.moveMouseSmooth(0, 0);
       expect(libnut.moveMouseSmooth(100, 100) === 1).toBeTruthy();
       currentPos = libnut.getMousePos();
