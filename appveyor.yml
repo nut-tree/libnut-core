@@ -35,7 +35,7 @@ test_script:
   - npm --version
   # run tests
   - npm test
-  - npm test:it
+  - npm run test:it
 
 on_success:
   - IF defined APPVEYOR_REPO_TAG_NAME npm publish
