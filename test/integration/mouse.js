@@ -16,6 +16,7 @@ describe("Integration/Mouse", () => {
     target = targetpractice.start();
     target.once("elements", message => {
       elements = message;
+      console.log(elements);
       done();
     });
   });
