@@ -48,5 +48,4 @@ deploy:
     script: npm publish --access public
     on:
       tags: true
-      node_js: '12'
 
