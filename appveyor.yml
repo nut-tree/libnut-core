@@ -33,10 +33,10 @@ test_script:
 
 on_success:
   - ps: |
-      if ($env:APPVEYOR_REPO_TAG -eq "true -And $env:nodejs_version -eq "12)
-      {
-        npm publish
-      }
+        if ($env:APPVEYOR_REPO_TAG -eq "true -And $env:nodejs_version -eq "12)
+        {
+          npm publish
+        }
 
 build: off
 version: "{build}"
