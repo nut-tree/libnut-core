@@ -1,6 +1,7 @@
 #include <napi.h>
 #include <vector>
 #include <sstream>
+#include <iostream>
 #include "mouse.h"
 #include "buffer_finalizer.h"
 #include "deadbeef_rand.h"
@@ -451,7 +452,6 @@ int GetFlagsFromValue(Napi::Value value, MMKeyFlags *flags)
 			if (!v.IsString())
 				return -2;
 
-			std::string a = value.As<Napi::String>();
 			MMKeyFlags f = MOD_NONE;
 			const int rv = GetFlagsFromString(v, &f);
 			if (rv)
