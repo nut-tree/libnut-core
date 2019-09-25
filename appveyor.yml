@@ -2,13 +2,7 @@
 
 image: Visual Studio 2017
 
-# Test against these versions of Io.js and Node.js.
-environment:
-  matrix:
-  # node.js
-    - nodejs_version: "10"
-    - nodejs_version: "11"
-    - nodejs_version: "12"
+nodejs_version: "10"
 
 cache:
   - node_modules
@@ -38,9 +32,11 @@ test_script:
   - npm run test:it
 
 on_success:
-  - ps: if ($env:APPVEYOR_REPO_TAG_NAME) { echo $env:APPVEYOR_REPO_TAG_NAME }
-  - ps: if ($env:nodejs_version = "12") { echo "node 12" }
-  - ps: if ($env:APPVEYOR_REPO_TAG_NAME -and $env:nodejs_version = "12") { npm publish }
+  - ps: |
+      if ($env:APPVEYOR_REPO_TAG -eq "true -And $env:nodejs_version -eq "12)
+      {
+        npm publish
+      }
 
 build: off
 version: "{build}"
