@@ -38,9 +38,9 @@ test_script:
   - npm run test:it
 
 on_success:
-  - sh: if [ ${APPVEYOR_REPO_TAG_NAME+x} ] ; then echo $APPVEYOR_REPO_TAG_NAME; else echo "No tag"; fi
-  - sh: if [ "${nodejs_version+x}" = "12" ]; then echo "node 12"; else echo "node != 12"; fi
-  - sh: if [ ${APPVEYOR_REPO_TAG_NAME+x} ] && [ "${nodejs_version+x}" = "12" ]; then npm publish; fi
+  - ps: if ($env:APPVEYOR_REPO_TAG_NAME != "") { echo $env:APPVEYOR_REPO_TAG_NAME } else { echo "No tag" }
+  - ps: if ($env:nodejs_version = "12") { echo "node 12" } else { echo "node != 12" }
+  - ps: if ($env:APPVEYOR_REPO_TAG_NAME != "") && ($env:nodejs_version = "12") { npm publish }
 
 build: off
 version: "{build}"
