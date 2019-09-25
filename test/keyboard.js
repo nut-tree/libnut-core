@@ -10,6 +10,10 @@ describe("Keyboard", () => {
     expect(() => libnut.keyTap()).toThrowError(/A string was expected/);
   });
 
+  it("Tap a key with modifier array.", function() {
+    expect(() => libnut.keyTap("a", ["alt", "control"])).not.toThrow();
+  });
+
   // This it won't fail if there's an issue, but it will help you identify an issue if ran locally.
   it("Tap all keys.", function() {
     const chars = "abcdefghijklmnopqrstuvwxyz1234567890,./;'[]\\".split("");
