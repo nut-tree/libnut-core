@@ -2,11 +2,11 @@
 
 image: Visual Studio 2017
 
+# Test against these versions of Io.js and Node.js.
 environment:
   matrix:
-    - nodejs_version: 10
-    - nodejs_version: 11
-    - nodejs_version: 12
+  # node.js
+    - nodejs_version: "10"
 
 cache:
   - node_modules
@@ -36,11 +36,7 @@ test_script:
   - npm run test:it
 
 on_success:
-  - ps: |
-        if ($env:APPVEYOR_REPO_TAG -eq "true" -And $env:nodejs_version -eq "12")
-        {
-          npm publish
-        }
+  - IF defined APPVEYOR_REPO_TAG_NAME npm publish
 
 build: off
 version: "{build}"
