@@ -1,5 +1,6 @@
 #include "screen.h"
 #include "os.h"
+#include "window.h"
 
 #if defined(IS_MACOSX)
 	#include <ApplicationServices/ApplicationServices.h>
@@ -30,4 +31,9 @@ bool pointVisibleOnMainDisplay(MMPoint point)
 {
 	MMSize displaySize = getMainDisplaySize();
 	return point.x < displaySize.width && point.y < displaySize.height;
+}
+
+void highlight(int x, int y, int width, int height, int duration, float opacity) {
+    Window highlightWindow(x, y, width, height);
+	highlightWindow.show(duration, opacity);
 }

@@ -22,6 +22,8 @@ MMSize getMainDisplaySize(void);
  * of the main screen. */
 bool pointVisibleOnMainDisplay(MMPoint point);
 
+void highlight(int x, int y, int width, int height, int duration, float opacity);
+
 #ifdef __cplusplus
 }
 #endif
