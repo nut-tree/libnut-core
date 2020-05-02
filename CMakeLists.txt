@@ -4,9 +4,11 @@ set(CMAKE_CXX_STANDARD 17)
 project(libnut)
 
 # Source
-set(SOURCE_FILES "src/libnut.cc" "src/deadbeef_rand.c" "src/mouse.c" "src/keypress.c" "src/keycode.c" "src/screen.c" "src/screengrab.c" "src/snprintf.c" "src/MMBitmap.c")
+set(SOURCE_FILES "src/libnut.cc" "src/deadbeef_rand.c" "src/mouse.c" "src/keypress.c" "src/keycode.c" "src/screen.cc" "src/screengrab.c" "src/snprintf.c" "src/MMBitmap.c")
 if (UNIX AND NOT APPLE)
     set(SOURCE_FILES "${SOURCE_FILES}" "src/xdisplay.c")
+elseif (UNIX AND APPLE)
+    set(SOURCE_FILES "${SOURCE_FILES}" "src/window_macos.mm")
 endif()
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
@@ -20,9 +22,7 @@ set(INCLUDES "")
 if (UNIX AND APPLE)
     message(STATUS "macOS build")
     set(LIBS "${LIBS}" "-framework ApplicationServices")
-    set(LIBS "${LIBS}" "-framework Carbon")
-    set(LIBS "${LIBS}" "-framework CoreFoundation")
-    set(LIBS "${LIBS}" "-framework OpenGL")
+    set(LIBS "${LIBS}" "-framework Cocoa")
 elseif (WIN32)
     message(STATUS "Windows build")
     # Required for disabeling delayed loading of node libs when linking
