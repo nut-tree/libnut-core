@@ -5,7 +5,9 @@ void showHighlightWindow(int x, int y, int width, int height, int duration, floa
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     [NSApplication sharedApplication];
 
-    NSRect frame = NSMakeRect(x, y, width, height);
+    NSRect mainScreenFrameRect = [[NSScreen mainScreen] frame];
+    CGFloat screenHeight = mainScreenFrameRect.size.height;
+    NSRect frame = NSMakeRect(x, screenHeight - y - height, width, height);
     NSUInteger styleMask = NSWindowStyleMaskBorderless;
     NSWindow * window =  [[[NSWindow alloc] initWithContentRect:frame styleMask:styleMask backing:NSBackingStoreBuffered defer:NO] autorelease];
     [window setBackgroundColor:[NSColor redColor]];
