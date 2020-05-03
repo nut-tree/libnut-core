@@ -14,7 +14,7 @@ void showHighlightWindow(int x, int y, int width, int height, int duration, floa
     // Register the window class.
     const wchar_t CLASS_NAME[]  = L"Highlight Window Class";
 
-    WNDCLASS wc = { };
+    WNDCLASS wc = {0};
 
     wc.lpfnWndProc   = WindowProc;
     wc.hInstance     = NULL;
@@ -47,7 +47,7 @@ void showHighlightWindow(int x, int y, int width, int height, int duration, floa
     SetTimer(hwnd, ID_CLOSE_TIMER, duration * 1000, NULL);
     ShowWindow(hwnd, 1);
 
-    MSG msg = { };
+    MSG msg = {0};
     while (GetMessage(&msg, NULL, 0, 0)) {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
