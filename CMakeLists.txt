@@ -4,13 +4,13 @@ set(CMAKE_CXX_STANDARD 17)
 project(libnut)
 
 # Source
-set(SOURCE_FILES "src/libnut.cc" "src/deadbeef_rand.c" "src/mouse.c" "src/keypress.c" "src/keycode.c" "src/screen.cc" "src/screengrab.c" "src/snprintf.c" "src/MMBitmap.c")
+set(SOURCE_FILES "src/libnut.cc" "src/deadbeef_rand.c" "src/mouse.c" "src/keypress.c" "src/keycode.c" "src/screen.c" "src/screengrab.c" "src/snprintf.c" "src/MMBitmap.c")
 if (UNIX AND NOT APPLE)
-    set(SOURCE_FILES "${SOURCE_FILES}" "src/xdisplay.c")
+    set(SOURCE_FILES "${SOURCE_FILES}" "src/xdisplay.c" "src/highlightwindow_linux.c")
 elseif (UNIX AND APPLE)
-    set(SOURCE_FILES "${SOURCE_FILES}" "src/window_macos.mm")
+    set(SOURCE_FILES "${SOURCE_FILES}" "src/highlightwindow_macos.mm")
 elseif (WIN32)
-    set(SOURCE_FILES "${SOURCE_FILES}" "src/window_win32.cc")
+    set(SOURCE_FILES "${SOURCE_FILES}" "src/highlightwindow_win32.c")
 endif()
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
