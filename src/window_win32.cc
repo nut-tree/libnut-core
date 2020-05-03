@@ -51,7 +51,7 @@ void Window::show(int duration, float opacity) {
         return;
     }
 
-    SetTimer(hwnd, ID_CLOSE_TIMER, 2000, NULL);
+    SetTimer(hwnd, ID_CLOSE_TIMER, duration * 1000, NULL);
     ShowWindow(hwnd, 1);
 
     MSG msg = { };
