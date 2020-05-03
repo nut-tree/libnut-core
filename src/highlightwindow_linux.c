@@ -1,61 +1,39 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include <stdio.h>
 #include "highlightwindow.h"
 
-void showHighlightWindow(int x, int y, int width, int height, int duration, float opacity) {
-//  Display *dpy;
-//   XVisualInfo vinfo;
-//   int depth;
-//   XVisualInfo *visual_list;
-//   XVisualInfo visual_template;
-//   int nxvisuals;
-//   int i;
-//   XSetWindowAttributes attrs;
-//   Window parent;
-//   Visual *visual;
+void showHighlightWindow(int x, int y, int width, int height, int duration, float opacity)
+{
+    Display *d = XOpenDisplay(NULL);
+    Window root = DefaultRootWindow(d);
+    int default_screen = XDefaultScreen(d);
 
-//   dpy = XOpenDisplay(NULL);
+    XSetWindowAttributes attrs;
+    attrs.override_redirect = True;
 
-//   nxvisuals = 0;
-//   visual_template.screen = DefaultScreen(dpy);
-//   visual_list = XGetVisualInfo (dpy, VisualScreenMask, &visual_template, &nxvisuals);
+    XVisualInfo vinfo;
+    if (!XMatchVisualInfo(d, DefaultScreen(d), 32, TrueColor, &vinfo)) {
+        return;
+    }
+    attrs.colormap = XCreateColormap(d, root, vinfo.visual, AllocNone);
+    int colorValue = 255 * opacity;
+    attrs.background_pixel = (colorValue << 24 | colorValue << 16);
+    attrs.border_pixel = 0;
 
-//   for (i = 0; i < nxvisuals; ++i)
-//     {
-//       printf("  %3d: visual 0x%lx class %d (%s) depth %d\n",
-//              i,
-//              visual_list[i].visualid,
-//              visual_list[i].depth);
-//     }
+    Window overlay = XCreateWindow(
+        d, root,
+        x, y, width, height, 0,
+        vinfo.depth, InputOutput, 
+        vinfo.visual,
+        CWOverrideRedirect | CWColormap | CWBackPixel | CWBorderPixel, &attrs
+    );
 
-//   if (!XMatchVisualInfo(dpy, XDefaultScreen(dpy), 32, TrueColor, &vinfo))
-//     {
-//       fprintf(stderr, "no such visual\n");
-//       return;
-//     }
+    XMapWindow(d, overlay);
 
-//   printf("Matched visual 0x%lx class %d (%s) depth %d\n",
-//          vinfo.visualid,
-//          vinfo.depth);
+    XFlush(d);
 
-//   parent = XDefaultRootWindow(dpy);
+    sleep(duration);
 
-//   XSync(dpy, True);
-
-//   printf("creating RGBA child\n");
-
-//   visual = vinfo.visual;
-//   depth = vinfo.depth;
-
-//   attrs.colormap = XCreateColormap(dpy, XDefaultRootWindow(dpy), visual, AllocNone);
-//   attrs.background_pixel = 0;
-//   attrs.border_pixel = 0;
-
-//   XCreateWindow(dpy, parent, 10, 10, 150, 100, 0, depth, InputOutput,
-//                 visual, CWBackPixel | CWColormap | CWBorderPixel, &attrs);
-
-//   XSync(dpy, True);
-
-//   printf("No error\n");
+    XUnmapWindow(d, overlay);
+    XCloseDisplay(d);
 }
