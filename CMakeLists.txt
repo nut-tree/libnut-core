@@ -8,7 +8,7 @@ set(SOURCE_FILES "src/libnut.cc" "src/deadbeef_rand.c" "src/mouse.c" "src/keypre
 if (UNIX AND NOT APPLE)
     set(SOURCE_FILES "${SOURCE_FILES}" "src/xdisplay.c" "src/highlightwindow_linux.c")
 elseif (UNIX AND APPLE)
-    set(SOURCE_FILES "${SOURCE_FILES}" "src/highlightwindow_macos.mm")
+    set(SOURCE_FILES "${SOURCE_FILES}" "src/highlightwindow_macos.m")
 elseif (WIN32)
     set(SOURCE_FILES "${SOURCE_FILES}" "src/highlightwindow_win32.c")
 endif()
