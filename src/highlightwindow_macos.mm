@@ -1,19 +1,11 @@
-#include "window.h"
+#include "highlightwindow.h"
 #import <Cocoa/Cocoa.h>
 
-
-Window::Window(int x, int y, int width, int height) {
-    this->_x = x;
-    this->_y = y;
-    this->_width = width;
-    this->_height = height;
-}
-
-void Window::show(int duration, float opacity) {
+void showHighlightWindow(int x, int y, int width, int height, int duration, float opacity) {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     [NSApplication sharedApplication];
 
-    NSRect frame = NSMakeRect(this->_x, this->_y, this->_width, this->_height);
+    NSRect frame = NSMakeRect(x, y, width, height);
     NSUInteger styleMask = NSWindowStyleMaskBorderless;
     NSWindow * window =  [[[NSWindow alloc] initWithContentRect:frame styleMask:styleMask backing:NSBackingStoreBuffered defer:NO] autorelease];
     [window setBackgroundColor:[NSColor redColor]];

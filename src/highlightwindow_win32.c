@@ -3,21 +3,14 @@
 #endif 
 
 #include <windows.h>
-#include <cstdio>
-#include "window.h"
+#include <stdio.h>
+#include "highlightwindow.h"
 
 #define ID_CLOSE_TIMER 1001
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-Window::Window(int x, int y, int width, int height) {
-    this->_x = x;
-    this->_y = y;
-    this->_width = width;
-    this->_height = height;
-}
-
-void Window::show(int duration, float opacity) {
+void showHighlightWindow(int x, int y, int width, int height, int duration, float opacity) {
     // Register the window class.
     const wchar_t CLASS_NAME[]  = L"Highlight Window Class";
 
@@ -35,10 +28,10 @@ void Window::show(int duration, float opacity) {
         CLASS_NAME,
         0,
         WS_POPUP,
-        this->_x,
-        this->_y,
-        this->_width,
-        this->_height,
+        x,
+        y,
+        width,
+        height,
         NULL,
         NULL,
         NULL,
@@ -51,7 +44,7 @@ void Window::show(int duration, float opacity) {
         return;
     }
 
-    SetTimer(hwnd, ID_CLOSE_TIMER, 2000, NULL);
+    SetTimer(hwnd, ID_CLOSE_TIMER, duration * 1000, NULL);
     ShowWindow(hwnd, 1);
 
     MSG msg = { };
