@@ -10,6 +10,7 @@ export interface Bitmap {
 
 export interface Screen {
   capture(x?: number, y?: number, width?: number, height?: number): Bitmap;
+  highlight(x: number, y: number, width: number, height: number, duration: number, opacity: number): void;
 }
 
 export function setKeyboardDelay(ms: number): void;

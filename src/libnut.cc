@@ -710,6 +710,31 @@ Napi::Number _setXDisplayName(const Napi::CallbackInfo &info)
 #endif
 }
 
+Napi::Number _highlight(const Napi::CallbackInfo &info)
+{
+	Napi::Env env = info.Env();
+	int x;
+	int y;
+	int width;
+	int height;
+	int duration;
+	float opacity;
+
+	if (info.Length() == 6)
+	{
+		x = info[0].As<Napi::Number>().Int32Value();
+		y = info[1].As<Napi::Number>().Int32Value();
+		width = info[2].As<Napi::Number>().Int32Value();
+		height = info[3].As<Napi::Number>().Int32Value();
+		duration = info[4].As<Napi::Number>().Int32Value();
+		opacity = info[5].As<Napi::Number>().FloatValue();
+
+		highlight(x, y, width, height, duration, opacity);
+		return Napi::Number::New(env, 1);
+	}
+	return Napi::Number::New(env, 1);
+}
+
 Napi::Object _captureScreen(const Napi::CallbackInfo &info)
 {
 	Napi::Env env = info.Env();
@@ -873,6 +898,7 @@ Napi::Object Init(Napi::Env env, Napi::Object exports)
 
 	exports.Set(Napi::String::New(env, "getPixelColor"), Napi::Function::New(env, _getPixelColor));
 	exports.Set(Napi::String::New(env, "getScreenSize"), Napi::Function::New(env, _getScreenSize));
+	exports.Set(Napi::String::New(env, "highlight"), Napi::Function::New(env, _highlight));
 	exports.Set(Napi::String::New(env, "captureScreen"), Napi::Function::New(env, _captureScreen));
 	exports.Set(Napi::String::New(env, "getColor"), Napi::Function::New(env, _getColor));
 	exports.Set(Napi::String::New(env, "getXDisplayName"), Napi::Function::New(env, _getXDisplayName));
