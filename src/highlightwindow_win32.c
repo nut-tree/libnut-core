@@ -10,7 +10,7 @@
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-void showHighlightWindow(int x, int y, int width, int height, int duration, float opacity) {
+void showHighlightWindow(int32_t x, int32_t y, int32_t width, int32_t height, long duration, float opacity) {
     // Register the window class.
     const wchar_t CLASS_NAME[]  = L"Highlight Window Class";
 
@@ -44,7 +44,7 @@ void showHighlightWindow(int x, int y, int width, int height, int duration, floa
         return;
     }
 
-    SetTimer(hwnd, ID_CLOSE_TIMER, duration * 1000, NULL);
+    SetTimer(hwnd, ID_CLOSE_TIMER, duration, NULL);
     ShowWindow(hwnd, 1);
 
     MSG msg = {0};
