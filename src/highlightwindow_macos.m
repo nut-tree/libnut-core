@@ -1,7 +1,7 @@
 #include "highlightwindow.h"
 #import <Cocoa/Cocoa.h>
 
-void showHighlightWindow(int x, int y, int width, int height, int duration, float opacity) {
+void showHighlightWindow(int32_t x, int32_t y, int32_t width, int32_t height, long duration, float opacity) {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     [NSApplication sharedApplication];
 
@@ -14,7 +14,7 @@ void showHighlightWindow(int x, int y, int width, int height, int duration, floa
     [window setAlphaValue:opacity];
     [window orderFrontRegardless];
 
-    [NSTimer scheduledTimerWithTimeInterval: duration
+    [NSTimer scheduledTimerWithTimeInterval: duration / 1000.0
                 repeats: NO
                 block: ^(NSTimer * timer){
                 [NSApp stop:0];
