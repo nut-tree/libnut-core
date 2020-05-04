@@ -20,8 +20,9 @@ function bitmap(width, height, byteWidth, bitsPerPixel, bytesPerPixel, image) {
 module.exports.screen.highlight = function(x, y, width, height, duration, opacity) {
   let highlightOpacity = (opacity < 0) ? 0 : opacity;
   highlightOpacity = (highlightOpacity > 1) ? 1 : highlightOpacity;
+  const highlightDuration = (duration < 0) ? 0 : duration;
 
-  libnut.highlight(x, y, width, height, duration, highlightOpacity);
+  libnut.highlight(x, y, width, height, highlightDuration, highlightOpacity);
 }
 
 module.exports.screen.capture = function(x, y, width, height) {
