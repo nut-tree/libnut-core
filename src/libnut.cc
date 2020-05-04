@@ -2,6 +2,7 @@
 #include <vector>
 #include <sstream>
 #include <iostream>
+#include <cstdint>
 #include "mouse.h"
 #include "buffer_finalizer.h"
 #include "deadbeef_rand.h"
@@ -713,11 +714,11 @@ Napi::Number _setXDisplayName(const Napi::CallbackInfo &info)
 Napi::Number _highlight(const Napi::CallbackInfo &info)
 {
 	Napi::Env env = info.Env();
-	int x;
-	int y;
-	int width;
-	int height;
-	int duration;
+	int32_t x;
+	int32_t y;
+	int32_t width;
+	int32_t height;
+	long duration;
 	float opacity;
 
 	if (info.Length() == 6)
@@ -726,7 +727,7 @@ Napi::Number _highlight(const Napi::CallbackInfo &info)
 		y = info[1].As<Napi::Number>().Int32Value();
 		width = info[2].As<Napi::Number>().Int32Value();
 		height = info[3].As<Napi::Number>().Int32Value();
-		duration = info[4].As<Napi::Number>().Int32Value();
+		duration = info[4].As<Napi::Number>().Int64Value();
 		opacity = info[5].As<Napi::Number>().FloatValue();
 
 		highlight(x, y, width, height, duration, opacity);
