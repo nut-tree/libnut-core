@@ -1,9 +1,9 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include <unistd.h>
 #include "highlightwindow.h"
 
-void showHighlightWindow(int x, int y, int width, int height, int duration, float opacity)
-{
+void showHighlightWindow(int32_t x, int32_t y, int32_t width, int32_t height, long duration, float opacity) {
     Display *d = XOpenDisplay(NULL);
     Window root = DefaultRootWindow(d);
     int default_screen = XDefaultScreen(d);
@@ -32,7 +32,7 @@ void showHighlightWindow(int x, int y, int width, int height, int duration, floa
 
     XFlush(d);
 
-    sleep(duration);
+    usleep(1000 * duration);
 
     XUnmapWindow(d, overlay);
     XCloseDisplay(d);
