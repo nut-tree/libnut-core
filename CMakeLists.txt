@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 17)
 project(libnut)
 
 # Source
-set(SOURCE_FILES "src/libnut.cc" "src/deadbeef_rand.c" "src/mouse.c" "src/keypress.c" "src/keycode.c" "src/screen.c" "src/screengrab.c" "src/snprintf.c" "src/MMBitmap.c")
+set(SOURCE_FILES "src/libnut.cc" "src/deadbeef_rand.c" "src/mouse.c" "src/keypress.c" "src/keycode.c" "src/screen.c" "src/screengrab.c" "src/MMBitmap.c")
 if (UNIX AND NOT APPLE)
     set(SOURCE_FILES "${SOURCE_FILES}" "src/xdisplay.c" "src/highlightwindow_linux.c")
 elseif (UNIX AND APPLE)
@@ -27,9 +27,6 @@ if (UNIX AND APPLE)
     set(LIBS "${LIBS}" "-framework Cocoa")
 elseif (WIN32)
     message(STATUS "Windows build")
-    # Required for disabeling delayed loading of node libs when linking
-    # Delayed loading would cause linking errors
-    set(CMAKE_SHARED_LINKER_FLAGS "")
 elseif (UNIX AND NOT APPLE)
     message(STATUS "Linux build")
     set(LIBS "${LIBS}" "-lpng")
