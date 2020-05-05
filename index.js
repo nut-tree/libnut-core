@@ -11,10 +11,6 @@ function bitmap(width, height, byteWidth, bitsPerPixel, bytesPerPixel, image) {
   this.bitsPerPixel = bitsPerPixel;
   this.bytesPerPixel = bytesPerPixel;
   this.image = image;
-
-  this.colorAt = function(x, y) {
-    return libnut.getColor(this, x, y);
-  };
 }
 
 module.exports.screen.highlight = function(x, y, width, height, duration, opacity) {
