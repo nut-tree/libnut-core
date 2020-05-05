@@ -1,5 +1,4 @@
 #include "screengrab.h"
-#include "bmp_io.h"
 #include "endian.h"
 #include <stdlib.h> /* malloc() */
 
