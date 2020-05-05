@@ -5,11 +5,7 @@
 #include "os.h"
 #include "keycode.h"
 
-#if defined(_MSC_VER)
-	#include "ms_stdbool.h"
-#else
-	#include <stdbool.h>
-#endif
+#include <stdbool.h>
 #ifdef __cplusplus
 extern "C" 
 {
