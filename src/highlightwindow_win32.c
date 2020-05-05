@@ -38,7 +38,7 @@ void showHighlightWindow(int32_t x, int32_t y, int32_t width, int32_t height, lo
         NULL
         );
 
-    SetLayeredWindowAttributes(hwnd, 0, 255 * opacity, LWA_ALPHA);
+    SetLayeredWindowAttributes(hwnd, 0, (BYTE)(255 * opacity), LWA_ALPHA);
 
     if (hwnd == NULL) {
         return;
