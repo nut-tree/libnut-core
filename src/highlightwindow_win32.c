@@ -3,7 +3,6 @@
 #endif 
 
 #include <windows.h>
-#include <stdio.h>
 #include "highlightwindow.h"
 
 #define ID_CLOSE_TIMER 1001
