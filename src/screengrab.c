@@ -11,7 +11,6 @@
 	#include <X11/Xutil.h>
 	#include "xdisplay.h"
 #elif defined(IS_WINDOWS)
-	#include <string.h>
 #endif
 
 MMBitmapRef copyMMBitmapFromDisplayInRect(MMRect rect)
