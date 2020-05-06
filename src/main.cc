@@ -1,17 +1,13 @@
 #include <napi.h>
-#include "mouse.h"
+
 #include "buffer_finalizer.h"
-#include "deadbeef_rand.h"
 #include "keypress.h"
+#include "microsleep.h"
+#include "MMBitmap.h"
+#include "mouse.h"
 #include "screen.h"
 #include "screengrab.h"
-#include "MMBitmap.h"
-#include "microsleep.h"
-#if defined(USE_X11)
-#include "xdisplay.h"
-#endif
 
-//Global delays.
 int mouseDelay = 10;
 int keyboardDelay = 10;
 static BufferFinalizer<char> finalizer;
@@ -244,6 +240,12 @@ Napi::Number _scrollMouse(const Napi::CallbackInfo &info)
 	microsleep(mouseDelay);
 
 	return Napi::Number::New(env, 1);
+}
+
+Napi::Number _theAnswer(const Napi::CallbackInfo &info) {
+	Napi::Env env = info.Env();
+
+	return Napi::Number::New(env, 42);
 }
 
 /*
@@ -728,8 +730,9 @@ Napi::Object _captureScreen(const Napi::CallbackInfo &info)
 	return obj;
 }
 
-Napi::Object Init(Napi::Env env, Napi::Object exports)
-{
+Napi::Object Init(Napi::Env env, Napi::Object exports) {
+	exports.Set(Napi::String::New(env, "theAnswer"), Napi::Function::New(env, _theAnswer));
+
 	exports.Set(Napi::String::New(env, "dragMouse"), Napi::Function::New(env, _dragMouse));
 	exports.Set(Napi::String::New(env, "moveMouse"), Napi::Function::New(env, _moveMouse));
 	exports.Set(Napi::String::New(env, "getMousePos"), Napi::Function::New(env, _getMousePos));
