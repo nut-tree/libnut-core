@@ -4,7 +4,7 @@ set(CMAKE_CXX_STANDARD 17)
 project(libnut)
 
 # Source
-set(SOURCE_FILES "src/libnut.cc" "src/deadbeef_rand.c" "src/mouse.c" "src/keypress.c" "src/keycode.c" "src/screen.c" "src/screengrab.c" "src/MMBitmap.c")
+set(SOURCE_FILES "src/main.cc" "src/deadbeef_rand.c" "src/keycode.c" "src/keypress.c" "src/MMBitmap.c" "src/mouse.c" "src/screen.c" "src/screengrab.c")
 if (UNIX AND NOT APPLE)
     set(SOURCE_FILES "${SOURCE_FILES}" "src/xdisplay.c" "src/highlightwindow_linux.c")
 elseif (UNIX AND APPLE)
@@ -12,10 +12,7 @@ elseif (UNIX AND APPLE)
 elseif (WIN32)
     set(SOURCE_FILES "${SOURCE_FILES}" "src/highlightwindow_win32.c")
 endif()
-add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
-
-# Includes
-include_directories("${CMAKE_SOURCE_DIR}/src/include")
+add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${CMAKE_JS_SRC})
 
 set(LIBS "")
 set(INCLUDES "")
@@ -40,13 +37,15 @@ if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     set(CMAKE_CXX_FLAGS "-Wall -Wparentheses -Winline -Wbad-function-cast -Wdisabled-optimization -Wextra")
 else()
     message(STATUS "MSVC compiler in use")
-    set(CMAKE_CXX_FLAGS "/Wall /W2")
+    set(CMAKE_CXX_FLAGS "/Wall /W4")
 endif()
 
 add_compile_definitions(NAPI_CPP_EXCEPTIONS)
+add_compile_definitions(-DNAPI_VERSION=3)
 
 # cmake-js
 set(INCLUDES ${INCLUDES} ${CMAKE_JS_INC})
+message(STATUS "Includes: ${INCLUDES}")
 set(LIBS ${LIBS} ${CMAKE_JS_LIB})
 message(STATUS "Libs: ${LIBS}")
 
