@@ -4,6 +4,7 @@
 
 #include "types.h"
 #include "MMBitmap.h"
+#include "xdisplay.h"
 
 #ifdef __cplusplus
 extern "C" 

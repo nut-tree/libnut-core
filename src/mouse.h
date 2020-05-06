@@ -4,6 +4,7 @@
 
 #include "os.h"
 #include "types.h"
+#include "xdisplay.h"
 
 #include <stdbool.h>
 #ifdef __cplusplus
