@@ -4,7 +4,9 @@
 
 #include "os.h"
 #include "types.h"
+#if defined(USE_X11)
 #include "xdisplay.h"
+#endif
 
 #include <stdbool.h>
 #ifdef __cplusplus
