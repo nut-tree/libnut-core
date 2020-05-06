@@ -7,12 +7,6 @@
   "scripts": {
     "clean": "cmake-js clean",
     "patch": "node ./patch-packagename.js",
-    "test": "run-script-os",
-    "test:it": "run-script-os",
-    "test:darwin:linux": "jasmine 'test/*.js'",
-    "test:win32": "jasmine test/*.js",
-    "test:it:darwin:linux": "jasmine 'test/integration/*.js'",
-    "test:it:win32": "jasmine test/integration/*.js",
     "build:debug": "cmake-js rebuild --debug",
     "build:debug:win": "cmake-js rebuild --debug -G \"Visual Studio 15 2017 Win64\"",
     "build:release": "cmake-js rebuild",
@@ -41,14 +35,9 @@
   },
   "homepage": "https://github.com/nut-tree/libnut",
   "dependencies": {
-    "bindings": "^1.5.0",
-    "cmake-js": "^5.3.2",
-    "node-addon-api": "^1.7.1"
-  },
-  "devDependencies": {
-    "jasmine": "^3.5.0",
-    "run-script-os": "^1.0.7",
-    "targetpractice": "0.0.7"
+    "bindings": "1.5.0",
+    "cmake-js": "6.1.0",
+    "node-addon-api": "3.0.0"
   },
   "engines": {
     "node": ">=10.15.3"
