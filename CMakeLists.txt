@@ -41,7 +41,7 @@ else()
 endif()
 
 add_compile_definitions(NAPI_CPP_EXCEPTIONS)
-add_compile_definitions(-DNAPI_VERSION=3)
+add_compile_definitions(NAPI_VERSION=3)
 
 # cmake-js
 set(INCLUDES ${INCLUDES} ${CMAKE_JS_INC})
