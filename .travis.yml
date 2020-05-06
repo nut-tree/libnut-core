@@ -40,7 +40,6 @@ script:
   - cd test
   - npm ci
   - npm test
-  - npm run test:it
 
 before_deploy:
   - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
