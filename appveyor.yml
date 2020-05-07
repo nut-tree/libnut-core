@@ -36,6 +36,7 @@ test_script:
   - npm ci
   - npm test test
   - npm test run test:it
+  - cd ..
 
 on_success:
   - IF defined APPVEYOR_REPO_TAG_NAME npm publish
