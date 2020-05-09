@@ -1,22 +1,13 @@
 #include <napi.h>
-#include <vector>
-#include <sstream>
-#include <iostream>
-#include <cstdint>
-#include "mouse.h"
+
 #include "buffer_finalizer.h"
-#include "deadbeef_rand.h"
 #include "keypress.h"
+#include "microsleep.h"
+#include "MMBitmap.h"
+#include "mouse.h"
 #include "screen.h"
 #include "screengrab.h"
-#include "MMBitmap.h"
-#include "snprintf.h"
-#include "microsleep.h"
-#if defined(USE_X11)
-#include "xdisplay.h"
-#endif
 
-//Global delays.
 int mouseDelay = 10;
 int keyboardDelay = 10;
 static BufferFinalizer<char> finalizer;
@@ -104,26 +95,6 @@ Napi::Number _moveMouse(const Napi::CallbackInfo &info)
 	MMPoint point;
 	point = MMPointMake(x, y);
 	moveMouse(point);
-	microsleep(mouseDelay);
-
-	return Napi::Number::New(env, 1);
-}
-
-Napi::Number _moveMouseSmooth(const Napi::CallbackInfo &info)
-{
-	Napi::Env env = info.Env();
-
-	if (info.Length() != 2)
-	{
-		throw Napi::Error::New(env, "Invalid number of arguments.");
-	}
-
-	size_t x = info[0].As<Napi::Number>().Int32Value();
-	size_t y = info[1].As<Napi::Number>().Int32Value();
-
-	MMPoint point;
-	point = MMPointMake(x, y);
-	smoothlyMoveMouse(point);
 	microsleep(mouseDelay);
 
 	return Napi::Number::New(env, 1);
@@ -269,6 +240,12 @@ Napi::Number _scrollMouse(const Napi::CallbackInfo &info)
 	microsleep(mouseDelay);
 
 	return Napi::Number::New(env, 1);
+}
+
+Napi::Number _theAnswer(const Napi::CallbackInfo &info) {
+	Napi::Env env = info.Env();
+
+	return Napi::Number::New(env, 42);
 }
 
 /*
@@ -626,51 +603,6 @@ Napi::Number _setKeyboardDelay(const Napi::CallbackInfo &info)
 
 */
 
-/**
- * Pad hex color code with leading zeros.
- * @param color Hex value to pad.
- * @param hex   Hex value to output.
- */
-void padHex(MMRGBHex color, char *hex)
-{
-	//Length needs to be 7 because snprintf includes a terminating null.
-	//Use %06x to pad hex value with leading 0s.
-	snprintf(hex, 7, "%06x", color);
-}
-
-Napi::String _getPixelColor(const Napi::CallbackInfo &info)
-{
-	Napi::Env env = info.Env();
-
-	if (info.Length() != 2)
-	{
-		throw Napi::Error::New(env, "Invalid number of arguments.");
-	}
-
-	MMBitmapRef bitmap;
-	MMRGBHex color;
-
-	size_t x = info[0].As<Napi::Number>().Int32Value();
-	size_t y = info[1].As<Napi::Number>().Int32Value();
-
-	if (!pointVisibleOnMainDisplay(MMPointMake(x, y)))
-	{
-		throw Napi::Error::New(env, "Requested coordinates are outside the main screen's dimensions.");
-	}
-
-	bitmap = copyMMBitmapFromDisplayInRect(MMRectMake(x, y, 1, 1));
-
-	color = MMRGBHexAtPoint(bitmap, 0, 0);
-
-	char hex[7];
-
-	padHex(color, hex);
-
-	destroyMMBitmap(bitmap);
-
-	return Napi::String::New(env, hex);
-}
-
 Napi::Object _getScreenSize(const Napi::CallbackInfo &info)
 {
 	Napi::Env env = info.Env();
@@ -756,27 +688,19 @@ Napi::Object _captureScreen(const Napi::CallbackInfo &info)
 
 		if (!(x >= 0 && x < displaySize.width))
 		{
-			std::stringstream s;
-			s << "x coordinate is out of bounds. Should be within 0 and " << displaySize.width << " but is: " << x;
-			throw Napi::Error::New(env, s.str());
+			throw Napi::Error::New(env, "Error: x coordinate outside of display");
 		}
 		if (!(y >= 0 && y < displaySize.height))
 		{
-			std::stringstream s;
-			s << "y coordinate is out of bounds. Should be within 0 and " << displaySize.height << " but is: " << y;
-			throw Napi::Error::New(env, s.str());
+			throw Napi::Error::New(env, "Error: y coordinate outside of display");
 		}
 		if (!((x + w) >= 0 && (x + w) < displaySize.width))
 		{
-			std::stringstream s;
-			s << "Rect is out of bounds. Should be within 0 and " << displaySize.width << " but is: (" << x << "," << x + w << ")";
-			throw Napi::Error::New(env, s.str());
+			throw Napi::Error::New(env, "Error: Given width exceeds display dimensions");
 		}
 		if (!((y + h) >= 0 && (y + h) < displaySize.height))
 		{
-			std::stringstream s;
-			s << "Rect is out of bounds. Should be within 0 and " << displaySize.height << " but is: (" << y << "," << y + h << ")";
-			throw Napi::Error::New(env, s.str());
+			throw Napi::Error::New(env, "Error: Given height exceeds display dimensions");
 		}
 	}
 	else
@@ -806,85 +730,11 @@ Napi::Object _captureScreen(const Napi::CallbackInfo &info)
 	return obj;
 }
 
-/*
- ____  _ _
-| __ )(_) |_ _ __ ___   __ _ _ __
-|  _ \| | __| '_ ` _ \ / _` | '_ \
-| |_) | | |_| | | | | | (_| | |_) |
-|____/|_|\__|_| |_| |_|\__,_| .__/
-                            |_|
- */
+Napi::Object Init(Napi::Env env, Napi::Object exports) {
+	exports.Set(Napi::String::New(env, "theAnswer"), Napi::Function::New(env, _theAnswer));
 
-class BMP
-{
-public:
-	size_t width;
-	size_t height;
-	size_t byteWidth;
-	uint8_t bitsPerPixel;
-	uint8_t bytesPerPixel;
-	uint8_t *image;
-};
-
-//Convert object from Javascript to a C++ class (BMP).
-BMP buildBMP(const Napi::Object &info)
-{
-	BMP img;
-
-	img.width = info.Get("width").As<Napi::Number>().Uint32Value();
-	img.height = info.Get("height").As<Napi::Number>().Uint32Value();
-	img.byteWidth = info.Get("byteWidth").As<Napi::Number>().Uint32Value();
-	img.bitsPerPixel = info.Get("bitsPerPixel").As<Napi::Number>().Uint32Value();
-	img.bytesPerPixel = info.Get("bytesPerPixel").As<Napi::Number>().Uint32Value();
-
-	Napi::Buffer<char> imageBuffer = info.Get("image").As<Napi::Buffer<char>>();
-	char *buf = imageBuffer.Data();
-
-	//Convert the buffer to a uint8_t which createMMBitmap requires.
-	img.image = (uint8_t *)malloc(img.byteWidth * img.height);
-	memcpy(img.image, buf, img.byteWidth * img.height);
-
-	return img;
-}
-
-Napi::String _getColor(const Napi::CallbackInfo &info)
-{
-	Napi::Env env = info.Env();
-
-	MMBitmapRef bitmap;
-	MMRGBHex color;
-
-	size_t x = info[1].As<Napi::Number>().Int32Value();
-	size_t y = info[2].As<Napi::Number>().Int32Value();
-
-	//Get our image object from JavaScript.
-	BMP img = buildBMP(info[0].As<Napi::Object>());
-
-	//Create the bitmap.
-	bitmap = createMMBitmap(img.image, img.width, img.height, img.byteWidth, img.bitsPerPixel, img.bytesPerPixel);
-
-	// Make sure the requested pixel is inside the bitmap.
-	if (!MMBitmapPointInBounds(bitmap, MMPointMake(x, y)))
-	{
-		throw Napi::Error::New(env, "Requested coordinates are outside the bitmap's dimensions.");
-	}
-
-	color = MMRGBHexAtPoint(bitmap, x, y);
-
-	char hex[7];
-
-	padHex(color, hex);
-
-	destroyMMBitmap(bitmap);
-
-	return Napi::String::New(env, hex);
-}
-
-Napi::Object Init(Napi::Env env, Napi::Object exports)
-{
 	exports.Set(Napi::String::New(env, "dragMouse"), Napi::Function::New(env, _dragMouse));
 	exports.Set(Napi::String::New(env, "moveMouse"), Napi::Function::New(env, _moveMouse));
-	exports.Set(Napi::String::New(env, "moveMouseSmooth"), Napi::Function::New(env, _moveMouseSmooth));
 	exports.Set(Napi::String::New(env, "getMousePos"), Napi::Function::New(env, _getMousePos));
 	exports.Set(Napi::String::New(env, "mouseClick"), Napi::Function::New(env, _mouseClick));
 	exports.Set(Napi::String::New(env, "mouseToggle"), Napi::Function::New(env, _mouseToggle));
@@ -897,11 +747,9 @@ Napi::Object Init(Napi::Env env, Napi::Object exports)
 	exports.Set(Napi::String::New(env, "typeStringDelayed"), Napi::Function::New(env, _typeStringDelayed));
 	exports.Set(Napi::String::New(env, "setKeyboardDelay"), Napi::Function::New(env, _setKeyboardDelay));
 
-	exports.Set(Napi::String::New(env, "getPixelColor"), Napi::Function::New(env, _getPixelColor));
 	exports.Set(Napi::String::New(env, "getScreenSize"), Napi::Function::New(env, _getScreenSize));
 	exports.Set(Napi::String::New(env, "highlight"), Napi::Function::New(env, _highlight));
 	exports.Set(Napi::String::New(env, "captureScreen"), Napi::Function::New(env, _captureScreen));
-	exports.Set(Napi::String::New(env, "getColor"), Napi::Function::New(env, _getColor));
 	exports.Set(Napi::String::New(env, "getXDisplayName"), Napi::Function::New(env, _getXDisplayName));
 	exports.Set(Napi::String::New(env, "setXDisplayName"), Napi::Function::New(env, _setXDisplayName));
 

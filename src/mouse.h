@@ -4,12 +4,11 @@
 
 #include "os.h"
 #include "types.h"
-
-#if defined(_MSC_VER)
-	#include "ms_stdbool.h"
-#else
-	#include <stdbool.h>
+#if defined(USE_X11)
+#include "xdisplay.h"
 #endif
+
+#include <stdbool.h>
 #ifdef __cplusplus
 extern "C" 
 {
@@ -67,13 +66,6 @@ void moveMouse(MMPoint point);
  * It is up to the caller to ensure that this point is within the screen
  * boundaries. */
 void dragMouse(MMPoint point, const MMMouseButton button);
-
-/* Smoothly moves the mouse from the current position to the given point.
- * deadbeef_srand() should be called before using this function.
- *
- * Returns false if unsuccessful (i.e. a point was hit that is outside of the
- * screen boundaries), or true if successful. */
-bool smoothlyMoveMouse(MMPoint point);
 
 /* Returns the coordinates of the mouse on the current screen. */
 MMPoint getMousePos(void);

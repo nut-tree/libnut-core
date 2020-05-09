@@ -5,6 +5,10 @@
 #include "types.h"
 #include "MMBitmap.h"
 
+#if defined(USE_X11)
+#include "xdisplay.h"
+#endif
+
 #ifdef __cplusplus
 extern "C" 
 {
