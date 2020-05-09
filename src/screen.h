@@ -2,13 +2,13 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
+#include <stdint.h>
 #include "types.h"
-
-#if defined(_MSC_VER)
-	#include "ms_stdbool.h"
-#else
-	#include <stdbool.h>
+#if defined(USE_X11)
+#include "xdisplay.h"
 #endif
+
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" 
@@ -22,7 +22,7 @@ MMSize getMainDisplaySize(void);
  * of the main screen. */
 bool pointVisibleOnMainDisplay(MMPoint point);
 
-void highlight(int x, int y, int width, int height, int duration, float opacity);
+void highlight(int32_t x, int32_t y, int32_t width, int32_t height, long duration, float opacity);
 
 #ifdef __cplusplus
 }

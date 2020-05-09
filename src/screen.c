@@ -33,6 +33,6 @@ bool pointVisibleOnMainDisplay(MMPoint point)
 	return point.x < displaySize.width && point.y < displaySize.height;
 }
 
-void highlight(int x, int y, int width, int height, int duration, float opacity) {
+void highlight(int32_t x, int32_t y, int32_t width, int32_t height, long duration, float opacity) {
 	showHighlightWindow(x, y, width, height, duration, opacity);
 }

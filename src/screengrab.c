@@ -1,5 +1,4 @@
 #include "screengrab.h"
-#include "bmp_io.h"
 #include "endian.h"
 #include <stdlib.h> /* malloc() */
 
@@ -12,7 +11,6 @@
 	#include <X11/Xutil.h>
 	#include "xdisplay.h"
 #elif defined(IS_WINDOWS)
-	#include <string.h>
 #endif
 
 MMBitmapRef copyMMBitmapFromDisplayInRect(MMRect rect)

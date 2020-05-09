@@ -1,4 +1,4 @@
-const libnut = require("bindings")("libnut.node");
+const libnut = require("bindings")("libnut");
 
 module.exports = libnut;
 
@@ -11,13 +11,15 @@ function bitmap(width, height, byteWidth, bitsPerPixel, bytesPerPixel, image) {
   this.bitsPerPixel = bitsPerPixel;
   this.bytesPerPixel = bytesPerPixel;
   this.image = image;
-
-  this.colorAt = function(x, y) {
-    return libnut.getColor(this, x, y);
-  };
 }
 
-module.exports.screen.highlight = libnut.highlight;
+module.exports.screen.highlight = function(x, y, width, height, duration, opacity) {
+  let highlightOpacity = (opacity < 0) ? 0 : opacity;
+  highlightOpacity = (highlightOpacity > 1) ? 1 : highlightOpacity;
+  const highlightDuration = (duration < 0) ? 0 : duration;
+
+  libnut.highlight(x, y, width, height, highlightDuration, highlightOpacity);
+}
 
 module.exports.screen.capture = function(x, y, width, height) {
   //If coords have been passed, use them.

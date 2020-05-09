@@ -277,8 +277,9 @@ typedef int MMKeyCode;
  * given ASCII character. */
 MMKeyCode keyCodeForChar(const char c);
 
-#endif /* KEYCODE_H */
-
 #ifdef __cplusplus
 }
 #endif
+
+#endif /* KEYCODE_H */
+
