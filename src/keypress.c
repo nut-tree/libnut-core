@@ -106,6 +106,7 @@ void win32KeyEvent(int key, MMKeyFlags flags)
 	keyboardInput.type = INPUT_KEYBOARD;
 	keyboardInput.ki.wScan = scan;
 	keyboardInput.ki.dwFlags = KEYEVENTF_SCANCODE | flags;
+	keyboardInput.ki.time = 0;
 	SendInput(1, &keyboardInput, sizeof(keyboardInput));
 }
 #endif
