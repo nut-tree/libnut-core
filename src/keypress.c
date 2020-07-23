@@ -102,7 +102,12 @@ void win32KeyEvent(int key, MMKeyFlags flags)
 		scan |= 0x80;
 	}
 
-	keybd_event(key, scan, flags, 0);
+	INPUT keyboardInput;
+	keyboardInput.type = INPUT_KEYBOARD;
+	keyboardInput.ki.wScan = scan;
+	keyboardInput.ki.dwFlags = KEYEVENTF_SCANCODE | flags;
+	keyboardInput.ki.time = 0;
+	SendInput(1, &keyboardInput, sizeof(keyboardInput));
 }
 #endif
 

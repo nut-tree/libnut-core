@@ -201,7 +201,14 @@ void toggleMouse(bool down, MMMouseButton button)
 	XTestFakeButtonEvent(display, button, down ? True : False, CurrentTime);
 	XSync(display, false);
 #elif defined(IS_WINDOWS)
-	mouse_event(MMMouseToMEventF(down, button), 0, 0, 0, 0);
+	INPUT mouseInput;
+	mouseInput.type = INPUT_MOUSE;
+	mouseInput.mi.mouseData = 0;
+	mouseInput.mi.dx = 0;
+	mouseInput.mi.dy = 0;
+	mouseInput.mi.time = 0;
+	mouseInput.mi.dwFlags = MMMouseToMEventF(down, button);
+	SendInput(1, &mouseInput, sizeof(mouseInput));
 #endif
 }
 
