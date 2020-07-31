@@ -1,4 +1,4 @@
-#include "xdisplay.h"
+#include "../xdisplay.h"
 #include <stdio.h> /* For fputs() */
 #include <stdlib.h> /* For atexit() */
 #include <string.h> /* For strdup() */

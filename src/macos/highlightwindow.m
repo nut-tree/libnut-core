@@ -1,4 +1,4 @@
-#include "highlightwindow.h"
+#include "../highlightwindow.h"
 #import <Cocoa/Cocoa.h>
 
 void showHighlightWindow(int32_t x, int32_t y, int32_t width, int32_t height, long duration, float opacity) {
