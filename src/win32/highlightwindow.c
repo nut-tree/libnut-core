@@ -1,9 +1,9 @@
 #ifndef UNICODE
 #define UNICODE
-#endif 
+#endif
 
 #include <windows.h>
-#include "highlightwindow.h"
+#include "../highlightwindow.h"
 
 #define ID_CLOSE_TIMER 1001
 
@@ -20,7 +20,7 @@ void showHighlightWindow(int32_t x, int32_t y, int32_t width, int32_t height, lo
     wc.lpszClassName = CLASS_NAME;
     wc.hbrBackground = CreateSolidBrush(RGB(255, 0, 0));
 
-    RegisterClass(&wc); 
+    RegisterClass(&wc);
 
     HWND hwnd = CreateWindowEx(
         WS_EX_LAYERED|WS_EX_TOPMOST|WS_EX_TRANSPARENT|WS_EX_TOOLWINDOW,
