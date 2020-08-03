@@ -6,7 +6,8 @@
 #include <string>
 #include "types.h"
 
-std::vector<int32_t> getWindows();
-MMRect getWindowRect(const int32_t windowHandle);
+std::vector<int64_t> getWindows();
+std::string getWindowTitle(const int64_t windowHandle);
+MMRect getWindowRect(const int64_t windowHandle);
 
 #endif
