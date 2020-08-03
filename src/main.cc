@@ -7,6 +7,7 @@
 #include "mouse.h"
 #include "screen.h"
 #include "screengrab.h"
+#include "window_manager.h"
 
 int mouseDelay = 10;
 int keyboardDelay = 10;
@@ -668,6 +669,32 @@ Napi::Number _highlight(const Napi::CallbackInfo &info)
 	return Napi::Number::New(env, 1);
 }
 
+Napi::Array _getWindows(const Napi::CallbackInfo &info) {
+	Napi::Env env = info.Env();
+
+	std::vector<int32_t> windowHandles = getWindows();
+	auto arr = Napi::Array::New(env, windowHandles.size());
+
+	for (size_t idx = 0; idx < windowHandles.size(); ++idx) {
+		arr[idx] = windowHandles[idx];
+	}
+
+	return arr;
+}
+
+Napi::Object _getWindowRect(const Napi::CallbackInfo &info) {
+	Napi::Env env = info.Env();
+
+	MMRect windowRect = getWindowRect(info[0].As<Napi::Number>().Int32Value());
+	Napi::Object obj = Napi::Object::New(env);
+	obj.Set(Napi::String::New(env, "x"), Napi::Number::New(env, windowRect.origin.x));
+	obj.Set(Napi::String::New(env, "y"), Napi::Number::New(env, windowRect.origin.y));
+	obj.Set(Napi::String::New(env, "width"), Napi::Number::New(env, windowRect.size.width));
+	obj.Set(Napi::String::New(env, "height"), Napi::Number::New(env, windowRect.size.height));
+
+	return obj;
+}
+
 Napi::Object _captureScreen(const Napi::CallbackInfo &info)
 {
 	Napi::Env env = info.Env();
@@ -749,6 +776,8 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
 
 	exports.Set(Napi::String::New(env, "getScreenSize"), Napi::Function::New(env, _getScreenSize));
 	exports.Set(Napi::String::New(env, "highlight"), Napi::Function::New(env, _highlight));
+	exports.Set(Napi::String::New(env, "getWindows"), Napi::Function::New(env, _getWindows));
+	exports.Set(Napi::String::New(env, "getWindowRect"), Napi::Function::New(env, _getWindowRect));
 	exports.Set(Napi::String::New(env, "captureScreen"), Napi::Function::New(env, _captureScreen));
 	exports.Set(Napi::String::New(env, "getXDisplayName"), Napi::Function::New(env, _getXDisplayName));
 	exports.Set(Napi::String::New(env, "setXDisplayName"), Napi::Function::New(env, _setXDisplayName));
