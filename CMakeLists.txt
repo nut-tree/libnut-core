@@ -10,7 +10,7 @@ if (UNIX AND NOT APPLE)
 elseif (UNIX AND APPLE)
     set(SOURCE_FILES "${SOURCE_FILES}" "src/macos/highlightwindow.m" "src/macos/window_manager.mm")
 elseif (WIN32)
-    set(SOURCE_FILES "${SOURCE_FILES}" "src/win32/highlightwindow.c")
+    set(SOURCE_FILES "${SOURCE_FILES}" "src/win32/highlightwindow.c" "src/win32/window_manager.cc")
 endif()
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${CMAKE_JS_SRC})
 
