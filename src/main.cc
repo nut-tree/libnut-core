@@ -672,7 +672,7 @@ Napi::Number _highlight(const Napi::CallbackInfo &info)
 Napi::Array _getWindows(const Napi::CallbackInfo &info) {
 	Napi::Env env = info.Env();
 
-	std::vector<int32_t> windowHandles = getWindows();
+	std::vector<int64_t> windowHandles = getWindows();
 	auto arr = Napi::Array::New(env, windowHandles.size());
 
 	for (size_t idx = 0; idx < windowHandles.size(); ++idx) {
@@ -685,7 +685,7 @@ Napi::Array _getWindows(const Napi::CallbackInfo &info) {
 Napi::Object _getWindowRect(const Napi::CallbackInfo &info) {
 	Napi::Env env = info.Env();
 
-	MMRect windowRect = getWindowRect(info[0].As<Napi::Number>().Int32Value());
+	MMRect windowRect = getWindowRect(info[0].As<Napi::Number>().Int64Value());
 	Napi::Object obj = Napi::Object::New(env);
 	obj.Set(Napi::String::New(env, "x"), Napi::Number::New(env, windowRect.origin.x));
 	obj.Set(Napi::String::New(env, "y"), Napi::Number::New(env, windowRect.origin.y));
@@ -693,6 +693,12 @@ Napi::Object _getWindowRect(const Napi::CallbackInfo &info) {
 	obj.Set(Napi::String::New(env, "height"), Napi::Number::New(env, windowRect.size.height));
 
 	return obj;
+}
+
+Napi::String _getWindowTitle(const Napi::CallbackInfo &info) {
+	Napi::Env env = info.Env();
+
+	return Napi::String::New(env, getWindowTitle(info[0].As<Napi::Number>().Int64Value()));
 }
 
 Napi::Object _captureScreen(const Napi::CallbackInfo &info)
@@ -778,6 +784,7 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
 	exports.Set(Napi::String::New(env, "highlight"), Napi::Function::New(env, _highlight));
 	exports.Set(Napi::String::New(env, "getWindows"), Napi::Function::New(env, _getWindows));
 	exports.Set(Napi::String::New(env, "getWindowRect"), Napi::Function::New(env, _getWindowRect));
+	exports.Set(Napi::String::New(env, "getWindowTitle"), Napi::Function::New(env, _getWindowTitle));
 	exports.Set(Napi::String::New(env, "captureScreen"), Napi::Function::New(env, _captureScreen));
 	exports.Set(Napi::String::New(env, "getXDisplayName"), Napi::Function::New(env, _getXDisplayName));
 	exports.Set(Napi::String::New(env, "setXDisplayName"), Napi::Function::New(env, _setXDisplayName));
