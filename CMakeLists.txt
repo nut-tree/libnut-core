@@ -8,7 +8,7 @@ set(SOURCE_FILES "src/main.cc" "src/deadbeef_rand.c" "src/keycode.c" "src/keypre
 if (UNIX AND NOT APPLE)
     set(SOURCE_FILES "${SOURCE_FILES}" "src/linux/xdisplay.c" "src/linux/highlightwindow.c")
 elseif (UNIX AND APPLE)
-    set(SOURCE_FILES "${SOURCE_FILES}" "src/macos/highlightwindow.m")
+    set(SOURCE_FILES "${SOURCE_FILES}" "src/macos/highlightwindow.m" "src/macos/window_manager.mm")
 elseif (WIN32)
     set(SOURCE_FILES "${SOURCE_FILES}" "src/win32/highlightwindow.c")
 endif()
