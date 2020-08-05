@@ -6,7 +6,7 @@ project(libnut)
 # Source
 set(SOURCE_FILES "src/main.cc" "src/deadbeef_rand.c" "src/keycode.c" "src/keypress.c" "src/MMBitmap.c" "src/mouse.c" "src/screen.c" "src/screengrab.c")
 if (UNIX AND NOT APPLE)
-    set(SOURCE_FILES "${SOURCE_FILES}" "src/linux/xdisplay.c" "src/linux/highlightwindow.c")
+    set(SOURCE_FILES "${SOURCE_FILES}" "src/linux/xdisplay.c" "src/linux/highlightwindow.c" "src/linux/window_manager.cc")
 elseif (UNIX AND APPLE)
     set(SOURCE_FILES "${SOURCE_FILES}" "src/macos/highlightwindow.m" "src/macos/window_manager.mm")
 elseif (WIN32)
