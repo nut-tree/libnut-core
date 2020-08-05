@@ -10,15 +10,15 @@
 /* Some generic, cross-platform types. */
 
 struct _MMPoint {
-	size_t x;
-	size_t y;
+	int64_t x;
+	int64_t y;
 };
 
 typedef struct _MMPoint MMPoint;
 
 struct _MMSize {
-	size_t width;
-	size_t height;
+	int64_t width;
+	int64_t height;
 };
 
 typedef struct _MMSize MMSize;
@@ -30,7 +30,7 @@ struct _MMRect {
 
 typedef struct _MMRect MMRect;
 
-H_INLINE MMPoint MMPointMake(size_t x, size_t y)
+H_INLINE MMPoint MMPointMake(int64_t x, int64_t y)
 {
 	MMPoint point;
 	point.x = x;
@@ -38,7 +38,7 @@ H_INLINE MMPoint MMPointMake(size_t x, size_t y)
 	return point;
 }
 
-H_INLINE MMSize MMSizeMake(size_t width, size_t height)
+H_INLINE MMSize MMSizeMake(int64_t width, int64_t height)
 {
 	MMSize size;
 	size.width = width;
@@ -46,7 +46,7 @@ H_INLINE MMSize MMSizeMake(size_t width, size_t height)
 	return size;
 }
 
-H_INLINE MMRect MMRectMake(size_t x, size_t y, size_t width, size_t height)
+H_INLINE MMRect MMRectMake(int64_t x, int64_t y, int64_t width, int64_t height)
 {
 	MMRect rect;
 	rect.origin = MMPointMake(x, y);
@@ -67,6 +67,8 @@ typedef int64_t PID;
 #elif defined(IS_WINDOWS)
 
 #define MMPointFromPOINT(p) MMPointMake((size_t)p.x, (size_t)p.y)
+
+typedef int64_t WindowHandle;
 
 #endif
 
