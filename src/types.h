@@ -5,6 +5,7 @@
 #include "os.h"
 #include "inline_keywords.h" /* For H_INLINE */
 #include <stddef.h>
+#include <stdint.h>
 
 /* Some generic, cross-platform types. */
 
@@ -59,6 +60,9 @@ H_INLINE MMRect MMRectMake(size_t x, size_t y, size_t width, size_t height)
 
 #define CGPointFromMMPoint(p) CGPointMake((CGFloat)(p).x, (CGFloat)(p).y)
 #define MMPointFromCGPoint(p) MMPointMake((size_t)(p).x, (size_t)(p).y)
+
+typedef int64_t WindowHandle;
+typedef int64_t PID;
 
 #elif defined(IS_WINDOWS)
 
