@@ -61,15 +61,12 @@ H_INLINE MMRect MMRectMake(int64_t x, int64_t y, int64_t width, int64_t height)
 #define CGPointFromMMPoint(p) CGPointMake((CGFloat)(p).x, (CGFloat)(p).y)
 #define MMPointFromCGPoint(p) MMPointMake((size_t)(p).x, (size_t)(p).y)
 
-typedef int64_t WindowHandle;
-typedef int64_t PID;
-
 #elif defined(IS_WINDOWS)
 
 #define MMPointFromPOINT(p) MMPointMake((size_t)p.x, (size_t)p.y)
 
-typedef int64_t WindowHandle;
-
 #endif
+
+typedef int64_t WindowHandle;
 
 #endif /* TYPES_H */
