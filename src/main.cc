@@ -684,8 +684,10 @@ Napi::Array _getWindows(const Napi::CallbackInfo &info) {
 
 Napi::Object _getWindowRect(const Napi::CallbackInfo &info) {
 	Napi::Env env = info.Env();
+	
+	WindowHandle windowHandle = info[0].As<Napi::Number>().Int64Value();
+	MMRect windowRect = getWindowRect(windowHandle);
 
-	MMRect windowRect = getWindowRect(info[0].As<Napi::Number>().Int64Value());
 	Napi::Object obj = Napi::Object::New(env);
 	obj.Set(Napi::String::New(env, "x"), Napi::Number::New(env, windowRect.origin.x));
 	obj.Set(Napi::String::New(env, "y"), Napi::Number::New(env, windowRect.origin.y));
@@ -698,7 +700,8 @@ Napi::Object _getWindowRect(const Napi::CallbackInfo &info) {
 Napi::String _getWindowTitle(const Napi::CallbackInfo &info) {
 	Napi::Env env = info.Env();
 
-	return Napi::String::New(env, getWindowTitle(info[0].As<Napi::Number>().Int64Value()));
+	WindowHandle windowHandle = info[0].As<Napi::Number>().Int64Value();
+	return Napi::String::New(env, getWindowTitle(windowHandle));
 }
 
 Napi::Object _captureScreen(const Napi::CallbackInfo &info)

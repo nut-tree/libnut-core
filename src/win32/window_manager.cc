@@ -2,34 +2,39 @@
 #include <windows.h>
 
 BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lparam) {
-    std::vector<int64_t>* windowHandles = reinterpret_cast<std::vector<int64_t>*>(lparam);
+    std::vector<WindowHandle>* windowHandles = reinterpret_cast<std::vector<WindowHandle>*>(lparam);
     if (windowHandles != nullptr) {
-        windowHandles->push_back(reinterpret_cast<int64_t>(hwnd));
+        windowHandles->push_back(reinterpret_cast<WindowHandle>(hwnd));
     }
     return TRUE;
 }
 
-std::vector<int64_t> getWindows() {
-    std::vector<int64_t> windowHandles;
+std::vector<WindowHandle> getWindows() {
+    std::vector<WindowHandle> windowHandles;
 
     EnumWindows (&EnumWindowsProc, reinterpret_cast<LPARAM>(&windowHandles));
 
     return windowHandles;
 }
 
-MMRect getWindowRect(const int64_t windowHandle) {
+MMRect getWindowRect(const WindowHandle windowHandle) {
     HWND hWnd = reinterpret_cast<HWND>(windowHandle);
     RECT windowRect;
-    GetWindowRect(hWnd, &windowRect);
-    return MMRectMake(windowRect.left, windowRect.top, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top);
+    if (GetWindowRect(hWnd, &windowRect)) {
+        return MMRectMake(windowRect.left, windowRect.top, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top);
+    }
+    return MMRectMake(0, 0, 0, 0);
 }
 
-std::string getWindowTitle(const int64_t windowHandle) {
+std::string getWindowTitle(const WindowHandle windowHandle) {
     HWND hWnd = reinterpret_cast<HWND>(windowHandle);
     auto BUFFER_SIZE = GetWindowTextLength(hWnd) + 1;
-    LPSTR windowTitle = new CHAR[BUFFER_SIZE];
-
-    GetWindowText(hWnd, windowTitle, BUFFER_SIZE);
-
-    return std::string(windowTitle);
+    if (BUFFER_SIZE) {
+        LPSTR windowTitle = new CHAR[BUFFER_SIZE];
+        if (GetWindowText(hWnd, windowTitle, BUFFER_SIZE)) {
+            return std::string(windowTitle);
+        }
+        return "";
+    }
+    return "";
 }

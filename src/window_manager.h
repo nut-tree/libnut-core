@@ -8,7 +8,7 @@
 
 std::vector<WindowHandle> getWindows();
 
-std::string getWindowTitle(const int64_t windowHandle);
-MMRect getWindowRect(const int64_t windowHandle);
+std::string getWindowTitle(const WindowHandle windowHandle);
+MMRect getWindowRect(const WindowHandle windowHandle);
 
 #endif
