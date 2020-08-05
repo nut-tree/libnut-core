@@ -672,7 +672,7 @@ Napi::Number _highlight(const Napi::CallbackInfo &info)
 Napi::Array _getWindows(const Napi::CallbackInfo &info) {
 	Napi::Env env = info.Env();
 
-	std::vector<int64_t> windowHandles = getWindows();
+	std::vector<WindowHandle> windowHandles = getWindows();
 	auto arr = Napi::Array::New(env, windowHandles.size());
 
 	for (size_t idx = 0; idx < windowHandles.size(); ++idx) {
