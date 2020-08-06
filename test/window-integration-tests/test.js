@@ -14,7 +14,7 @@ beforeAll(async () => {
         waitTimeout: APP_TIMEOUT,
     });
     await app.start();
-    await app.focus();
+    await app.browserWindow.focus();
 });
 
 beforeEach(async () => {
