@@ -1,4 +1,5 @@
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
 #include "../window_manager.h"
 
 Display* connectToX() {
@@ -27,32 +28,32 @@ std::vector<WindowHandle> getWindows() {
 
 std::string getWindowTitle(const WindowHandle windowHandle) {
     Display* xServer = connectToX();
+    std::string windowName = "";
     if (xServer != nullptr) {
-        char* windowName = NULL;
-        if (XFetchName(xServer, windowHandle, &windowName)) {
-            std::string wndName = std::string(windowName);
-            XFree(windowName);
-            disconnectFromX(xServer);
-            return wndName;
+        XTextProperty windowTextProperty;
+        int32_t getWMNameResult = XGetWMName(xServer, windowHandle, &windowTextProperty);
+        if (getWMNameResult > 0) {
+            windowName = std::string(reinterpret_cast<const char*>(windowTextProperty.value));
         }
         disconnectFromX(xServer);
-        return "";
     }
-    return "";
+    return windowName; 
 }
 
 MMRect getWindowRect(const WindowHandle windowHandle) {
     Display* xServer = connectToX();
+    MMRect windowRect = MMRectMake(0, 0, 0, 0);
     if (xServer != nullptr) {
-        Window rootWindow;
-        int32_t x, y;
-        uint32_t width, height, border_width, border_height;
-        if (XGetGeometry(xServer, windowHandle, &rootWindow, &x, &y, &width, &height, &border_width, &border_height)) {
-            disconnectFromX(xServer);
-            return MMRectMake(x, y, width, height);
+        XWindowAttributes windowAttributes;
+        int32_t getXGeometryResult = XGetWindowAttributes(xServer, windowHandle, &windowAttributes);
+        printf("Border width: %d", windowAttributes.border_width);
+        if (getXGeometryResult > 0) {
+            windowRect = MMRectMake(windowAttributes.x - windowAttributes.border_width, \
+                                    windowAttributes.y - windowAttributes.border_width, \
+                                    windowAttributes.width + windowAttributes.border_width, \
+                                    windowAttributes.height + windowAttributes.border_width);
         }
         disconnectFromX(xServer);
-        return MMRectMake(0, 0, 0, 0);
     }
-    return MMRectMake(0, 0, 0, 0);
+    return windowRect;
 }
