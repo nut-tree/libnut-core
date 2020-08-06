@@ -6,14 +6,16 @@ const { POS_X, POS_Y, WIDTH, HEIGTH, TITLE } = require("./constants");
 let app;
 const APP_TIMEOUT = 10000;
 
-beforeEach(() => {
+beforeAll(async () => {
     app = new Application({
         path: electronPath,
         args: ['main.js'],
         startTimeout: APP_TIMEOUT,
         waitTimeout: APP_TIMEOUT,
     });
-    return app.start();
+    await app.start();
+    await app.browserWindow.setAlwaysOnTop(true);
+    await app.browserWindow.focus();
 });
 
 describe("getWindows", () => {
@@ -55,8 +57,8 @@ describe("getActiveWindow", () => {
     });
 });
 
-afterEach(() => {
+afterAll(async () => {
     if (app && app.isRunning()) {
-        return app.stop();
+        await app.stop();
     }
 });
