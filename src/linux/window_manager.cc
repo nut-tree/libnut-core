@@ -17,13 +17,23 @@ int32_t disconnectFromX(Display* connection) {
 
 std::vector<WindowHandle> getWindows() {
     Display* xServer = connectToX();
-    Window window;
-    int32_t revertToWindow;
-    if (XGetInputFocus(xServer, &window, &revertToWindow)) {
+    std::vector<WindowHandle> windowHandles;
+    if (xServer != nullptr) {
+        Window defaultRootWindow = DefaultRootWindow(xServer);
+        Window rootWindow;
+        Window parentWindow;
+        Window* windowList;
+        uint32_t windowCount;
+
+        Status queryTreeResult = XQueryTree(xServer, defaultRootWindow, &rootWindow, &parentWindow, &windowList, &windowCount);
+        if (queryTreeResult > 0) {
+            for (size_t idx = 0; idx < windowCount; ++idx) {
+                windowHandles.push_back(windowList[idx]);
+            }
+        }
         disconnectFromX(xServer);
-        return std::vector<WindowHandle>{static_cast<WindowHandle>(window)};
     }
-    return std::vector<WindowHandle>();
+    return windowHandles;
 }
 
 std::string getWindowTitle(const WindowHandle windowHandle) {
