@@ -9,10 +9,12 @@
     "url": "https://simon-hofmann.org"
   },
   "scripts": {
-    "test": "electron ."
+    "test": "jest"
   },
   "license": "MIT",
   "dependencies": {
-    "electron": "^9.1.2"
+    "electron": "^9.1.2",
+    "jest": "^26.2.2",
+    "spectron": "^11.1.0"
   }
 }
