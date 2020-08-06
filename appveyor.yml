@@ -34,9 +34,12 @@ test_script:
   # run tests
   - cd test
   - npm ci
-  - npm test test
-  - npm test run test:it
-  - cd ..
+  - npm test 
+  - npm run test:it
+  - cd window-integration-tests
+  - npm ci
+  - npm test
+  - cd ../..
 
 on_success:
   - IF defined APPVEYOR_REPO_TAG_NAME npm publish
