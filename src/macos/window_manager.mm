@@ -24,6 +24,30 @@ NSDictionary* getWindowInfo(int64_t windowHandle) {
   return nullptr;
 }
 
+WindowHandle getActiveWindow() {
+  CGWindowListOption listOptions = kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements;
+  CFArrayRef windowList = CGWindowListCopyWindowInfo(listOptions, kCGNullWindowID);
+
+  for (NSDictionary *info in (NSArray *)windowList) {
+    NSNumber *ownerPid = info[(id)kCGWindowOwnerPID];
+    NSNumber *windowNumber = info[(id)kCGWindowNumber];
+
+    auto app = [NSRunningApplication runningApplicationWithProcessIdentifier: [ownerPid intValue]];
+
+    if (![app isActive]) {
+      continue;
+    }
+
+    CFRelease(windowList);
+    return [windowNumber intValue];
+  }
+
+  if (windowList) {
+    CFRelease(windowList);
+  }
+  return -1;
+}
+
 std::vector<WindowHandle> getWindows() {
   CGWindowListOption listOptions = kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements;
   CFArrayRef windowList = CGWindowListCopyWindowInfo(listOptions, kCGNullWindowID);
@@ -54,7 +78,7 @@ MMRect getWindowRect(const WindowHandle windowHandle) {
   if (windowInfo != nullptr) {
     CGRect windowRect;
     if (CGRectMakeWithDictionaryRepresentation((CFDictionaryRef)windowInfo[(id)kCGWindowBounds], &windowRect)) {
-      return MMRectMake(windowRect.origin.x, windowRect.origin.y, windowRect.size.height, windowRect.size.width);
+      return MMRectMake(windowRect.origin.x, windowRect.origin.y, windowRect.size.width, windowRect.size.height);
     }
     return MMRectMake(0, 0, 0, 0);
   }
