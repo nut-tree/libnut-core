@@ -17,6 +17,10 @@ std::vector<WindowHandle> getWindows() {
     return windowHandles;
 }
 
+WindowHandle getActiveWindow() {
+    return reinterpret_cast<WindowHandle>(GetForegroundWindow());
+}
+
 MMRect getWindowRect(const WindowHandle windowHandle) {
     HWND hWnd = reinterpret_cast<HWND>(windowHandle);
     RECT windowRect;
