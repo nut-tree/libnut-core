@@ -14,7 +14,7 @@ WindowHandle getActiveWindow() {
         XCloseMainDisplay();
         return window;
     }
-    return NULL;
+    return -1;
 }
 
 std::vector<WindowHandle> getWindows() {
