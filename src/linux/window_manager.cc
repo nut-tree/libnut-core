@@ -71,7 +71,7 @@ MMRect getWindowRect(const WindowHandle windowHandle) {
         uint32_t width, height, border_width, border_height;
         Status getXGeometryResult = XGetGeometry(xServer, windowHandle, &rootWindow, &x, &y, &width, &height, &border_width, &border_height);
         if (getXGeometryResult > 0) {
-            windowRect = MMRectMake(x, y, width + border_width, height + border_height);
+            windowRect = MMRectMake(x, y, width, height);
         }
         disconnectFromX(xServer);
     }
