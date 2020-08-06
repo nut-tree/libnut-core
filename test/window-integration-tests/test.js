@@ -14,8 +14,12 @@ beforeAll(async () => {
         waitTimeout: APP_TIMEOUT,
     });
     await app.start();
-    await app.browserWindow.setAlwaysOnTop(true);
-    await app.browserWindow.focus();
+    await app.client.waitUntilWindowLoaded();
+    await app.client.waitUntil(async () => {
+        await app.browserWindow.setAlwaysOnTop(true);
+        await app.browserWindow.focus();
+        return await app.browserWindow.isFocused();
+    });
 });
 
 describe("getWindows", () => {
