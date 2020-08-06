@@ -10,7 +10,7 @@ const HEIGTH = 600;
 function test(description, assertion) {
     console.log(`${description}: ${assertion}`);
     if (!assertion) {
-        process.exit(1);
+        app.exit(1);
     }
 }
 
@@ -40,7 +40,7 @@ function createWindow() {
         test("posY", activeWindowRect.y === POS_Y);
         test("width", activeWindowRect.width === WIDTH);
         test("height", activeWindowRect.height === HEIGTH);
-        process.exit(0);
+        app.quit();
     }, 5000);
 }
 
@@ -51,7 +51,7 @@ ipcMain.on("main", (event, args) => {
 });
 
 app.whenReady().then(() => {
-    setTimeout(() => process.exit(1), 15000);
+    setTimeout(() => app.exit(1), 15000);
     createWindow()
 
     app.on('activate', function () {
