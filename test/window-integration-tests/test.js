@@ -19,6 +19,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
     if (app && app.isRunning()) {
+        await app.browserWindow.minimize();
         await app.browserWindow.focus();
     }
 });
