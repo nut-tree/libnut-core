@@ -20,6 +20,7 @@ beforeAll(async () => {
 beforeEach(async () => {
     if (app && app.isRunning()) {
         await app.browserWindow.minimize();
+        await app.browserWindow.restore();
         await app.browserWindow.focus();
         await app.client.waitUntil(async () => {
             return await app.browserWindow.isFocused();
