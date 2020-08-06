@@ -38,11 +38,9 @@ script:
   - npm run patch && npm i
   - if [[ $TRAVIS_OS_NAME = "windows" ]]; then npm run build:release:win; else npm run build:release; fi
   - cd test
-  - npm ci
-  - npm test
+  - npm cit
   - cd window-integration-tests
-  - npm ci
-  - npm test
+  - npm cit
   - cd ../..
 
 before_deploy:

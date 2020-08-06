@@ -33,12 +33,10 @@ test_script:
   - npm --version
   # run tests
   - cd test
-  - npm ci
-  - npm test 
+  - npm cit
   - npm run test:it
   - cd window-integration-tests
-  - npm ci
-  - npm test
+  - npm cit
   - cd ../..
 
 on_success:
