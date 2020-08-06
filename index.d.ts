@@ -30,5 +30,9 @@ export function dragMouse(x: number, y: number): void;
 export function scrollMouse(x: number, y: number): void;
 export function getMousePos(): { x: number; y: number };
 export function getScreenSize(): { width: number; height: number };
+export function getWindows(): number[];
+export function getActiveWindow(): number;
+export function getWindowRect(handle: number): {x: number, y: number, width: number, height: number };
+export function getWindowTitle(handle: number): string;
 
 export const screen: Screen;
