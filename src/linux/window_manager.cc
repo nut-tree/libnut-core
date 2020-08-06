@@ -1,4 +1,5 @@
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
 #include "../window_manager.h"
 
 Display* connectToX() {
@@ -27,32 +28,30 @@ std::vector<WindowHandle> getWindows() {
 
 std::string getWindowTitle(const WindowHandle windowHandle) {
     Display* xServer = connectToX();
+    std::string windowName = "";
     if (xServer != nullptr) {
-        char* windowName = NULL;
-        if (XFetchName(xServer, windowHandle, &windowName)) {
-            std::string wndName = std::string(windowName);
-            XFree(windowName);
-            disconnectFromX(xServer);
-            return wndName;
+        XTextProperty windowTextProperty;
+        Status getWMNameResult = XGetWMName(xServer, windowHandle, &windowTextProperty);
+        if (getWMNameResult > 0) {
+            windowName = std::string(reinterpret_cast<const char*>(windowTextProperty.value));
         }
         disconnectFromX(xServer);
-        return "";
     }
-    return "";
+    return windowName; 
 }
 
 MMRect getWindowRect(const WindowHandle windowHandle) {
     Display* xServer = connectToX();
+    MMRect windowRect = MMRectMake(0, 0, 0, 0);
     if (xServer != nullptr) {
         Window rootWindow;
         int32_t x, y;
         uint32_t width, height, border_width, border_height;
-        if (XGetGeometry(xServer, windowHandle, &rootWindow, &x, &y, &width, &height, &border_width, &border_height)) {
-            disconnectFromX(xServer);
-            return MMRectMake(x, y, width, height);
+        Status getXGeometryResult = XGetGeometry(xServer, windowHandle, &rootWindow, &x, &y, &width, &height, &border_width, &border_height);
+        if (getXGeometryResult > 0) {
+            windowRect = MMRectMake(x - border_width, y - border_height, width + border_width, height + border_height);
         }
         disconnectFromX(xServer);
-        return MMRectMake(0, 0, 0, 0);
     }
-    return MMRectMake(0, 0, 0, 0);
+    return windowRect;
 }
