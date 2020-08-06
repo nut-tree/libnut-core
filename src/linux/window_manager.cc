@@ -1,34 +1,22 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include "../window_manager.h"
-
-Display* connectToX() {
-    Display* xDisplay = XOpenDisplay(NULL);
-
-    if (xDisplay == NULL) {
-        return nullptr;
-    }
-    return xDisplay;
-}
-
-void disconnectFromX(Display* connection) {
-    XCloseDisplay(connection);
-}
+#include "../xdisplay.h"
 
 WindowHandle getActiveWindow() {
-    Display* xServer = connectToX();
+    Display* xServer = XGetMainDisplay();
     Window window;
     if (xServer != nullptr) {
         int32_t revertToWindow;
         XGetInputFocus(xServer, &window, &revertToWindow);
-        disconnectFromX(xServer);
+        XCloseMainDisplay();
         return window;
     }
     return NULL;
 }
 
 std::vector<WindowHandle> getWindows() {
-    Display* xServer = connectToX();
+    Display* xServer = XGetMainDisplay();
     std::vector<WindowHandle> windowHandles;
     if (xServer != nullptr) {
         Window defaultRootWindow = DefaultRootWindow(xServer);
@@ -43,13 +31,13 @@ std::vector<WindowHandle> getWindows() {
                 windowHandles.push_back(windowList[idx]);
             }
         }
-        disconnectFromX(xServer);
+        XCloseMainDisplay();
     }
     return windowHandles;
 }
 
 std::string getWindowTitle(const WindowHandle windowHandle) {
-    Display* xServer = connectToX();
+    Display* xServer = XGetMainDisplay();
     std::string windowName = "";
     if (xServer != nullptr) {
         XTextProperty windowTextProperty;
@@ -57,13 +45,13 @@ std::string getWindowTitle(const WindowHandle windowHandle) {
         if (getWMNameResult > 0) {
             windowName = std::string(reinterpret_cast<const char*>(windowTextProperty.value));
         }
-        disconnectFromX(xServer);
+        XCloseMainDisplay();
     }
     return windowName; 
 }
 
 MMRect getWindowRect(const WindowHandle windowHandle) {
-    Display* xServer = connectToX();
+    Display* xServer = XGetMainDisplay();
     MMRect windowRect = MMRectMake(0, 0, 0, 0);
     if (xServer != nullptr) {
         Window rootWindow;
@@ -73,7 +61,7 @@ MMRect getWindowRect(const WindowHandle windowHandle) {
         if (getXGeometryResult > 0) {
             windowRect = MMRectMake(x, y, width, height);
         }
-        disconnectFromX(xServer);
+        XCloseMainDisplay();
     }
     return windowRect;
 }
