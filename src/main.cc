@@ -669,6 +669,13 @@ Napi::Number _highlight(const Napi::CallbackInfo &info)
 	return Napi::Number::New(env, 1);
 }
 
+Napi::Number _getActiveWindow(const Napi::CallbackInfo &info) {
+	Napi::Env env = info.Env();
+
+	WindowHandle windowHandle = getActiveWindow();
+	return Napi::Number::New(env, windowHandle);
+}
+
 Napi::Array _getWindows(const Napi::CallbackInfo &info) {
 	Napi::Env env = info.Env();
 
@@ -786,6 +793,7 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
 	exports.Set(Napi::String::New(env, "getScreenSize"), Napi::Function::New(env, _getScreenSize));
 	exports.Set(Napi::String::New(env, "highlight"), Napi::Function::New(env, _highlight));
 	exports.Set(Napi::String::New(env, "getWindows"), Napi::Function::New(env, _getWindows));
+	exports.Set(Napi::String::New(env, "getActiveWindow"), Napi::Function::New(env, _getActiveWindow));
 	exports.Set(Napi::String::New(env, "getWindowRect"), Napi::Function::New(env, _getWindowRect));
 	exports.Set(Napi::String::New(env, "getWindowTitle"), Napi::Function::New(env, _getWindowTitle));
 	exports.Set(Napi::String::New(env, "captureScreen"), Napi::Function::New(env, _captureScreen));

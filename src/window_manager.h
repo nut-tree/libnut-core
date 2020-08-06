@@ -7,6 +7,7 @@
 #include "types.h"
 
 std::vector<WindowHandle> getWindows();
+WindowHandle getActiveWindow();
 
 std::string getWindowTitle(const WindowHandle windowHandle);
 MMRect getWindowRect(const WindowHandle windowHandle);

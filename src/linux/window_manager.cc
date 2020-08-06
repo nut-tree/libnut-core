@@ -11,8 +11,20 @@ Display* connectToX() {
     return xDisplay;
 }
 
-int32_t disconnectFromX(Display* connection) {
-    return XCloseDisplay(connection);
+void disconnectFromX(Display* connection) {
+    XCloseDisplay(connection);
+}
+
+WindowHandle getActiveWindow() {
+    Display* xServer = connectToX();
+    Window window;
+    if (xServer != nullptr) {
+        int32_t revertToWindow;
+        XGetInputFocus(xServer, &window, &revertToWindow);
+        disconnectFromX(xServer);
+        return window;
+    }
+    return NULL;
 }
 
 std::vector<WindowHandle> getWindows() {
