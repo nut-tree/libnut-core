@@ -8,10 +8,9 @@ extern "C" {
 WindowHandle getActiveWindow() {
     Display* xServer = XGetMainDisplay();
     Window window;
-    if (xServer != nullptr) {
+    if (xServer != NULL) {
         int32_t revertToWindow;
         XGetInputFocus(xServer, &window, &revertToWindow);
-        XCloseMainDisplay();
         return window;
     }
     return -1;
@@ -20,7 +19,7 @@ WindowHandle getActiveWindow() {
 std::vector<WindowHandle> getWindows() {
     Display* xServer = XGetMainDisplay();
     std::vector<WindowHandle> windowHandles;
-    if (xServer != nullptr) {
+    if (xServer != NULL) {
         Window defaultRootWindow = DefaultRootWindow(xServer);
         Window rootWindow;
         Window parentWindow;
@@ -33,7 +32,6 @@ std::vector<WindowHandle> getWindows() {
                 windowHandles.push_back(windowList[idx]);
             }
         }
-        XCloseMainDisplay();
     }
     return windowHandles;
 }
@@ -41,21 +39,20 @@ std::vector<WindowHandle> getWindows() {
 std::string getWindowTitle(const WindowHandle windowHandle) {
     Display* xServer = XGetMainDisplay();
     std::string windowName = "";
-    if (xServer != nullptr) {
+    if (xServer != NULL) {
         XTextProperty windowTextProperty;
         Status getWMNameResult = XGetWMName(xServer, windowHandle, &windowTextProperty);
         if (getWMNameResult > 0) {
             windowName = std::string(reinterpret_cast<const char*>(windowTextProperty.value));
         }
-        XCloseMainDisplay();
     }
-    return windowName; 
+    return windowName;
 }
 
 MMRect getWindowRect(const WindowHandle windowHandle) {
     Display* xServer = XGetMainDisplay();
     MMRect windowRect = MMRectMake(0, 0, 0, 0);
-    if (xServer != nullptr) {
+    if (xServer != NULL) {
         Window rootWindow;
         int32_t x, y;
         uint32_t width, height, border_width, border_height;
@@ -63,7 +60,6 @@ MMRect getWindowRect(const WindowHandle windowHandle) {
         if (getXGeometryResult > 0) {
             windowRect = MMRectMake(x, y, width, height);
         }
-        XCloseMainDisplay();
     }
     return windowRect;
 }
