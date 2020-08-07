@@ -87,25 +87,6 @@ describe("getActiveWindow", () => {
         expect(activeWindowRect.width).toBe(newWidth);
         expect(activeWindowRect.height).toBe(newHeight);
     });
-
-    it("should return (0,0,0,0) by default for a minimized window", async () => {
-        // GIVEN
-        const xPosition = 0;
-        const yPosition = 0;
-        const width = 0;
-        const height = 0;
-        await app.browserWindow.minimize();
-
-        // WHEN
-        const activeWindowHandle = libnut.getActiveWindow();
-        const activeWindowRect = libnut.getWindowRect(activeWindowHandle);
-
-        // THEN
-        expect(activeWindowRect.x).toBe(xPosition);
-        expect(activeWindowRect.y).toBe(yPosition);
-        expect(activeWindowRect.width).toBe(width);
-        expect(activeWindowRect.height).toBe(height);
-    });
 });
 
 afterAll(async () => {
