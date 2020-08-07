@@ -57,6 +57,55 @@ describe("getActiveWindow", () => {
         expect(activeWindowRect.width).toBe(WIDTH);
         expect(activeWindowRect.height).toBe(HEIGTH);
     });
+
+    it("should determine correct coordinates for our application after moving the window", async () => {
+        // GIVEN
+        const xPosition = 42;
+        const yPosition = 23;
+        await app.browserWindow.setPosition(xPosition, yPosition);
+
+        // WHEN
+        const activeWindowHandle = libnut.getActiveWindow();
+        const activeWindowRect = libnut.getWindowRect(activeWindowHandle);
+
+        // THEN
+        expect(activeWindowRect.x).toBe(xPosition);
+        expect(activeWindowRect.y).toBe(yPosition);
+    });
+
+    it("should determine correct window size for our application after resizing the window", async () => {
+        // GIVEN
+        const newWidth = 400;
+        const newHeight = 250;
+        await app.browserWindow.setSize(newWidth, newHeight);
+
+        // WHEN
+        const activeWindowHandle = libnut.getActiveWindow();
+        const activeWindowRect = libnut.getWindowRect(activeWindowHandle);
+
+        // THEN
+        expect(activeWindowRect.width).toBe(newWidth);
+        expect(activeWindowRect.height).toBe(newHeight);
+    });
+
+    it("should return (0,0,0,0) by default for a minimized window", async () => {
+        // GIVEN
+        const xPosition = 0;
+        const yPosition = 0;
+        const width = 0;
+        const height = 0;
+        await app.browserWindow.minimize();
+
+        // WHEN
+        const activeWindowHandle = libnut.getActiveWindow();
+        const activeWindowRect = libnut.getWindowRect(activeWindowHandle);
+
+        // THEN
+        expect(activeWindowRect.x).toBe(xPosition);
+        expect(activeWindowRect.y).toBe(yPosition);
+        expect(activeWindowRect.width).toBe(width);
+        expect(activeWindowRect.height).toBe(height);
+    });
 });
 
 afterAll(async () => {
