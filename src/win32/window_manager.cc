@@ -38,7 +38,6 @@ std::string getWindowTitle(const WindowHandle windowHandle) {
         if (GetWindowText(hWnd, windowTitle, BUFFER_SIZE)) {
             return std::string(windowTitle);
         }
-        return "";
     }
     return "";
 }
