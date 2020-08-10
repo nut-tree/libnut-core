@@ -40,6 +40,11 @@ std::string getWindowTitle(const WindowHandle windowHandle) {
     Display* xServer = XGetMainDisplay();
     std::string windowName = "";
     if (xServer != NULL) {
+        /*
+         * While there's also `XFetchName` to retrieve a window's `WM_NAME` property, in my tests `XFetchName` always failed and return 0
+         * `XGetWMName` on the other hand just worked as expected.
+         * Keep that in mind in case you're considering changing this implementation
+         */
         XTextProperty windowTextProperty;
         Status getWMNameResult = XGetWMName(xServer, windowHandle, &windowTextProperty);
         if (getWMNameResult > 0) {
