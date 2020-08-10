@@ -1,6 +1,10 @@
 #include "../window_manager.h"
 #include <windows.h>
 
+/**
+ * Documentation regarding the `EnumWindowsProc` already seems a bit stale (https://docs.microsoft.com/en-us/previous-versions/windows/desktop/legacy/ms633498(v=vs.85))
+ * We should keep this in mind for the future, just in case there should be any deprecations or strange behaviour
+ */
 BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lparam) {
     std::vector<WindowHandle>* windowHandles = reinterpret_cast<std::vector<WindowHandle>*>(lparam);
     if (windowHandles != nullptr) {
