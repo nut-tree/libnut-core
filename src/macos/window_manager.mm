@@ -80,7 +80,6 @@ MMRect getWindowRect(const WindowHandle windowHandle) {
     if (CGRectMakeWithDictionaryRepresentation((CFDictionaryRef)windowInfo[(id)kCGWindowBounds], &windowRect)) {
       return MMRectMake(windowRect.origin.x, windowRect.origin.y, windowRect.size.width, windowRect.size.height);
     }
-    return MMRectMake(0, 0, 0, 0);
   }
   return MMRectMake(0, 0, 0, 0);
 }
