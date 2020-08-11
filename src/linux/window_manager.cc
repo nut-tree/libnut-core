@@ -39,7 +39,7 @@ std::vector<WindowHandle> getWindows() {
 std::string getWindowTitle(const WindowHandle windowHandle) {
     Display* xServer = XGetMainDisplay();
     std::string windowName = "";
-    if (xServer != NULL) {
+    if (xServer != NULL && windowHandle >= 0) {
         /*
          * While there's also `XFetchName` to retrieve a window's `WM_NAME` property, in my tests `XFetchName` always failed and return 0
          * `XGetWMName` on the other hand just worked as expected.
@@ -57,7 +57,7 @@ std::string getWindowTitle(const WindowHandle windowHandle) {
 MMRect getWindowRect(const WindowHandle windowHandle) {
     Display* xServer = XGetMainDisplay();
     MMRect windowRect = MMRectMake(0, 0, 0, 0);
-    if (xServer != NULL) {
+    if (xServer != NULL && windowHandle >= 0) {
         Window rootWindow;
         int32_t x, y;
         uint32_t width, height, border_width, border_height;

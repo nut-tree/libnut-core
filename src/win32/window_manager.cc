@@ -22,8 +22,7 @@ std::vector<WindowHandle> getWindows() {
 }
 
 WindowHandle getActiveWindow() {
-    HWND foregroundWindow = GetForegroundWindow();
-    if (foregroundWindow != NULL) {
+    if (IsWindow(GetForegroundWindow())) {
         return reinterpret_cast<WindowHandle>(foregroundWindow);
     }
     return -1;
@@ -32,7 +31,7 @@ WindowHandle getActiveWindow() {
 MMRect getWindowRect(const WindowHandle windowHandle) {
     HWND hWnd = reinterpret_cast<HWND>(windowHandle);
     RECT windowRect;
-    if (GetWindowRect(hWnd, &windowRect)) {
+    if (IsWindow(hWnd) && GetWindowRect(hWnd, &windowRect)) {
         return MMRectMake(windowRect.left, windowRect.top, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top);
     }
     return MMRectMake(0, 0, 0, 0);
@@ -40,11 +39,13 @@ MMRect getWindowRect(const WindowHandle windowHandle) {
 
 std::string getWindowTitle(const WindowHandle windowHandle) {
     HWND hWnd = reinterpret_cast<HWND>(windowHandle);
-    auto BUFFER_SIZE = GetWindowTextLength(hWnd) + 1;
-    if (BUFFER_SIZE) {
-        LPSTR windowTitle = new CHAR[BUFFER_SIZE];
-        if (GetWindowText(hWnd, windowTitle, BUFFER_SIZE)) {
-            return std::string(windowTitle);
+    if (IsWindow(hWnd)) {
+        auto BUFFER_SIZE = GetWindowTextLength(hWnd) + 1;
+        if (BUFFER_SIZE) {
+            LPSTR windowTitle = new CHAR[BUFFER_SIZE];
+            if (GetWindowText(hWnd, windowTitle, BUFFER_SIZE)) {
+                return std::string(windowTitle);
+            }
         }
     }
     return "";

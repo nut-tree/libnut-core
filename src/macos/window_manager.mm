@@ -75,7 +75,7 @@ std::vector<WindowHandle> getWindows() {
 
 MMRect getWindowRect(const WindowHandle windowHandle) {
   auto windowInfo = getWindowInfo(windowHandle);
-  if (windowInfo != nullptr) {
+  if (windowInfo != nullptr && windowHandle >= 0) {
     CGRect windowRect;
     if (CGRectMakeWithDictionaryRepresentation((CFDictionaryRef)windowInfo[(id)kCGWindowBounds], &windowRect)) {
       return MMRectMake(windowRect.origin.x, windowRect.origin.y, windowRect.size.width, windowRect.size.height);
@@ -86,7 +86,7 @@ MMRect getWindowRect(const WindowHandle windowHandle) {
 
 std::string getWindowTitle(const WindowHandle windowHandle) {
   auto windowInfo = getWindowInfo(windowHandle);
-  if (windowInfo != nullptr) {
+  if (windowInfo != nullptr && windowHandle >= 0) {
     NSString *windowName = windowInfo[(id)kCGWindowName];
     return [windowName UTF8String];
   }
