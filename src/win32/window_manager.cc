@@ -22,7 +22,8 @@ std::vector<WindowHandle> getWindows() {
 }
 
 WindowHandle getActiveWindow() {
-    if (IsWindow(GetForegroundWindow())) {
+    HWND foregroundWindow = GetForegroundWindow();
+    if (IsWindow(foregroundWindow)) {
         return reinterpret_cast<WindowHandle>(foregroundWindow);
     }
     return -1;
