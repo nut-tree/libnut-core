@@ -1,7 +1,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <unistd.h>
-#include "highlightwindow.h"
+#include "../highlightwindow.h"
 
 void showHighlightWindow(int32_t x, int32_t y, int32_t width, int32_t height, long duration, float opacity) {
     Display *d = XOpenDisplay(NULL);
@@ -23,7 +23,7 @@ void showHighlightWindow(int32_t x, int32_t y, int32_t width, int32_t height, lo
     Window overlay = XCreateWindow(
         d, root,
         x, y, width, height, 0,
-        vinfo.depth, InputOutput, 
+        vinfo.depth, InputOutput,
         vinfo.visual,
         CWOverrideRedirect | CWColormap | CWBackPixel | CWBorderPixel, &attrs
     );

@@ -38,9 +38,10 @@ script:
   - npm run patch && npm i
   - if [[ $TRAVIS_OS_NAME = "windows" ]]; then npm run build:release:win; else npm run build:release; fi
   - cd test
-  - npm ci
-  - npm test
-  - cd ..
+  - npm cit
+  - cd window-integration-tests
+  - npm cit
+  - cd ../..
 
 before_deploy:
   - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
