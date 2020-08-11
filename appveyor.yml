@@ -33,10 +33,11 @@ test_script:
   - npm --version
   # run tests
   - cd test
-  - npm ci
-  - npm test test
-  - npm test run test:it
-  - cd ..
+  - npm cit
+  - npm run test:it
+  - cd window-integration-tests
+  - npm cit
+  - cd ../..
 
 on_success:
   - IF defined APPVEYOR_REPO_TAG_NAME npm publish
