@@ -1,0 +1,104 @@
+#include "../mouse.h"
+#include "../microsleep.h"
+
+#include <math.h> /* For floor() */
+
+#if !defined(M_SQRT2)
+	#define M_SQRT2 1.4142135623730950488016887 /* Fix for MSVC. */
+#endif
+
+#define MMMouseToMEventF(down, button) \
+	(down ? MMMouseDownToMEventF(button) : MMMouseUpToMEventF(button))
+
+#define MMMouseUpToMEventF(button) \
+	((button) == LEFT_BUTTON ? MOUSEEVENTF_LEFTUP \
+	: ((button) == RIGHT_BUTTON ? MOUSEEVENTF_RIGHTUP \
+	: MOUSEEVENTF_MIDDLEUP))
+
+#define MMMouseDownToMEventF(button) \
+	((button) == LEFT_BUTTON ? MOUSEEVENTF_LEFTDOWN \
+	: ((button) == RIGHT_BUTTON ? MOUSEEVENTF_RIGHTDOWN \
+	: MOUSEEVENTF_MIDDLEDOWN))
+
+/**
+ * Move the mouse to a specific point.
+ * @param point The coordinates to move the mouse to (x, y).
+ */
+void moveMouse(MMPoint point)
+{
+	SetCursorPos (point.x, point.y);
+}
+
+void dragMouse(MMPoint point, const MMMouseButton button)
+{
+	moveMouse(point);
+}
+
+MMPoint getMousePos()
+{
+	POINT point;
+	GetCursorPos(&point);
+
+	return MMPointFromPOINT(point);
+}
+
+/**
+ * Press down a button, or release it.
+ * @param down   True for down, false for up.
+ * @param button The button to press down or release.
+ */
+void toggleMouse(bool down, MMMouseButton button)
+{
+	INPUT mouseInput;
+	mouseInput.type = INPUT_MOUSE;
+	mouseInput.mi.mouseData = 0;
+	mouseInput.mi.dx = 0;
+	mouseInput.mi.dy = 0;
+	mouseInput.mi.time = 0;
+	mouseInput.mi.dwFlags = MMMouseToMEventF(down, button);
+	SendInput(1, &mouseInput, sizeof(mouseInput));
+}
+
+void clickMouse(MMMouseButton button)
+{
+	toggleMouse(true, button);
+	toggleMouse(false, button);
+}
+
+/**
+ * Special function for sending double clicks, needed for Mac OS X.
+ * @param button Button to click.
+ */
+void doubleClick(MMMouseButton button)
+{
+	/* Double click for everything else. */
+	clickMouse(button);
+	microsleep(200);
+	clickMouse(button);
+}
+
+void scrollMouse(int x, int y)
+{
+	INPUT mouseScrollInputH;
+	INPUT mouseScrollInputV;
+
+	mouseScrollInputH.type = INPUT_MOUSE;
+	mouseScrollInputH.mi.dx = 0;
+	mouseScrollInputH.mi.dy = 0;
+	mouseScrollInputH.mi.dwFlags = MOUSEEVENTF_HWHEEL;
+	mouseScrollInputH.mi.time = 0;
+	mouseScrollInputH.mi.dwExtraInfo = 0;
+	// Flip x to match other platforms.
+	mouseScrollInputH.mi.mouseData = -x;
+
+	mouseScrollInputV.type = INPUT_MOUSE;
+	mouseScrollInputV.mi.dx = 0;
+	mouseScrollInputV.mi.dy = 0;
+	mouseScrollInputV.mi.dwFlags = MOUSEEVENTF_WHEEL;
+	mouseScrollInputV.mi.time = 0;
+	mouseScrollInputV.mi.dwExtraInfo = 0;
+	mouseScrollInputV.mi.mouseData = y;
+
+	SendInput(1, &mouseScrollInputH, sizeof(mouseScrollInputH));
+	SendInput(1, &mouseScrollInputV, sizeof(mouseScrollInputV));
+}
