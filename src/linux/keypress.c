@@ -5,7 +5,7 @@
 #include <ctype.h> /* For isupper() */
 
 #include <X11/extensions/XTest.h>
-#include "xdisplay.h"
+#include "../xdisplay.h"
 
 #define X_KEY_EVENT(display, key, is_press) \
 	(XTestFakeKeyEvent(display, \
