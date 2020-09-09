@@ -36,21 +36,29 @@ install: true
 
 script:
   - npm run patch && npm i
-  - if [[ $TRAVIS_OS_NAME = "windows" ]]; then npm run build:release:win; else npm run build:release; fi
+  - npm run build:release
   - cd test
   - npm cit
   - cd window-integration-tests
   - npm cit
   - cd ../..
 
+stages:
+  - test
+  - name: deploy
+    if: (branch = develop) OR (tag IS present)
+
 before_deploy:
   - echo "//registry.npmjs.org/:_authToken=\${NPM_TOKEN}" >> $HOME/.npmrc 2> /dev/null
 
 deploy:
   - provider: script
-    skip_cleanup: true
-    script: npm publish --access public
+    skip_cleanup: false
+    script: bash ./.build/pre-release.sh
+    on:
+      branch: develop
+  - provider: script
+    skip_cleanup: false
+    script: bash ./.build/release.sh
     on:
       tags: true
-      node_js: '12'
-
