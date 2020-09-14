@@ -22,23 +22,9 @@ npm install
 npm run build:release
 ```
 
-Installation and build on Windows
-
-```
-npm install
-npm run build:release:win
-```
-
 ### Debug build
 
 ```
 npm install
 npm run build:debug
-```
-
-Installation and build on Windows
-
-```
-npm install
-npm run build:debug:win
 ```
