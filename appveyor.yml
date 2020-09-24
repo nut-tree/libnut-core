@@ -5,8 +5,7 @@ image: Visual Studio 2017
 # Test against these versions of Io.js and Node.js.
 environment:
   matrix:
-  # node.js
-    - nodejs_version: "10"
+    - nodejs_version: "12"
 
 cache:
   - node_modules
@@ -25,7 +24,7 @@ install:
   - ps: '"//registry.npmjs.org/:_authToken=$env:npm_auth_token`n" | out-file "$env:userprofile\.npmrc" -Encoding ASCII'
   - npm whoami
   - npm run patch && npm install
-  - npm run build:release:win
+  - npm run build:release
 
 test_script:
   # Output useful info for debugging.
@@ -41,6 +40,16 @@ test_script:
 
 on_success:
   - IF defined APPVEYOR_REPO_TAG_NAME npm publish
+
+deploy:
+  - provider: script
+    path: ./.build/release.ps1
+    on:
+      APPVEYOR_REPO_TAG: true
+  - provider: script
+    path: ./.build/pre-release.ps1
+    on:
+      branch: develop
 
 build: off
 version: "{build}"
