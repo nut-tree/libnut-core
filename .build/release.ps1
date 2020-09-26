@@ -13,7 +13,9 @@ function Release {
 }
 
 if ($env:APPVEYOR_REPO_BRANCH -eq "develop") {
+    echo "Running pre-release on branch $env:APPVEYOR_REPO_BRANCH"
     Pre-Release
 } elseif ($env:APPVEYOR_REPO_TAG -eq "true") {
+    echo "Running release on tag $env:APPVEYOR_REPO_TAG_NAME"
     Release
 }
