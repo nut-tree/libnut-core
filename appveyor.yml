@@ -38,18 +38,8 @@ test_script:
   - npm cit
   - cd ../..
 
-on_success:
-  - IF defined APPVEYOR_REPO_TAG_NAME npm publish
-
-deploy:
-  - provider: Script
-    path: ./.build/release.ps1
-    on:
-      APPVEYOR_REPO_TAG: true
-  - provider: Script
-    path: ./.build/pre-release.ps1
-    on:
-      branch: develop
+deploy_script:
+    - cmd: powershell ./.build/release.ps1
 
 build: off
 version: "{build}"
