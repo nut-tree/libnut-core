@@ -14,6 +14,6 @@ function Release {
 
 if ($env:APPVEYOR_REPO_BRANCH -eq "develop") {
     Pre-Release
-} else if ($env:APPVEYOR_REPO_TAG -eq "true") {
+} elseif ($env:APPVEYOR_REPO_TAG -eq "true") {
     Release
 }
