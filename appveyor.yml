@@ -42,11 +42,11 @@ on_success:
   - IF defined APPVEYOR_REPO_TAG_NAME npm publish
 
 deploy:
-  - provider: script
+  - provider: Script
     path: ./.build/release.ps1
     on:
       APPVEYOR_REPO_TAG: true
-  - provider: script
+  - provider: Script
     path: ./.build/pre-release.ps1
     on:
       branch: develop
