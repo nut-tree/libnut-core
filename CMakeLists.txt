@@ -4,13 +4,13 @@ set(CMAKE_CXX_STANDARD 17)
 project(libnut)
 
 # Source
-set(SOURCE_FILES "src/main.cc" "src/deadbeef_rand.c" "src/keycode.c" "src/keypress.c" "src/MMBitmap.c" "src/mouse.c" "src/screen.c" "src/screengrab.c")
+set(SOURCE_FILES "src/main.cc" "src/deadbeef_rand.c" "src/MMBitmap.c")
 if (UNIX AND NOT APPLE)
-    set(SOURCE_FILES "${SOURCE_FILES}" "src/linux/xdisplay.c" "src/linux/highlightwindow.c" "src/linux/window_manager.cc")
+    set(SOURCE_FILES "${SOURCE_FILES}" "src/linux/keycode.c" "src/linux/keypress.c" "src/linux/mouse.c" "src/linux/screen.c" "src/linux/screengrab.c" "src/linux/xdisplay.c" "src/linux/highlightwindow.c" "src/linux/window_manager.cc")
 elseif (UNIX AND APPLE)
-    set(SOURCE_FILES "${SOURCE_FILES}" "src/macos/highlightwindow.m" "src/macos/window_manager.mm")
+    set(SOURCE_FILES "${SOURCE_FILES}" "src/macos/keycode.c" "src/macos/keypress.c" "src/macos/mouse.c" "src/macos/screen.c" "src/macos/screengrab.c" "src/macos/highlightwindow.m" "src/macos/window_manager.mm")
 elseif (WIN32)
-    set(SOURCE_FILES "${SOURCE_FILES}" "src/win32/highlightwindow.c" "src/win32/window_manager.cc")
+    set(SOURCE_FILES "${SOURCE_FILES}" "src/win32/keycode.c" "src/win32/keypress.c" "src/win32/mouse.c" "src/win32/screen.c" "src/win32/screengrab.c" "src/win32/highlightwindow.c" "src/win32/window_manager.cc")
 endif()
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${CMAKE_JS_SRC})
 
