@@ -3,10 +3,15 @@ const electronPath = require("electron");
 const libnut = require("../..");
 const { POS_X, POS_Y, WIDTH, HEIGTH, TITLE } = require("./constants");
 
+const sleep = async (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+};
+
 let app;
 const APP_TIMEOUT = 10000;
+jest.setTimeout(3 * APP_TIMEOUT)
 
-beforeAll(async () => {
+beforeEach(async () => {
     app = new Application({
         path: electronPath,
         args: ['main.js'],
@@ -63,6 +68,7 @@ describe("getActiveWindow", () => {
         const xPosition = 42;
         const yPosition = 23;
         await app.browserWindow.setPosition(xPosition, yPosition);
+        await sleep(1000);
 
         // WHEN
         const activeWindowHandle = libnut.getActiveWindow();
@@ -78,6 +84,7 @@ describe("getActiveWindow", () => {
         const newWidth = 400;
         const newHeight = 250;
         await app.browserWindow.setSize(newWidth, newHeight);
+        await sleep(1000);
 
         // WHEN
         const activeWindowHandle = libnut.getActiveWindow();
@@ -89,7 +96,7 @@ describe("getActiveWindow", () => {
     });
 });
 
-afterAll(async () => {
+afterEach(async () => {
     if (app && app.isRunning()) {
         await app.stop();
     }
