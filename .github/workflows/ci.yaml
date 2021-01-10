@@ -30,8 +30,10 @@ jobs:
       - name: Build
         run: npm run build:release
       - name: Run tests
-        working-directory: ./test
-        run: npm cit
+        uses: GabrielBB/xvfb-action@v1
+        with:
+          working-directory: ./test/
+          run: npm cit
       - name: Run window tests
         uses: GabrielBB/xvfb-action@v1
         with:
