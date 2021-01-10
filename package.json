@@ -7,12 +7,8 @@
   "scripts": {
     "clean": "cmake-js clean",
     "patch": "node ./patch-packagename.js",
-    "build:debug": "run-script-os",
-    "build:debug:default": "cmake-js rebuild --debug",
-    "build:debug:win32": "cmake-js rebuild --debug -G \"Visual Studio 15 2017 Win64\"",
-    "build:release": "run-script-os",
-    "build:release:default": "cmake-js rebuild",
-    "build:release:win32": "cmake-js rebuild -G \"Visual Studio 15 2017 Win64\"",
+    "build:debug": "cmake-js rebuild --debug",
+    "build:release": "cmake-js rebuild",
     "prepublishOnly": "npm run build:release",
     "publish:next": "npm publish --tag next"
   },
@@ -45,8 +41,5 @@
   },
   "engines": {
     "node": ">=10.15.3"
-  },
-  "devDependencies": {
-    "run-script-os": "1.1.1"
   }
 }
