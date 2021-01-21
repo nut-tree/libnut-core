@@ -715,33 +715,33 @@ Napi::Object _captureScreen(const Napi::CallbackInfo &info)
 {
 	Napi::Env env = info.Env();
 
-	size_t x;
-	size_t y;
-	size_t w;
-	size_t h;
+	int64_t x;
+	int64_t y;
+	int64_t w;
+	int64_t h;
 
 	MMSize displaySize = getMainDisplaySize();
 	//If user has provided screen coords, use them!
 	if (info.Length() == 4)
 	{
-		x = info[0].As<Napi::Number>().Int32Value();
-		y = info[1].As<Napi::Number>().Int32Value();
-		w = info[2].As<Napi::Number>().Int32Value();
-		h = info[3].As<Napi::Number>().Int32Value();
+		x = info[0].As<Napi::Number>().Int64Value();
+		y = info[1].As<Napi::Number>().Int64Value();
+		w = info[2].As<Napi::Number>().Int64Value();
+		h = info[3].As<Napi::Number>().Int64Value();
 
-		if (!(x >= 0 && x < displaySize.width))
+		if (!(x >= 0 && x <= displaySize.width))
 		{
 			throw Napi::Error::New(env, "Error: x coordinate outside of display");
 		}
-		if (!(y >= 0 && y < displaySize.height))
+		if (!(y >= 0 && y <= displaySize.height))
 		{
 			throw Napi::Error::New(env, "Error: y coordinate outside of display");
 		}
-		if (!((x + w) >= 0 && (x + w) < displaySize.width))
+		if (!((x + w) >= 0 && (x + w) <= displaySize.width))
 		{
 			throw Napi::Error::New(env, "Error: Given width exceeds display dimensions");
 		}
-		if (!((y + h) >= 0 && (y + h) < displaySize.height))
+		if (!((y + h) >= 0 && (y + h) <= displaySize.height))
 		{
 			throw Napi::Error::New(env, "Error: Given height exceeds display dimensions");
 		}
