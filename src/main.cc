@@ -729,19 +729,19 @@ Napi::Object _captureScreen(const Napi::CallbackInfo &info)
 		w = info[2].As<Napi::Number>().Int32Value();
 		h = info[3].As<Napi::Number>().Int32Value();
 
-		if (!(x >= 0 && x < (size_t)displaySize.width))
+		if (!(x >= 0 && x <= (size_t)displaySize.width))
 		{
 			throw Napi::Error::New(env, "Error: x coordinate outside of display");
 		}
-		if (!(y >= 0 && y < (size_t)displaySize.height))
+		if (!(y >= 0 && y <= (size_t)displaySize.height))
 		{
 			throw Napi::Error::New(env, "Error: y coordinate outside of display");
 		}
-		if (!((x + w) >= 0 && (x + w) < (size_t)displaySize.width))
+		if (!((x + w) >= 0 && (x + w) <= (size_t)displaySize.width))
 		{
 			throw Napi::Error::New(env, "Error: Given width exceeds display dimensions");
 		}
-		if (!((y + h) >= 0 && (y + h) < (size_t)displaySize.height))
+		if (!((y + h) >= 0 && (y + h) <= (size_t)displaySize.height))
 		{
 			throw Napi::Error::New(env, "Error: Given height exceeds display dimensions");
 		}
