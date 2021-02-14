@@ -4,8 +4,8 @@
 
 MMSize getMainDisplaySize(void)
 {
-	return MMSizeMake((size_t)GetSystemMetrics(SM_CXSCREEN),
-	                  (size_t)GetSystemMetrics(SM_CYSCREEN));
+	return MMSizeMake((size_t)GetSystemMetrics(SM_CXVIRTUALSCREEN),
+	                  (size_t)GetSystemMetrics(SM_CYVIRTUALSCREEN));
 }
 
 bool pointVisibleOnMainDisplay(MMPoint point)
