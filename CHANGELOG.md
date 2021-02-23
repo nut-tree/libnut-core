@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## @next
+
+- Bugfix: Fix off-by-one error when specifying the full screen region in `screen.capture` [(#45)](https://github.com/nut-tree/libnut/issues/45)
+
 ## 2.1.0
 
 - Enhancement: Retrieve coordinates of current active window [(#15)](https://github.com/nut-tree/libnut/issues/15)
