@@ -1,0 +1,84 @@
+name: Create snapshot release
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+    runs-on: ${{matrix.os}}
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v2
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{matrix.node}}
+      - name: Configure Linux environment
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        run: |
+          sudo apt-get install -y cmake libx11-dev zlib1g-dev libpng-dev libxtst-dev g++-4.8 gcc-4.8
+          export CXX=g++-4.8 && $CXX --version
+      - name: Install
+        run: npm run patch && npm i
+      - name: Build
+        run: npm run build:release
+      - name: Run tests
+        uses: GabrielBB/xvfb-action@v1
+        with:
+          working-directory: ./test/
+          run: npm cit
+      - name: Run window tests
+        uses: GabrielBB/xvfb-action@v1
+        with:
+          working-directory: ./test/window-integration-tests
+          run: npm cit
+
+  deploy:
+    needs:
+      - test
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest, macos-latest ]
+    runs-on: ${{matrix.os}}
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v2
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+      - name: Configure Linux environment
+        if: ${{matrix.os == 'ubuntu-latest'}}
+        run: |
+          sudo apt-get install -y cmake libx11-dev zlib1g-dev libpng-dev libxtst-dev g++-4.8 gcc-4.8
+          export CXX=g++-4.8 && $CXX --version
+      - name: Install
+        run: npm run patch && npm i
+      - name: Publish snapshot release
+        if: ${{matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'}}
+        run: ./.build/pre-release.sh
+        shell: bash
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Publish Windows snapshot release
+        if: ${{matrix.os == 'windows-latest'}}
+        run: ./.build/pre-release.ps1
+        shell: powershell
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  dispatch:
+    needs:
+      - deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch snapshot release
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.SNAPSHOT_DISPATCH_TOKEN }}
+          repository: nut-tree/libnut-install
+          event-type: snapshot-release

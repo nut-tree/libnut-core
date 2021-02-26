@@ -1,6 +1,6 @@
 {
   "name": "window-integration-tests",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Integration tests to verify window handling",
   "main": "main.js",
   "author": {
@@ -13,7 +13,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "electron": "9.1.2",
+    "electron": "9.4.0",
     "jest": "26.2.2",
     "spectron": "11.1.0"
   }

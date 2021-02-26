@@ -8,3 +8,16 @@ describe("Screen", () => {
     expect(screenSize.height !== undefined).toBeTruthy();
   });
 });
+
+describe("Capture", () => {
+  it("fullScreen capture", () => {
+    // GIVEN
+    const screenSize = libnut.getScreenSize()
+
+    // WHEN
+    const capture = () => libnut.screen.capture(0, 0, screenSize.width, screenSize.height);
+
+    // THEN
+    expect(capture).not.toThrowError("Error: Given width exceeds display dimensions");
+  });
+});

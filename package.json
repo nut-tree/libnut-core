@@ -1,6 +1,6 @@
 {
   "name": "libnut",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "libnut is an N-API module for desktop automation with node",
   "main": "index.js",
   "typings": "index.d.ts",
@@ -8,9 +8,9 @@
     "clean": "cmake-js clean",
     "patch": "node ./patch-packagename.js",
     "build:debug": "cmake-js rebuild --debug",
-    "build:debug:win": "cmake-js rebuild --debug -G \"Visual Studio 15 2017 Win64\"",
     "build:release": "cmake-js rebuild",
-    "build:release:win": "cmake-js rebuild -G \"Visual Studio 15 2017 Win64\""
+    "prepublishOnly": "npm run build:release",
+    "publish:next": "npm publish --tag next"
   },
   "repository": {
     "type": "git",
