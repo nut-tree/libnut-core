@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 - Enhancement: Snapshot releases [(#4)](https://github.com/nut-tree/libnut/issues/4)
 - Enhancement: Update CI configs [(#7)](https://github.com/nut-tree/libnut/issues/7)
 - Enhancement: Split OS specific implementation into separate files [(#20)](https://github.com/nut-tree/libnut/issues/20)
+- Enhancement: Linux: Update XGetMainDisplay to avoid receiving `Invalid MIT-MAGIC-COOKIE-1 key` [(#27)](https://github.com/nut-tree/libnut/issues/27)
 - Enhancement: Enable GitHub Actions [(#40)](https://github.com/nut-tree/libnut/issues/40)
 - Enhancement: Trigger snapshot build for https://github.com/nut-tree/libnut-install after snapshot release [(#42)](https://github.com/nut-tree/libnut/issues/42)
 - Bugfix: Region captures can't capture the whole screen [(#45)](https://github.com/nut-tree/libnut/issues/45)
