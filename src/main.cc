@@ -758,6 +758,10 @@ Napi::Object _captureScreen(const Napi::CallbackInfo &info)
 	}
 
 	MMBitmapRef bitmap = copyMMBitmapFromDisplayInRect(MMRectMake(x, y, w, h));
+	
+	if (bitmap == NULL) {
+		throw Napi::Error::New(env, "Error: Failed to capture screen");
+	}
 
 	uint32_t bufferSize = bitmap->bytewidth * bitmap->height;
 	Napi::Buffer<char> buffer = Napi::Buffer<char>::New(env, (char *)bitmap->imageBuffer, bufferSize, finalizer);
