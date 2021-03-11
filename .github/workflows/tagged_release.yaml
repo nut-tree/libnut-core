@@ -55,8 +55,7 @@ jobs:
       - name: Configure Linux environment
         if: ${{matrix.os == 'ubuntu-latest'}}
         run: |
-          sudo apt-get install -y cmake libx11-dev zlib1g-dev libpng-dev libxtst-dev g++-4.8 gcc-4.8
-          export CXX=g++-4.8 && $CXX --version
+          sudo apt-get install -y cmake libx11-dev zlib1g-dev libpng-dev libxtst-dev build-essential
       - name: Install
         run: npm run patch && npm i
       - name: Publish tagged release
