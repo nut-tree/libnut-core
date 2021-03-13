@@ -496,7 +496,7 @@ Napi::Number _keyToggle(const Napi::CallbackInfo &info)
 	MMKeyFlags flags = MOD_NONE;
 	MMKeyCode key;
 
-	bool down;
+	bool down = false;
 
 	//Get arguments from JavaScript.
 	std::string keyName = info[0].As<Napi::String>();

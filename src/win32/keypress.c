@@ -167,6 +167,8 @@ void typeString(const char *str)
 			c3 = (*str++) & 0x3F;
 			n = ((c & 0x07) << 18) | (c1 << 12) | (c2 << 6) | c3;
 		}
+		else
+			continue; /* ignore invalid UTF-8 */
 
 		toggleUniKey(n, true);
 		toggleUniKey(n, false);
