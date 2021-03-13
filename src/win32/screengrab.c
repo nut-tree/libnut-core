@@ -38,8 +38,8 @@ MMBitmapRef copyMMBitmapFromDisplayInRect(MMRect rect)
 	            (int)rect.size.width,
 	            (int)rect.size.height,
 				screen,
-				rect.origin.x,
-				rect.origin.y,
+				(int)rect.origin.x,
+				(int)rect.origin.y,
 				SRCCOPY)) {
 		
 		/* Error copying data. */

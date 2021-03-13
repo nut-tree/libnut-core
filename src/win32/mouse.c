@@ -26,7 +26,7 @@
  */
 void moveMouse(MMPoint point)
 {
-	SetCursorPos (point.x, point.y);
+	SetCursorPos ((int)point.x, (int)point.y);
 }
 
 void dragMouse(MMPoint point, const MMMouseButton button)
