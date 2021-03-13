@@ -31,6 +31,7 @@ void moveMouse(MMPoint point)
 
 void dragMouse(MMPoint point, const MMMouseButton button)
 {
+	(void)button;
 	moveMouse(point);
 }
 
