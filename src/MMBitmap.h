@@ -47,8 +47,8 @@ MMBitmapRef copyMMBitmapFromPortion(MMBitmapRef source, MMRect rect);
 #define MMBitmapPointInBounds(image, p) ((p).x < (image)->width && \
                                          (p).y < (image)->height)
 #define MMBitmapRectInBounds(image, r)                    \
-	(((r).origin.x + (r).size.width <= (image)->width) && \
-	 ((r).origin.y + (r).size.height <= (image)->height))
+	(((r).origin.x + (r).size.width <= (int64_t)(image)->width) && \
+	 ((r).origin.y + (r).size.height <= (int64_t)(image)->height))
 
 #define MMBitmapGetBounds(image) MMRectMake(0, 0, image->width, image->height)
 
