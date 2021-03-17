@@ -36,6 +36,7 @@ void destroyMMBitmap(MMBitmapRef bitmap)
 
 void destroyMMBitmapBuffer(char * bitmapBuffer, void * hint)
 {
+	(void)hint;
 	if (bitmapBuffer != NULL)	
 	{
 		free(bitmapBuffer);
