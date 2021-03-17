@@ -496,7 +496,7 @@ Napi::Number _keyToggle(const Napi::CallbackInfo &info)
 	MMKeyFlags flags = MOD_NONE;
 	MMKeyCode key;
 
-	bool down;
+	bool down = false;
 
 	//Get arguments from JavaScript.
 	std::string keyName = info[0].As<Napi::String>();
@@ -576,7 +576,7 @@ Napi::Number _typeStringDelayed(const Napi::CallbackInfo &info)
 	std::string stringToType = info[0].As<Napi::String>();
 	size_t cpm = info[1].As<Napi::Number>().Int32Value();
 
-	typeStringDelayed(stringToType.c_str(), cpm);
+	typeStringDelayed(stringToType.c_str(), (unsigned int)cpm);
 
 	return Napi::Number::New(env, 1);
 }
@@ -613,8 +613,8 @@ Napi::Object _getScreenSize(const Napi::CallbackInfo &info)
 
 	//Create our return object.
 	Napi::Object obj = Napi::Object::New(env);
-	obj.Set(Napi::String::New(env, "width"), Napi::Number::New(env, displaySize.width));
-	obj.Set(Napi::String::New(env, "height"), Napi::Number::New(env, displaySize.height));
+	obj.Set(Napi::String::New(env, "width"), Napi::Number::New(env, (double)displaySize.width));
+	obj.Set(Napi::String::New(env, "height"), Napi::Number::New(env, (double)displaySize.height));
 
 	return obj;
 }
@@ -660,7 +660,7 @@ Napi::Number _highlight(const Napi::CallbackInfo &info)
 		y = info[1].As<Napi::Number>().Int32Value();
 		width = info[2].As<Napi::Number>().Int32Value();
 		height = info[3].As<Napi::Number>().Int32Value();
-		duration = info[4].As<Napi::Number>().Int64Value();
+		duration = (int)info[4].As<Napi::Number>().Int64Value();
 		opacity = info[5].As<Napi::Number>().FloatValue();
 
 		highlight(x, y, width, height, duration, opacity);
@@ -673,7 +673,7 @@ Napi::Number _getActiveWindow(const Napi::CallbackInfo &info) {
 	Napi::Env env = info.Env();
 
 	WindowHandle windowHandle = getActiveWindow();
-	return Napi::Number::New(env, windowHandle);
+	return Napi::Number::New(env, (double)windowHandle);
 }
 
 Napi::Array _getWindows(const Napi::CallbackInfo &info) {
@@ -683,7 +683,7 @@ Napi::Array _getWindows(const Napi::CallbackInfo &info) {
 	auto arr = Napi::Array::New(env, windowHandles.size());
 
 	for (size_t idx = 0; idx < windowHandles.size(); ++idx) {
-		arr[idx] = windowHandles[idx];
+		arr[(uint32_t)idx] = windowHandles[idx];
 	}
 
 	return arr;
@@ -696,10 +696,10 @@ Napi::Object _getWindowRect(const Napi::CallbackInfo &info) {
 	MMRect windowRect = getWindowRect(windowHandle);
 
 	Napi::Object obj = Napi::Object::New(env);
-	obj.Set(Napi::String::New(env, "x"), Napi::Number::New(env, windowRect.origin.x));
-	obj.Set(Napi::String::New(env, "y"), Napi::Number::New(env, windowRect.origin.y));
-	obj.Set(Napi::String::New(env, "width"), Napi::Number::New(env, windowRect.size.width));
-	obj.Set(Napi::String::New(env, "height"), Napi::Number::New(env, windowRect.size.height));
+	obj.Set(Napi::String::New(env, "x"), Napi::Number::New(env, (double)windowRect.origin.x));
+	obj.Set(Napi::String::New(env, "y"), Napi::Number::New(env, (double)windowRect.origin.y));
+	obj.Set(Napi::String::New(env, "width"), Napi::Number::New(env, (double)windowRect.size.width));
+	obj.Set(Napi::String::New(env, "height"), Napi::Number::New(env, (double)windowRect.size.height));
 
 	return obj;
 }
@@ -758,14 +758,18 @@ Napi::Object _captureScreen(const Napi::CallbackInfo &info)
 	}
 
 	MMBitmapRef bitmap = copyMMBitmapFromDisplayInRect(MMRectMake(x, y, w, h));
+	
+	if (bitmap == NULL) {
+		throw Napi::Error::New(env, "Error: Failed to capture screen");
+	}
 
-	uint32_t bufferSize = bitmap->bytewidth * bitmap->height;
+	uint32_t bufferSize = (uint32_t)(bitmap->bytewidth * bitmap->height);
 	Napi::Buffer<char> buffer = Napi::Buffer<char>::New(env, (char *)bitmap->imageBuffer, bufferSize, finalizer);
 
 	Napi::Object obj = Napi::Object::New(env);
-	obj.Set(Napi::String::New(env, "width"), Napi::Number::New(env, bitmap->width));
-	obj.Set(Napi::String::New(env, "height"), Napi::Number::New(env, bitmap->height));
-	obj.Set(Napi::String::New(env, "byteWidth"), Napi::Number::New(env, bitmap->bytewidth));
+	obj.Set(Napi::String::New(env, "width"), Napi::Number::New(env, (double)bitmap->width));
+	obj.Set(Napi::String::New(env, "height"), Napi::Number::New(env, (double)bitmap->height));
+	obj.Set(Napi::String::New(env, "byteWidth"), Napi::Number::New(env, (double)bitmap->bytewidth));
 	obj.Set(Napi::String::New(env, "bitsPerPixel"), Napi::Number::New(env, bitmap->bitsPerPixel));
 	obj.Set(Napi::String::New(env, "bytesPerPixel"), Napi::Number::New(env, bitmap->bytesPerPixel));
 	obj.Set(Napi::String::New(env, "image"), buffer);
