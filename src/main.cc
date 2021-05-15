@@ -483,7 +483,6 @@ Napi::Number _keyTap(const Napi::CallbackInfo &info)
 		break;
 	default:
 		tapKeyCode(key, flags);
-		microsleep(keyboardDelay);
 	}
 
 	return Napi::Number::New(env, 1);
@@ -552,7 +551,6 @@ Napi::Number _keyToggle(const Napi::CallbackInfo &info)
 		break;
 	default:
 		toggleKeyCode(key, down, flags);
-		microsleep(keyboardDelay);
 	}
 
 	return Napi::Number::New(env, 1);
