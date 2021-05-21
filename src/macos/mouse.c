@@ -110,7 +110,7 @@ MMPoint getMousePos()
     CFRelease(event);
     CFRelease(src);
 
-    return MMPointFromCGPoint(point);
+    return MMSignedPointFromCGPoint(point);
 }
 
 /**
@@ -120,7 +120,7 @@ MMPoint getMousePos()
  */
 void toggleMouse(bool down, MMMouseButton button)
 {
-    const CGPoint currentPos = CGPointFromMMPoint(getMousePos());
+    const CGPoint currentPos = CGPointFromMMSignedPoint(getMousePos());
     const CGEventType mouseType = MMMouseToCGEventType(down, button);
     CGEventSourceRef src = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
     CGEventRef event = CGEventCreateMouseEvent(src, mouseType, currentPos, (CGMouseButton)button);
