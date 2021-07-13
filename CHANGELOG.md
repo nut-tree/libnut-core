@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.1.2
+
+- Maintenance: Upgrade CI [(#56)](https://github.com/nut-tree/libnut/issues/56)
+- Enhancement: Fix compiler warnings [(#58)](https://github.com/nut-tree/libnut/issues/58)
+- Enhancement: Windows: Support for HDPI displays [(#59)](https://github.com/nut-tree/libnut/issues/59)
+- Enhancement: macOS: Support for M1 chips [(PR #50)](https://github.com/nut-tree/libnut/pull/50)
+- Enhancement: Remove static keyboard delay [(PR #64)](https://github.com/nut-tree/libnut/pull/64)
 ## 2.1.1
 
 - Enhancement: Snapshot releases [(#4)](https://github.com/nut-tree/libnut/issues/4)

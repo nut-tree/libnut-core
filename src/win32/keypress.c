@@ -61,7 +61,7 @@ void win32KeyEvent(int key, MMKeyFlags flags)
 
 	INPUT keyboardInput;
 	keyboardInput.type = INPUT_KEYBOARD;
-	keyboardInput.ki.wScan = scan;
+	keyboardInput.ki.wScan = (WORD)scan;
 	keyboardInput.ki.dwFlags = KEYEVENTF_SCANCODE | flags;
 	keyboardInput.ki.time = 0;
 	SendInput(1, &keyboardInput, sizeof(keyboardInput));
@@ -167,9 +167,11 @@ void typeString(const char *str)
 			c3 = (*str++) & 0x3F;
 			n = ((c & 0x07) << 18) | (c1 << 12) | (c2 << 6) | c3;
 		}
+		else
+			continue; /* ignore invalid UTF-8 */
 
-		toggleUniKey(n, true);
-		toggleUniKey(n, false);
+		toggleUniKey((char)n, true);
+		toggleUniKey((char)n, false);
 	}
 }
 

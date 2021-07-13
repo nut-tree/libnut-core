@@ -1,7 +1,3 @@
-## Disclaimer
-
-This project if based on [octaImage/robotjs](https://github.com/octalmage/robotjs) and is used internally at [nut-tree/nut.js](https://github.com/nut-tree/nut.js).
-
 ## Building
 
 Please ensure you have the required dependencies before installing:

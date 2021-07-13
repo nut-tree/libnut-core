@@ -1,6 +1,6 @@
 {
   "name": "libnut",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "libnut is an N-API module for desktop automation with node",
   "main": "index.js",
   "typings": "index.d.ts",
@@ -8,7 +8,7 @@
     "clean": "cmake-js clean",
     "patch": "node ./patch-packagename.js",
     "build:debug": "cmake-js rebuild --debug",
-    "build:release": "cmake-js rebuild",
+    "build:release": "cmake-js rebuild --CDCMAKE_OSX_ARCHITECTURES=\"arm64;x86_64\"",
     "prepublishOnly": "npm run build:release",
     "publish:next": "npm publish --tag next"
   },
