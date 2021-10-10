@@ -1,4 +1,5 @@
 #include "../mouse.h"
+#include "../screen.h"
 #include "../microsleep.h"
 
 #include <math.h> /* For floor() */
