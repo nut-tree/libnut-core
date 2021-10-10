@@ -20,6 +20,18 @@
 	: ((button) == RIGHT_BUTTON ? MOUSEEVENTF_RIGHTDOWN \
 	: MOUSEEVENTF_MIDDLEDOWN))
 
+int CalculateAbsoluteCoordinateX(int x)
+{
+	MMSize displaySize = getMainDisplaySize();
+        return (x * 65536) / displaySize.width;
+}
+
+int CalculateAbsoluteCoordinateY(int y)
+{
+	MMSize displaySize = getMainDisplaySize();
+        return (y * 65536) / displaySize.height;
+}
+
 /**
  * Move the mouse to a specific point.
  * @param point The coordinates to move the mouse to (x, y).
