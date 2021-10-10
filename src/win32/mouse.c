@@ -40,9 +40,10 @@ int CalculateAbsoluteCoordinates(MMPoint point) {
  */
 void moveMouse(MMPoint point) {
 	INPUT mouseInput;
+	POINT pointAbsolute = CalculateAbsoluteCoordinates(point);
 	mouseInput.type = INPUT_MOUSE;
-	mouseInput.mi.dx = CalculateAbsoluteCoordinateX(point.x);
-	mouseInput.mi.dy = CalculateAbsoluteCoordinateY(point.y);
+	mouseInput.mi.dx = pointAbsolute.x;
+	mouseInput.mi.dy = pointAbsolute.y;
 	mouseInput.mi.mouseData = 0;
 	mouseInput.mi.time = 0;
 	mouseInput.mi.dwFlags = MouseEventFlags.MOUSEEVENTF_MOVE | MouseEventFlags.MOUSEEVENTF_ABSOLUTE;
