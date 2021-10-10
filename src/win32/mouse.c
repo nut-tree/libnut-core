@@ -38,7 +38,15 @@ int CalculateAbsoluteCoordinateY(int y)
  */
 void moveMouse(MMPoint point)
 {
-	SetCursorPos ((int)point.x, (int)point.y);
+   INPUT mouseInput;
+	mouseInput.type = INPUT_MOUSE;
+	mouseInput.mi.dx = CalculateAbsoluteCoordinateX(point.x);
+	mouseInput.mi.dy = CalculateAbsoluteCoordinateY(point.y);
+	mouseInput.mi.mouseData = 0;     
+	mouseInput.mi.time = 0;
+   mouseInput.mi.dwFlags = MouseEventFlags.MOUSEEVENTF_MOVE | MouseEventFlags.MOUSEEVENTF_ABSOLUTE;
+   mouseInput.mi.dwExtraInfo = 0;
+	SendInput(1, &mouseInput, sizeof(mouseInput));
 }
 
 void dragMouse(MMPoint point, const MMMouseButton button)
