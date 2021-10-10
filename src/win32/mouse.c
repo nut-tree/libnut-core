@@ -7,6 +7,15 @@
 	#define M_SQRT2 1.4142135623730950488016887 /* Fix for MSVC. */
 #endif
 
+/**
+ * This constant is required as Windows divides the entire
+ *	screen space into 65536 segments in both X and Y axes
+ * irrespective of resolution
+ * https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-mouseinput#remarks
+ */
+ #define ABSOLUTE_COORD_CONST 65536
+
+
 #define MMMouseToMEventF(down, button) \
 	(down ? MMMouseDownToMEventF(button) : MMMouseUpToMEventF(button))
 
