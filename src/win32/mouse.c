@@ -29,9 +29,9 @@
 	: ((button) == RIGHT_BUTTON ? MOUSEEVENTF_RIGHTDOWN \
 	: MOUSEEVENTF_MIDDLEDOWN))
 
-int CalculateAbsoluteCoordinates(MMPoint point) {
+MMPoint CalculateAbsoluteCoordinates(MMPoint point) {
 	MMSize displaySize = getMainDisplaySize();
-	return MMPointMake((x / displaySize.width) * ABSOLUTE_COORD_CONST,  (y / displaySize.height) * ABSOLUTE_COORD_CONST);
+	return MMPointMake((point.x / displaySize.width) * ABSOLUTE_COORD_CONST,  (point.y / displaySize.height) * ABSOLUTE_COORD_CONST);
 }
 
 /**
@@ -40,13 +40,13 @@ int CalculateAbsoluteCoordinates(MMPoint point) {
  */
 void moveMouse(MMPoint point) {
 	INPUT mouseInput;
-	POINT pointAbsolute = CalculateAbsoluteCoordinates(point);
+	MMPoint pointAbsolute = CalculateAbsoluteCoordinates(point);
 	mouseInput.type = INPUT_MOUSE;
 	mouseInput.mi.dx = pointAbsolute.x;
 	mouseInput.mi.dy = pointAbsolute.y;
 	mouseInput.mi.mouseData = 0;
 	mouseInput.mi.time = 0;
-	mouseInput.mi.dwFlags = MouseEventFlags.MOUSEEVENTF_MOVE | MouseEventFlags.MOUSEEVENTF_ABSOLUTE;
+	mouseInput.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE;
 	mouseInput.mi.dwExtraInfo = 0;
 	SendInput(1, & mouseInput, sizeof(mouseInput));
 }
