@@ -29,14 +29,9 @@
 	: ((button) == RIGHT_BUTTON ? MOUSEEVENTF_RIGHTDOWN \
 	: MOUSEEVENTF_MIDDLEDOWN))
 
-int CalculateAbsoluteCoordinateX(int x) {
+int CalculateAbsoluteCoordinates(MMPoint point) {
 	MMSize displaySize = getMainDisplaySize();
-	return (x * 65536) / displaySize.width;
-}
-
-int CalculateAbsoluteCoordinateY(int y) {
-	MMSize displaySize = getMainDisplaySize();
-	return (y * 65536) / displaySize.height;
+	return MMPointMake((x / displaySize.width) * ABSOLUTE_COORD_CONST,  (y / displaySize.height) * ABSOLUTE_COORD_CONST);
 }
 
 /**
