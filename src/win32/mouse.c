@@ -20,33 +20,30 @@
 	: ((button) == RIGHT_BUTTON ? MOUSEEVENTF_RIGHTDOWN \
 	: MOUSEEVENTF_MIDDLEDOWN))
 
-int CalculateAbsoluteCoordinateX(int x)
-{
+int CalculateAbsoluteCoordinateX(int x) {
 	MMSize displaySize = getMainDisplaySize();
-        return (x * 65536) / displaySize.width;
+	return (x * 65536) / displaySize.width;
 }
 
-int CalculateAbsoluteCoordinateY(int y)
-{
+int CalculateAbsoluteCoordinateY(int y) {
 	MMSize displaySize = getMainDisplaySize();
-        return (y * 65536) / displaySize.height;
+	return (y * 65536) / displaySize.height;
 }
 
 /**
  * Move the mouse to a specific point.
  * @param point The coordinates to move the mouse to (x, y).
  */
-void moveMouse(MMPoint point)
-{
-   INPUT mouseInput;
+void moveMouse(MMPoint point) {
+	INPUT mouseInput;
 	mouseInput.type = INPUT_MOUSE;
 	mouseInput.mi.dx = CalculateAbsoluteCoordinateX(point.x);
 	mouseInput.mi.dy = CalculateAbsoluteCoordinateY(point.y);
-	mouseInput.mi.mouseData = 0;     
+	mouseInput.mi.mouseData = 0;
 	mouseInput.mi.time = 0;
-   mouseInput.mi.dwFlags = MouseEventFlags.MOUSEEVENTF_MOVE | MouseEventFlags.MOUSEEVENTF_ABSOLUTE;
-   mouseInput.mi.dwExtraInfo = 0;
-	SendInput(1, &mouseInput, sizeof(mouseInput));
+	mouseInput.mi.dwFlags = MouseEventFlags.MOUSEEVENTF_MOVE | MouseEventFlags.MOUSEEVENTF_ABSOLUTE;
+	mouseInput.mi.dwExtraInfo = 0;
+	SendInput(1, & mouseInput, sizeof(mouseInput));
 }
 
 void dragMouse(MMPoint point, const MMMouseButton button)
