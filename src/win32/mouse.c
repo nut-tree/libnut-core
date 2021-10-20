@@ -32,7 +32,7 @@
 
 MMPoint CalculateAbsoluteCoordinates(MMPoint point) {
 	MMSize displaySize = getMainDisplaySize();
-	return MMPointMake((point.x / displaySize.width) * ABSOLUTE_COORD_CONST,  (point.y / displaySize.height) * ABSOLUTE_COORD_CONST);
+	return MMPointMake(((float) point.x / displaySize.width) * ABSOLUTE_COORD_CONST,  ((float) point.y / displaySize.height) * ABSOLUTE_COORD_CONST);
 }
 
 /**
