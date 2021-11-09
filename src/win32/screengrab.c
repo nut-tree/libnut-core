@@ -3,17 +3,17 @@
 #include <stdlib.h> /* malloc() */
 
 MMRect getScaledRect(MMRect input, HDC imageSource) {
-	BITMAP structBitmapHeader;
-	memset( &structBitmapHeader, 0, sizeof(BITMAP) );
-
-	HGDIOBJ hBitmap = GetCurrentObject(imageSource, OBJ_BITMAP);
-	GetObject(hBitmap, sizeof(BITMAP), &structBitmapHeader);
-
+	// Configure DPI awareness to fetch unscaled display size
+	DPI_AWARENESS_CONTEXT initialDpiAwareness = SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+	size_t scaledDesktopWidth = (size_t)GetSystemMetrics(SM_CXSCREEN);
+	size_t scaledDesktopHeight = (size_t)GetSystemMetrics(SM_CYSCREEN);
+	// Reset DPI awareness to avoid inconsistencies on future calls to copyMMBitmapFromDisplayInRect
+	SetThreadDpiAwarenessContext(initialDpiAwareness);
 	size_t desktopWidth = (size_t)GetSystemMetrics(SM_CXSCREEN);
 	size_t desktopHeight = (size_t)GetSystemMetrics(SM_CYSCREEN);
 
-	double scaleX = (double)(structBitmapHeader.bmWidth / desktopWidth);
-	double scaleY = (double)(structBitmapHeader.bmHeight / desktopHeight);
+	double scaleX = (double)(desktopWidth / (double)scaledDesktopWidth);
+	double scaleY = (double)(desktopHeight / (double)scaledDesktopHeight);
 
 	return MMRectMake(input.origin.x, input.origin.y, input.size.width * scaleX, input.size.height * scaleY);
 }
