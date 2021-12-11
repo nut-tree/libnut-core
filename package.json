@@ -1,6 +1,6 @@
 {
   "name": "libnut",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "libnut is an N-API module for desktop automation with node",
   "main": "index.js",
   "typings": "index.d.ts",
@@ -41,5 +41,14 @@
   },
   "engines": {
     "node": ">=10.15.3"
-  }
+  },
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ]
 }

@@ -65,7 +65,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         switch(wParam) {
             case ID_CLOSE_TIMER:
                 KillTimer(hwnd, ID_CLOSE_TIMER);
-                CloseWindow(hwnd);
+                DestroyWindow(hwnd);
                 PostQuitMessage(0);
                 return 0;
         }
