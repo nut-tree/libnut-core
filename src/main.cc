@@ -7,6 +7,7 @@
 #include "screen.h"
 #include "screengrab.h"
 #include "window_manager.h"
+#include "startup.h"
 
 int mouseDelay = 10;
 int keyboardDelay = 10;
@@ -256,85 +257,85 @@ struct KeyNames
 };
 
 static KeyNames key_names[] =
-	{
-		{"backspace", K_BACKSPACE},
-		{"delete", K_DELETE},
-		{"enter", K_RETURN},
-		{"tab", K_TAB},
-		{"escape", K_ESCAPE},
-		{"up", K_UP},
-		{"down", K_DOWN},
-		{"right", K_RIGHT},
-		{"left", K_LEFT},
-		{"home", K_HOME},
-		{"end", K_END},
-		{"pageup", K_PAGEUP},
-		{"pagedown", K_PAGEDOWN},
-		{"f1", K_F1},
-		{"f2", K_F2},
-		{"f3", K_F3},
-		{"f4", K_F4},
-		{"f5", K_F5},
-		{"f6", K_F6},
-		{"f7", K_F7},
-		{"f8", K_F8},
-		{"f9", K_F9},
-		{"f10", K_F10},
-		{"f11", K_F11},
-		{"f12", K_F12},
-		{"f13", K_F13},
-		{"f14", K_F14},
-		{"f15", K_F15},
-		{"f16", K_F16},
-		{"f17", K_F17},
-		{"f18", K_F18},
-		{"f19", K_F19},
-		{"f20", K_F20},
-		{"f21", K_F21},
-		{"f22", K_F22},
-		{"f23", K_F23},
-		{"f24", K_F24},
-		{"command", K_META},
-		{"alt", K_ALT},
-		{"control", K_CONTROL},
-		{"shift", K_SHIFT},
-		{"right_shift", K_RIGHTSHIFT},
-		{"space", K_SPACE},
-		{"printscreen", K_PRINTSCREEN},
-		{"insert", K_INSERT},
-		{"menu", K_MENU},
+    {
+	{"backspace", K_BACKSPACE},
+	{"delete", K_DELETE},
+	{"enter", K_RETURN},
+	{"tab", K_TAB},
+	{"escape", K_ESCAPE},
+	{"up", K_UP},
+	{"down", K_DOWN},
+	{"right", K_RIGHT},
+	{"left", K_LEFT},
+	{"home", K_HOME},
+	{"end", K_END},
+	{"pageup", K_PAGEUP},
+	{"pagedown", K_PAGEDOWN},
+	{"f1", K_F1},
+	{"f2", K_F2},
+	{"f3", K_F3},
+	{"f4", K_F4},
+	{"f5", K_F5},
+	{"f6", K_F6},
+	{"f7", K_F7},
+	{"f8", K_F8},
+	{"f9", K_F9},
+	{"f10", K_F10},
+	{"f11", K_F11},
+	{"f12", K_F12},
+	{"f13", K_F13},
+	{"f14", K_F14},
+	{"f15", K_F15},
+	{"f16", K_F16},
+	{"f17", K_F17},
+	{"f18", K_F18},
+	{"f19", K_F19},
+	{"f20", K_F20},
+	{"f21", K_F21},
+	{"f22", K_F22},
+	{"f23", K_F23},
+	{"f24", K_F24},
+	{"command", K_META},
+	{"alt", K_ALT},
+	{"control", K_CONTROL},
+	{"shift", K_SHIFT},
+	{"right_shift", K_RIGHTSHIFT},
+	{"space", K_SPACE},
+	{"printscreen", K_PRINTSCREEN},
+	{"insert", K_INSERT},
+	{"menu", K_MENU},
 
-		{"audio_mute", K_AUDIO_VOLUME_MUTE},
-		{"audio_vol_down", K_AUDIO_VOLUME_DOWN},
-		{"audio_vol_up", K_AUDIO_VOLUME_UP},
-		{"audio_play", K_AUDIO_PLAY},
-		{"audio_stop", K_AUDIO_STOP},
-		{"audio_pause", K_AUDIO_PAUSE},
-		{"audio_prev", K_AUDIO_PREV},
-		{"audio_next", K_AUDIO_NEXT},
-		{"audio_rewind", K_AUDIO_REWIND},
-		{"audio_forward", K_AUDIO_FORWARD},
-		{"audio_repeat", K_AUDIO_REPEAT},
-		{"audio_random", K_AUDIO_RANDOM},
+	{"audio_mute", K_AUDIO_VOLUME_MUTE},
+	{"audio_vol_down", K_AUDIO_VOLUME_DOWN},
+	{"audio_vol_up", K_AUDIO_VOLUME_UP},
+	{"audio_play", K_AUDIO_PLAY},
+	{"audio_stop", K_AUDIO_STOP},
+	{"audio_pause", K_AUDIO_PAUSE},
+	{"audio_prev", K_AUDIO_PREV},
+	{"audio_next", K_AUDIO_NEXT},
+	{"audio_rewind", K_AUDIO_REWIND},
+	{"audio_forward", K_AUDIO_FORWARD},
+	{"audio_repeat", K_AUDIO_REPEAT},
+	{"audio_random", K_AUDIO_RANDOM},
 
-		{"numpad_0", K_NUMPAD_0},
-		{"numpad_1", K_NUMPAD_1},
-		{"numpad_2", K_NUMPAD_2},
-		{"numpad_3", K_NUMPAD_3},
-		{"numpad_4", K_NUMPAD_4},
-		{"numpad_5", K_NUMPAD_5},
-		{"numpad_6", K_NUMPAD_6},
-		{"numpad_7", K_NUMPAD_7},
-		{"numpad_8", K_NUMPAD_8},
-		{"numpad_9", K_NUMPAD_9},
+	{"numpad_0", K_NUMPAD_0},
+	{"numpad_1", K_NUMPAD_1},
+	{"numpad_2", K_NUMPAD_2},
+	{"numpad_3", K_NUMPAD_3},
+	{"numpad_4", K_NUMPAD_4},
+	{"numpad_5", K_NUMPAD_5},
+	{"numpad_6", K_NUMPAD_6},
+	{"numpad_7", K_NUMPAD_7},
+	{"numpad_8", K_NUMPAD_8},
+	{"numpad_9", K_NUMPAD_9},
 
-		{"lights_mon_up", K_LIGHTS_MON_UP},
-		{"lights_mon_down", K_LIGHTS_MON_DOWN},
-		{"lights_kbd_toggle", K_LIGHTS_KBD_TOGGLE},
-		{"lights_kbd_up", K_LIGHTS_KBD_UP},
-		{"lights_kbd_down", K_LIGHTS_KBD_DOWN},
+	{"lights_mon_up", K_LIGHTS_MON_UP},
+	{"lights_mon_down", K_LIGHTS_MON_DOWN},
+	{"lights_kbd_toggle", K_LIGHTS_KBD_TOGGLE},
+	{"lights_kbd_up", K_LIGHTS_KBD_UP},
+	{"lights_kbd_down", K_LIGHTS_KBD_DOWN},
 
-		{NULL, K_NOT_A_KEY} /* end marker */
+	{NULL, K_NOT_A_KEY} /* end marker */
 };
 
 int CheckKeyCodes(std::string &keyName, MMKeyCode *key)
@@ -659,29 +660,33 @@ Napi::Number _highlight(const Napi::CallbackInfo &info)
 	return Napi::Number::New(env, 1);
 }
 
-Napi::Number _getActiveWindow(const Napi::CallbackInfo &info) {
+Napi::Number _getActiveWindow(const Napi::CallbackInfo &info)
+{
 	Napi::Env env = info.Env();
 
 	WindowHandle windowHandle = getActiveWindow();
 	return Napi::Number::New(env, (double)windowHandle);
 }
 
-Napi::Array _getWindows(const Napi::CallbackInfo &info) {
+Napi::Array _getWindows(const Napi::CallbackInfo &info)
+{
 	Napi::Env env = info.Env();
 
 	std::vector<WindowHandle> windowHandles = getWindows();
 	auto arr = Napi::Array::New(env, windowHandles.size());
 
-	for (size_t idx = 0; idx < windowHandles.size(); ++idx) {
+	for (size_t idx = 0; idx < windowHandles.size(); ++idx)
+	{
 		arr[(uint32_t)idx] = windowHandles[idx];
 	}
 
 	return arr;
 }
 
-Napi::Object _getWindowRect(const Napi::CallbackInfo &info) {
+Napi::Object _getWindowRect(const Napi::CallbackInfo &info)
+{
 	Napi::Env env = info.Env();
-	
+
 	WindowHandle windowHandle = info[0].As<Napi::Number>().Int64Value();
 	MMRect windowRect = getWindowRect(windowHandle);
 
@@ -694,7 +699,8 @@ Napi::Object _getWindowRect(const Napi::CallbackInfo &info) {
 	return obj;
 }
 
-Napi::String _getWindowTitle(const Napi::CallbackInfo &info) {
+Napi::String _getWindowTitle(const Napi::CallbackInfo &info)
+{
 	Napi::Env env = info.Env();
 
 	WindowHandle windowHandle = info[0].As<Napi::Number>().Int64Value();
@@ -748,8 +754,9 @@ Napi::Object _captureScreen(const Napi::CallbackInfo &info)
 	}
 
 	MMBitmapRef bitmap = copyMMBitmapFromDisplayInRect(MMRectMake(x, y, w, h));
-	
-	if (bitmap == NULL) {
+
+	if (bitmap == NULL)
+	{
 		throw Napi::Error::New(env, "Error: Failed to capture screen");
 	}
 
@@ -769,7 +776,8 @@ Napi::Object _captureScreen(const Napi::CallbackInfo &info)
 	return obj;
 }
 
-Napi::Object Init(Napi::Env env, Napi::Object exports) {
+Napi::Object Init(Napi::Env env, Napi::Object exports)
+{
 	exports.Set(Napi::String::New(env, "dragMouse"), Napi::Function::New(env, _dragMouse));
 	exports.Set(Napi::String::New(env, "moveMouse"), Napi::Function::New(env, _moveMouse));
 	exports.Set(Napi::String::New(env, "getMousePos"), Napi::Function::New(env, _getMousePos));
