@@ -1,8 +1,8 @@
 #include "os.h"
+#include <iostream>
 
 #if defined(IS_MACOSX)
 
-#include <iostream>
 #include <ApplicationServices/ApplicationServices.h>
 
 static void startupCheck(void) __attribute__((constructor));
