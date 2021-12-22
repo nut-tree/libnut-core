@@ -26,7 +26,7 @@ static void startupCheck(void)
 	int32_t majorOpcode;
 	int32_t firstEvent;
 	int32_t firstError;
-	bool isXTestAvailable = XQueryExtension(display, "XTEST", &majorOpcode, &firstEvent, &firstEvent);
+	bool isXTestAvailable = XQueryExtension(display, "XTEST", &majorOpcode, &firstEvent, &firstError);
 
 	if (!isXTestAvailable) {
 		std::cout << "##### WARNING! Your system is missing libXtst! Please visit https://github.com/nut-tree/nut.js#linux #####" << std::endl;
