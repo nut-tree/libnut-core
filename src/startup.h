@@ -18,6 +18,9 @@ static void startupCheck(void)
 
 	#include "xdisplay.h"
 
+static void startupCheck(void) __attribute__((constructor));
+static void startupCheck(void)
+{
 	Display *display = XGetMainDisplay();
 
 	int32_t majorOpcode;
@@ -28,5 +31,6 @@ static void startupCheck(void)
 	if (!isXTestAvailable) {
 		std::cout << "##### WARNING! Your system is missing libXtst! Please visit https://github.com/nut-tree/nut.js#linux #####" << std::endl;
 	}
+}
 
 #endif
