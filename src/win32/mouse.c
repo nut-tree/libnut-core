@@ -1,4 +1,5 @@
 #include "../mouse.h"
+#include "../screen.h"
 #include "../microsleep.h"
 
 #include <math.h> /* For floor() */
@@ -6,6 +7,15 @@
 #if !defined(M_SQRT2)
 	#define M_SQRT2 1.4142135623730950488016887 /* Fix for MSVC. */
 #endif
+
+/**
+ * This constant is required as Windows divides the entire
+ *	screen space into 65536 segments in both X and Y axes
+ * irrespective of resolution
+ * https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-mouseinput#remarks
+ */
+ #define ABSOLUTE_COORD_CONST 65536
+
 
 #define MMMouseToMEventF(down, button) \
 	(down ? MMMouseDownToMEventF(button) : MMMouseUpToMEventF(button))
@@ -20,13 +30,26 @@
 	: ((button) == RIGHT_BUTTON ? MOUSEEVENTF_RIGHTDOWN \
 	: MOUSEEVENTF_MIDDLEDOWN))
 
+MMPoint CalculateAbsoluteCoordinates(MMPoint point) {
+	MMSize displaySize = getMainDisplaySize();
+	return MMPointMake(((float) point.x / displaySize.width) * ABSOLUTE_COORD_CONST,  ((float) point.y / displaySize.height) * ABSOLUTE_COORD_CONST);
+}
+
 /**
  * Move the mouse to a specific point.
  * @param point The coordinates to move the mouse to (x, y).
  */
-void moveMouse(MMPoint point)
-{
-	SetCursorPos ((int)point.x, (int)point.y);
+void moveMouse(MMPoint point) {
+	INPUT mouseInput;
+	MMPoint pointAbsolute = CalculateAbsoluteCoordinates(point);
+	mouseInput.type = INPUT_MOUSE;
+	mouseInput.mi.dx = pointAbsolute.x;
+	mouseInput.mi.dy = pointAbsolute.y;
+	mouseInput.mi.mouseData = 0;
+	mouseInput.mi.time = 0;
+	mouseInput.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_ABSOLUTE;
+	mouseInput.mi.dwExtraInfo = 0;
+	SendInput(1, & mouseInput, sizeof(mouseInput));
 }
 
 void dragMouse(MMPoint point, const MMMouseButton button)
