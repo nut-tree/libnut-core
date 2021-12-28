@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.1.4
+
+- Bugfix: Windows display scaling is applied in wrong direction [(#92)](https://github.com/nut-tree/libnut/issues/92)
+
 ## 2.1.3
 
 - Enhancement: Fix undefined behaviour of BufferFinalizer [(#47)](https://github.com/nut-tree/libnut/issues/47)
