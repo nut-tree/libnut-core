@@ -7,13 +7,13 @@
 #include <X11/extensions/XTest.h>
 #include "../xdisplay.h"
 
-#define X_KEY_EVENT(display, key, is_press)            \
+#define X_KEY_EVENT(display, key, is_press)                \
 	(XTestFakeKeyEvent(display,                        \
-					   XKeysymToKeycode(display, key), \
-					   is_press, CurrentTime),         \
+			   XKeysymToKeycode(display, key), \
+			   is_press, CurrentTime),         \
 	 XSync(display, false))
 #define X_KEY_EVENT_WAIT(display, key, is_press) \
-	(X_KEY_EVENT(display, key, is_press),        \
+	(X_KEY_EVENT(display, key, is_press),    \
 	 microsleep(DEADBEEF_UNIFORM(0.0, 62.5)))
 
 void toggleKeyCode(MMKeyCode code, const bool down, MMKeyFlags flags)
@@ -21,17 +21,34 @@ void toggleKeyCode(MMKeyCode code, const bool down, MMKeyFlags flags)
 	Display *display = XGetMainDisplay();
 	const Bool is_press = down ? True : False; /* Just to be safe. */
 
-	/* Parse modifier keys. */
-	if (flags & MOD_META)
-		X_KEY_EVENT_WAIT(display, K_META, is_press);
-	if (flags & MOD_ALT)
-		X_KEY_EVENT_WAIT(display, K_ALT, is_press);
-	if (flags & MOD_CONTROL)
-		X_KEY_EVENT_WAIT(display, K_CONTROL, is_press);
-	if (flags & MOD_SHIFT)
-		X_KEY_EVENT_WAIT(display, K_SHIFT, is_press);
+	if (down)
+	{
+		/* Parse modifier keys. */
+		if (flags & MOD_META)
+			X_KEY_EVENT_WAIT(display, K_META, is_press);
+		if (flags & MOD_ALT)
+			X_KEY_EVENT_WAIT(display, K_ALT, is_press);
+		if (flags & MOD_CONTROL)
+			X_KEY_EVENT_WAIT(display, K_CONTROL, is_press);
+		if (flags & MOD_SHIFT)
+			X_KEY_EVENT_WAIT(display, K_SHIFT, is_press);
 
-	X_KEY_EVENT(display, code, is_press);
+		X_KEY_EVENT_WAIT(display, code, is_press);
+	}
+	else
+	{
+		X_KEY_EVENT_WAIT(display, code, is_press);
+
+		/* Parse modifier keys. */
+		if (flags & MOD_META)
+			X_KEY_EVENT(display, K_META, is_press);
+		if (flags & MOD_ALT)
+			X_KEY_EVENT(display, K_ALT, is_press);
+		if (flags & MOD_CONTROL)
+			X_KEY_EVENT(display, K_CONTROL, is_press);
+		if (flags & MOD_SHIFT)
+			X_KEY_EVENT(display, K_SHIFT, is_press);
+	}
 }
 
 void tapKeyCode(MMKeyCode code, MMKeyFlags flags)
