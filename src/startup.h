@@ -21,7 +21,7 @@ static void startupCheck(void)
 static void startupCheck(void) __attribute__((constructor));
 static void startupCheck(void)
 {
-	Display *display = XOpenDisplay();
+	Display *display = XOpenDisplay(NULL);
 
 	int32_t majorOpcode;
 	int32_t firstEvent;
