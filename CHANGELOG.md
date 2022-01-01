@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.1.5
+
+- Bugfix: Keypresses not properly caught on Windows [(#94)](https://github.com/nut-tree/libnut/issues/94)
+- Enhancement: Enable some kind of warning / info message in case system requirements are not met [(#91)](https://github.com/nut-tree/libnut/issues/91)
+
 ## 2.1.4
 
 - Bugfix: Windows display scaling is applied in wrong direction [(#92)](https://github.com/nut-tree/libnut/issues/92)
