@@ -38,16 +38,16 @@ MMRect getWindowRect(const WindowHandle windowHandle) {
     return MMRectMake(0, 0, 0, 0);
 }
 
-std::string getWindowTitle(const WindowHandle windowHandle) {
+char16_t* getWindowTitle(const WindowHandle windowHandle) {
     HWND hWnd = reinterpret_cast<HWND>(windowHandle);
     if (IsWindow(hWnd)) {
-        auto BUFFER_SIZE = GetWindowTextLength(hWnd) + 1;
+        auto BUFFER_SIZE = GetWindowTextLengthW(hWnd) + 1;
         if (BUFFER_SIZE) {
-            LPSTR windowTitle = new CHAR[BUFFER_SIZE];
-            if (GetWindowText(hWnd, windowTitle, BUFFER_SIZE)) {
-                return std::string(windowTitle);
+            wchar_t* windowTitle = new wchar_t[BUFFER_SIZE + 2];
+            if (GetWindowTextW(hWnd, windowTitle, BUFFER_SIZE)) {
+                return (char16_t*)windowTitle;
             }
         }
     }
-    return "";
+    return (char16_t*)L"";
 }

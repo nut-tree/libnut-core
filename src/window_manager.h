@@ -24,7 +24,7 @@ WindowHandle getActiveWindow();
  * `getWindowTitle` returns an std::string holding the window title for a window adressed via its window handle.
  * The respective window handle may be aquired via `getWindows` or `getActiveWindow`
  */
-std::string getWindowTitle(const WindowHandle windowHandle);
+char16_t* getWindowTitle(const WindowHandle windowHandle);
 /**
  * `getWindowRect` returns an MMRect struct representing the window's size and position.
  * Windows are adressed via their window handle.
