@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.1.6
+
+- Enhancement: Numpad buttons don't work on Linux [(nut-tree/nut.js#360)](https://github.com/nut-tree/nut.js/issues/360)
+- Bugfix: Issue with keyboard.type in to Spotlight on MacOS [(nut-tree/nut.js#152)](https://github.com/nut-tree/nut.js/issues/152)
+
 ## 2.1.5
 
 - Bugfix: Keypresses not properly caught on Windows [(#94)](https://github.com/nut-tree/libnut/issues/94)

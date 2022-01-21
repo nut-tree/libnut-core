@@ -48,13 +48,14 @@ void toggleKeyCode(MMKeyCode code, const bool down, MMKeyFlags flags)
 	}
 	else
 	{
-		CGEventRef keyEvent = CGEventCreateKeyboardEvent(NULL, (CGKeyCode)code, down);
+		CGEventSourceRef src = CGEventSourceCreate(kCGEventSourceStatePrivate);
+		CGEventRef keyEvent = CGEventCreateKeyboardEvent(src, (CGKeyCode)code, down);
 		assert(keyEvent != NULL);
 
-		CGEventSetType(keyEvent, down ? kCGEventKeyDown : kCGEventKeyUp);
 		CGEventSetFlags(keyEvent, flags);
-		CGEventPost(kCGSessionEventTap, keyEvent);
+		CGEventPost(kCGHIDEventTap, keyEvent);
 		CFRelease(keyEvent);
+		CFRelease(src);
 	}
 }
 
@@ -89,7 +90,8 @@ void toggleUnicodeKey(unsigned long ch, const bool down)
 	 * convert characters to a keycode, but does not support adding modifier
 	 * flags. It is therefore only used in typeString() and typeStringDelayed()
 	 * -- if you need modifier keys, use the above functions instead. */
-	CGEventRef keyEvent = CGEventCreateKeyboardEvent(NULL, 0, down);
+	CGEventSourceRef src = CGEventSourceCreate(kCGEventSourceStatePrivate);
+	CGEventRef keyEvent = CGEventCreateKeyboardEvent(src, 0, down);
 	if (keyEvent == NULL)
 	{
 		fputs("Could not create keyboard event.\n", stderr);
@@ -110,8 +112,9 @@ void toggleUnicodeKey(unsigned long ch, const bool down)
 		CGEventKeyboardSetUnicodeString(keyEvent, 1, &ch);
 	}
 
-	CGEventPost(kCGSessionEventTap, keyEvent);
+	CGEventPost(kCGHIDEventTap, keyEvent);
 	CFRelease(keyEvent);
+	CFRelease(src);
 }
 
 void toggleUniKey(char c, const bool down)
