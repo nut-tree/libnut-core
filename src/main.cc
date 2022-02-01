@@ -332,6 +332,7 @@ static KeyNames key_names[] =
 	{"numpad_7", K_NUMPAD_7},
 	{"numpad_8", K_NUMPAD_8},
 	{"numpad_9", K_NUMPAD_9},
+	{"numpad_decimal", K_NUMPAD_DECIMAL},
 
 	{"add", K_ADD},
 	{"subtract", K_SUBTRACT},
