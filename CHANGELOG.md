@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.1.6
+
+- Enhancement: Numpad buttons don't work on Linux [(nut-tree/nut.js#360)](https://github.com/nut-tree/nut.js/issues/360)
+- Bugfix: Issue with keyboard.type in to Spotlight on MacOS [(nut-tree/nut.js#152)](https://github.com/nut-tree/nut.js/issues/152)
+
+## 2.1.5
+
+- Bugfix: Keypresses not properly caught on Windows [(#94)](https://github.com/nut-tree/libnut/issues/94)
+- Enhancement: Enable some kind of warning / info message in case system requirements are not met [(#91)](https://github.com/nut-tree/libnut/issues/91)
+
+## 2.1.4
+
+- Bugfix: Windows display scaling is applied in wrong direction [(#92)](https://github.com/nut-tree/libnut/issues/92)
+
+## 2.1.3
+
+- Enhancement: Fix undefined behaviour of BufferFinalizer [(#47)](https://github.com/nut-tree/libnut/issues/47)
+- Bugfix: Fix for screen highlight window minimized intead close [(PR #77)](https://github.com/nut-tree/libnut/pull/77)
+- Enhancement: SendInput for mouse movement on Windows [(#26)](https://github.com/nut-tree/libnut/issues/26)
+- Bugfix: Windows Scaling issues: screen functions broken [(nut-tree/nut.js#249)](https://github.com/nut-tree/nut.js/issues/249)
+- Enhancement: Support Apple Silicon [(nut-tree/nut.js#306)](https://github.com/nut-tree/nut.js/issues/306)
+- Bugfix: Remove scan code KEYUP block [(PR #87)](https://github.com/nut-tree/libnut/pull/87)
+ 
+## 2.1.2
+
+- Maintenance: Upgrade CI [(#56)](https://github.com/nut-tree/libnut/issues/56)
+- Enhancement: Fix compiler warnings [(#58)](https://github.com/nut-tree/libnut/issues/58)
+- Enhancement: Windows: Support for HDPI displays [(#59)](https://github.com/nut-tree/libnut/issues/59)
+- Enhancement: macOS: Support for M1 chips [(PR #50)](https://github.com/nut-tree/libnut/pull/50)
+- Enhancement: Remove static keyboard delay [(PR #64)](https://github.com/nut-tree/libnut/pull/64)
+ 
 ## 2.1.1
 
 - Enhancement: Snapshot releases [(#4)](https://github.com/nut-tree/libnut/issues/4)

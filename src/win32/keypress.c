@@ -4,13 +4,9 @@
 
 #include <ctype.h> /* For isupper() */
 
-/* Convenience wrappers around ugly APIs. */
-#define WIN32_KEY_EVENT_WAIT(key, flags) \
-	(win32KeyEvent(key, flags), Sleep(DEADBEEF_RANDRANGE(0, 63)))
-
 void win32KeyEvent(int key, MMKeyFlags flags)
 {
-	int scan = MapVirtualKey(key & 0xff, MAPVK_VK_TO_VSC);
+	UINT scan = MapVirtualKey(key & 0xff, MAPVK_VK_TO_VSC);
 
 	/* Set the scan code for extended keys */
 	switch (key)
@@ -53,15 +49,10 @@ void win32KeyEvent(int key, MMKeyFlags flags)
 	}
 	}
 
-	/* Set the scan code for keyup */
-	if (flags & KEYEVENTF_KEYUP)
-	{
-		scan |= 0x80;
-	}
-
 	INPUT keyboardInput;
 	keyboardInput.type = INPUT_KEYBOARD;
 	keyboardInput.ki.wScan = (WORD)scan;
+	keyboardInput.ki.wVk = (WORD)key;
 	keyboardInput.ki.dwFlags = KEYEVENTF_SCANCODE | flags;
 	keyboardInput.ki.time = 0;
 	SendInput(1, &keyboardInput, sizeof(keyboardInput));
@@ -71,17 +62,35 @@ void toggleKeyCode(MMKeyCode code, const bool down, MMKeyFlags flags)
 {
 	const DWORD dwFlags = down ? 0 : KEYEVENTF_KEYUP;
 
-	/* Parse modifier keys. */
-	if (flags & MOD_META)
-		WIN32_KEY_EVENT_WAIT(K_META, dwFlags);
-	if (flags & MOD_ALT)
-		WIN32_KEY_EVENT_WAIT(K_ALT, dwFlags);
-	if (flags & MOD_CONTROL)
-		WIN32_KEY_EVENT_WAIT(K_CONTROL, dwFlags);
-	if (flags & MOD_SHIFT)
-		WIN32_KEY_EVENT_WAIT(K_SHIFT, dwFlags);
+	if (down)
+	{
+		/* Parse modifier keys. */
+		if (flags & MOD_META)
+			win32KeyEvent(K_META, dwFlags);
+		if (flags & MOD_ALT)
+			win32KeyEvent(K_ALT, dwFlags);
+		if (flags & MOD_CONTROL)
+			win32KeyEvent(K_CONTROL, dwFlags);
+		if (flags & MOD_SHIFT)
+			win32KeyEvent(K_SHIFT, dwFlags);
 
-	win32KeyEvent(code, dwFlags);
+		win32KeyEvent(code, dwFlags);
+	}
+	else
+	{
+		win32KeyEvent(code, dwFlags);
+
+		/* Parse modifier keys. */
+		if (flags & MOD_META)
+			win32KeyEvent(K_META, dwFlags);
+		if (flags & MOD_ALT)
+			win32KeyEvent(K_ALT, dwFlags);
+		if (flags & MOD_CONTROL)
+			win32KeyEvent(K_CONTROL, dwFlags);
+		if (flags & MOD_SHIFT)
+			win32KeyEvent(K_SHIFT, dwFlags);
+
+	}
 }
 
 void tapKeyCode(MMKeyCode code, MMKeyFlags flags)
@@ -94,17 +103,9 @@ void toggleKey(char c, const bool down, MMKeyFlags flags)
 {
 	MMKeyCode keyCode = keyCodeForChar(c);
 
-	//Prevent unused variable warning for Mac and Linux.
-	int modifiers;
-
-	if (isupper(c) && !(flags & MOD_SHIFT))
-	{
-		flags |= MOD_SHIFT; /* Not sure if this is safe for all layouts. */
-	}
-
-	modifiers = keyCode >> 8; // Pull out modifers.
+	int modifiers = keyCode >> 8; // Pull out modifers.
 	if ((modifiers & 1) != 0)
-		flags |= MOD_SHIFT; // Uptdate flags from keycode modifiers.
+		flags |= MOD_SHIFT; // Update flags from keycode modifiers.
 	if ((modifiers & 2) != 0)
 		flags |= MOD_CONTROL;
 	if ((modifiers & 4) != 0)
