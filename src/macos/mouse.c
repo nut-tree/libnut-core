@@ -139,22 +139,32 @@ void clickMouse(MMMouseButton button)
  * Special function for sending double clicks, needed for Mac OS X.
  * @param button Button to click.
  */
-void doubleClick(MMMouseButton button)
-{
+void doubleClick(MMMouseButton button) {
     /* Double click for Mac. */
     const CGPoint currentPos = CGPointFromMMPoint(getMousePos());
     const CGEventType mouseTypeDown = MMMouseToCGEventType(true, button);
-    const CGEventType mouseTypeUP = MMMouseToCGEventType(false, button);
+    const CGEventType mouseTypeUp = MMMouseToCGEventType(false, button);
 
     CGEventSourceRef src = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
-    CGEventRef event = CGEventCreateMouseEvent(src, mouseTypeDown, currentPos, kCGMouseButtonLeft);
+    CGEventRef event = CGEventCreateMouseEvent(src, mouseTypeDown, currentPos,
+                                                button);
 
     /* Set event to double click. */
     CGEventSetIntegerValueField(event, kCGMouseEventClickState, 2);
 
+    // First down
     CGEventPost(kCGHIDEventTap, event);
 
-    CGEventSetType(event, mouseTypeUP);
+    // First up
+    CGEventSetType(event, mouseTypeUp);
+    CGEventPost(kCGHIDEventTap, event);
+
+    // Second down
+    CGEventSetType(event, mouseTypeDown);
+    CGEventPost(kCGHIDEventTap, event);
+
+    // Second up
+    CGEventSetType(event, mouseTypeUp);
     CGEventPost(kCGHIDEventTap, event);
 
     CFRelease(event);
