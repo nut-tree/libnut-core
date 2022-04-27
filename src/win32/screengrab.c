@@ -20,7 +20,7 @@ MMRect getScaledRect(MMRect input)
 
 	// return MMRectMake(input.origin.x, input.origin.y, input.size.width / scaleX, input.size.height / scaleY);
 
-	auto activeWindow = GetActiveWindow();
+	auto activeWindow = GetForegroundWindow();
 	HMONITOR monitor = MonitorFromWindow(activeWindow, MONITOR_DEFAULTTONEAREST);
 
 	MONITORINFOEX monitorInfoEx;
