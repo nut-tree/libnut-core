@@ -4,19 +4,42 @@
 
 MMRect getScaledRect(MMRect input)
 {
-	// Configure DPI awareness to fetch unscaled display size
-	DPI_AWARENESS_CONTEXT initialDpiAwareness = SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-	size_t scaledDesktopWidth = (size_t)GetSystemMetrics(SM_CXSCREEN);
-	size_t scaledDesktopHeight = (size_t)GetSystemMetrics(SM_CYSCREEN);
+	// Works only from Windows 10 forward
+
+	// Configure DPI awareness to fetch unscaled display size - 
+	// DPI_AWARENESS_CONTEXT initialDpiAwareness = SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+	// size_t scaledDesktopWidth = (size_t)GetSystemMetrics(SM_CXSCREEN);
+	// size_t scaledDesktopHeight = (size_t)GetSystemMetrics(SM_CYSCREEN);
 	// Reset DPI awareness to avoid inconsistencies on future calls to copyMMBitmapFromDisplayInRect
-	SetThreadDpiAwarenessContext(initialDpiAwareness);
-	size_t desktopWidth = (size_t)GetSystemMetrics(SM_CXSCREEN);
-	size_t desktopHeight = (size_t)GetSystemMetrics(SM_CYSCREEN);
+	// SetThreadDpiAwarenessContext(initialDpiAwareness);
+	// size_t desktopWidth = (size_t)GetSystemMetrics(SM_CXSCREEN);
+	// size_t desktopHeight = (size_t)GetSystemMetrics(SM_CYSCREEN);
 
-	double scaleX = (double)(desktopWidth / (double)scaledDesktopWidth);
-	double scaleY = (double)(desktopHeight / (double)scaledDesktopHeight);
+	// double scaleX = (double)(desktopWidth / (double)scaledDesktopWidth);
+	// double scaleY = (double)(desktopHeight / (double)scaledDesktopHeight);
 
-	return MMRectMake(input.origin.x, input.origin.y, input.size.width / scaleX, input.size.height / scaleY);
+	// return MMRectMake(input.origin.x, input.origin.y, input.size.width / scaleX, input.size.height / scaleY);
+
+	auto activeWindow = GetActiveWindow();
+	HMONITOR monitor = MonitorFromWindow(activeWindow, MONITOR_DEFAULTTONEAREST);
+
+	MONITORINFOEX monitorInfoEx;
+	monitorInfoEx.cbSize = sizeof(monitorInfoEx);
+	GetMonitorInfo(monitor, &monitorInfoEx);
+	auto cxLogical = monitorInfoEx.rcMonitor.right - monitorInfoEx.rcMonitor.left;
+	auto cyLogical = monitorInfoEx.rcMonitor.bottom - monitorInfoEx.rcMonitor.top;
+
+	DEVMODE devMode;
+	devMode.dmSize = sizeof(devMode);
+	devMode.dmDriverExtra = 0;
+	EnumDisplaySettings(monitorInfoEx.szDevice, ENUM_CURRENT_SETTINGS, &devMode);
+	auto cxPhysical = devMode.dmPelsWidth;
+	auto cyPhysical = devMode.dmPelsHeight;
+
+	auto horizontalScale = ((double) cxPhysical / (double) cxLogical);
+	auto verticalScale = ((double) cyPhysical / (double) cyLogical);
+
+	return MMRectMake(input.origin.x, input.origin.y, input.size.width / horizontalScale, input.size.height / verticalScale);
 }
 
 MMBitmapRef copyMMBitmapFromDisplayInRect(MMRect rect)
