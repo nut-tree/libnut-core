@@ -149,15 +149,15 @@ void doubleClick(MMMouseButton button) {
     CGEventRef event = CGEventCreateMouseEvent(src, mouseTypeDown, currentPos,
                                                 button);
 
-    /* Set event to double click. */
-    CGEventSetIntegerValueField(event, kCGMouseEventClickState, 2);
-
     // First down
     CGEventPost(kCGHIDEventTap, event);
 
     // First up
     CGEventSetType(event, mouseTypeUp);
     CGEventPost(kCGHIDEventTap, event);
+
+    /* Set event to double click. */
+    CGEventSetIntegerValueField(event, kCGMouseEventClickState, 2);
 
     // Second down
     CGEventSetType(event, mouseTypeDown);
