@@ -1,6 +1,7 @@
 #include "../mouse.h"
 #include "../screen.h"
 #include "../microsleep.h"
+#include "../deadbeef_rand.h"
 
 #include <math.h> /* For floor() */
 
@@ -16,7 +17,6 @@
  */
  #define ABSOLUTE_COORD_CONST 65536
 
-
 #define MMMouseToMEventF(down, button) \
 	(down ? MMMouseDownToMEventF(button) : MMMouseUpToMEventF(button))
 
@@ -29,6 +29,8 @@
 	((button) == LEFT_BUTTON ? MOUSEEVENTF_LEFTDOWN \
 	: ((button) == RIGHT_BUTTON ? MOUSEEVENTF_RIGHTDOWN \
 	: MOUSEEVENTF_MIDDLEDOWN))
+
+static int32_t DEFAULT_DOUBLE_CLICK_INTERVAL_MS = 200;
 
 MMPoint CalculateAbsoluteCoordinates(MMPoint point) {
 	MMSize displaySize = getMainDisplaySize();
@@ -95,9 +97,14 @@ void clickMouse(MMMouseButton button)
  */
 void doubleClick(MMMouseButton button)
 {
+	UINT maxDoubleClickTime = GetDoubleClickTime();
 	/* Double click for everything else. */
 	clickMouse(button);
-	microsleep(200);
+	if (maxDoubleClickTime > DEFAULT_DOUBLE_CLICK_INTERVAL_MS) {
+		microsleep(DEFAULT_DOUBLE_CLICK_INTERVAL_MS);
+	} else {
+		microsleep(DEADBEEF_RANDRANGE(1, maxDoubleClickTime));
+	}
 	clickMouse(button);
 }
 

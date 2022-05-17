@@ -4,12 +4,10 @@
 
 #include <ctype.h> /* For isupper() */
 
-/* Convenience wrappers around ugly APIs. */
-#define WIN32_KEY_EVENT_WAIT(key, flags) \
-	(win32KeyEvent(key, flags), Sleep(DEADBEEF_RANDRANGE(0, 63)))
-
 void win32KeyEvent(int key, MMKeyFlags flags)
 {
+	UINT scan = MapVirtualKey(key & 0xff, MAPVK_VK_TO_VSC);
+
 	/* Set the scan code for extended keys */
 	switch (key)
 	{
@@ -53,9 +51,11 @@ void win32KeyEvent(int key, MMKeyFlags flags)
 
 	INPUT keyboardInput;
 	keyboardInput.type = INPUT_KEYBOARD;
+	keyboardInput.ki.wScan = (WORD)scan;
 	keyboardInput.ki.wVk = (WORD)key;
-	keyboardInput.ki.dwFlags = flags;
-	SendInput(1, &keyboardInput, sizeof(INPUT));
+	keyboardInput.ki.dwFlags = KEYEVENTF_SCANCODE | flags;
+	keyboardInput.ki.time = 0;
+	SendInput(1, &keyboardInput, sizeof(keyboardInput));
 }
 
 void toggleKeyCode(MMKeyCode code, const bool down, MMKeyFlags flags)
@@ -66,19 +66,19 @@ void toggleKeyCode(MMKeyCode code, const bool down, MMKeyFlags flags)
 	{
 		/* Parse modifier keys. */
 		if (flags & MOD_META)
-			WIN32_KEY_EVENT_WAIT(K_META, dwFlags);
+			win32KeyEvent(K_META, dwFlags);
 		if (flags & MOD_ALT)
-			WIN32_KEY_EVENT_WAIT(K_ALT, dwFlags);
+			win32KeyEvent(K_ALT, dwFlags);
 		if (flags & MOD_CONTROL)
-			WIN32_KEY_EVENT_WAIT(K_CONTROL, dwFlags);
+			win32KeyEvent(K_CONTROL, dwFlags);
 		if (flags & MOD_SHIFT)
-			WIN32_KEY_EVENT_WAIT(K_SHIFT, dwFlags);
+			win32KeyEvent(K_SHIFT, dwFlags);
 
-		WIN32_KEY_EVENT_WAIT(code, dwFlags);
+		win32KeyEvent(code, dwFlags);
 	}
 	else
 	{
-		WIN32_KEY_EVENT_WAIT(code, dwFlags);
+		win32KeyEvent(code, dwFlags);
 
 		/* Parse modifier keys. */
 		if (flags & MOD_META)
