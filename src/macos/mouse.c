@@ -1,5 +1,6 @@
 #include "../mouse.h"
 #include "../deadbeef_rand.h"
+#include "../keypress.h"
 #include "../microsleep.h"
 #include "mouse_utils.h"
 
@@ -115,21 +116,28 @@ MMPoint getMousePos() {
  * Press down a button, or release it.
  * @param down   True for down, false for up.
  * @param button The button to press down or release.
- * 
- * This function ships a manual implementation to handle double clicks by tracking the time interval between mouse events.
- * Reason for this is the fact that https://developer.apple.com/documentation/coregraphics/1408790-cgeventsourcesecondssincelasteve?language=objc
- * has a bit of latency and will stop working correctly if the time between two consecutive clicks is not long enough.
- * 
- * This implementation captures the current timestamp for up/down events on each of left/middle/right mouse buttons.
- * If the interval between two clicks is lower than https://developer.apple.com/documentation/appkit/nsevent/1528384-doubleclickinterval?language=objc
- * and both clicks happen at the same position, we alter the mouse event to trigger a double click by setting kCGMouseEventClickState = 2 on the event
+ *
+ * This function ships a manual implementation to handle double clicks by
+ * tracking the time interval between mouse events. Reason for this is the fact
+ * that
+ * https://developer.apple.com/documentation/coregraphics/1408790-cgeventsourcesecondssincelasteve?language=objc
+ * has a bit of latency and will stop working correctly if the time between two
+ * consecutive clicks is not long enough.
+ *
+ * This implementation captures the current timestamp for up/down events on each
+ * of left/middle/right mouse buttons. If the interval between two clicks is
+ * lower than
+ * https://developer.apple.com/documentation/appkit/nsevent/1528384-doubleclickinterval?language=objc
+ * and both clicks happen at the same position, we alter the mouse event to
+ * trigger a double click by setting kCGMouseEventClickState = 2 on the event
  */
 void toggleMouse(bool down, MMMouseButton button) {
   static ClickTimer clickTimer = {{0, 0}, {0, 0}, {0, 0}, {0, 0}};
 
-  MMPoint currentMMPoint= getMousePos();
+  MMPoint currentMMPoint = getMousePos();
 
-  clock_t intervalSinceLastClick = timeSinceLastClick(&clickTimer, down, button, clock());
+  clock_t intervalSinceLastClick =
+      timeSinceLastClick(&clickTimer, down, button, clock());
 
   const CGPoint currentPos = CGPointFromMMPoint(currentMMPoint);
   const CGEventType mouseType = MMMouseToCGEventType(down, button);
@@ -141,6 +149,7 @@ void toggleMouse(bool down, MMMouseButton button) {
       areSamePoint(currentMMPoint, clickTimer.clickLocation)) {
     CGEventSetIntegerValueField(event, kCGMouseEventClickState, 2);
   }
+  CGEventSetFlags(event, flagBuffer);
   CGEventPost(kCGHIDEventTap, event);
   CFRelease(event);
   CFRelease(src);
