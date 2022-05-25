@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.1.8
+- Bugfix: Modifier keys are not properly released on macOS [(nut-tree/nut-js#264)](https://github.com/nut-tree/nut.js/issues/264)
+- Bugfix: Fix mouse clicks with modifiers on macOS [(nut-tree/nut-js#273)](https://github.com/nut-tree/nut.js/issues/273)
+
 ## 2.1.7
 
 - Enhancement: Disable microsleep between keypresses on Windows and Linux [(#101)](https://github.com/nut-tree/libnut/issues/101)
