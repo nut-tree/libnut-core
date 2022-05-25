@@ -23,6 +23,8 @@ extern "C"
 		MOD_SHIFT = kCGEventFlagMaskShift
 	} MMKeyFlags;
 
+	extern MMKeyFlags flagBuffer;
+
 #elif defined(USE_X11)
 
 	enum _MMKeyFlags {
