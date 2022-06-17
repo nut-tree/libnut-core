@@ -13,7 +13,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "electron": "9.4.0",
+    "electron": "15.5.5",
     "jest": "26.2.2",
     "spectron": "11.1.0"
   }
