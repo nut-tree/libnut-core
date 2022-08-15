@@ -4,6 +4,10 @@ build/CMakeFiles
 build/cmake_install.cmake
 build/CMakeCache.txt
 build/Makefile
+build/*.vcxproj*
+build/*.sln
+build/x64/
+build/libnut.dir/
 CMakeFiles
 src
 test
