@@ -26,8 +26,6 @@ elseif (WIN32)
     message(STATUS "Windows build")
 elseif (UNIX AND NOT APPLE)
     message(STATUS "Linux build")
-    set(LIBS "${LIBS}" "-lpng")
-    set(LIBS "${LIBS}" "-lz")
     set(LIBS "${LIBS}" "-lX11")
     set(LIBS "${LIBS}" "-lXtst")
 endif()
@@ -38,6 +36,16 @@ if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 else()
     message(STATUS "MSVC compiler in use")
     set(CMAKE_CXX_FLAGS "/Wall /W4 /EHsc")
+endif()
+
+if (WIN32)
+	# Copy runtime distributable
+	add_custom_command(
+		TARGET ${PROJECT_NAME} POST_BUILD
+		COMMAND ${CMAKE_COMMAND} -E copy
+		${CMAKE_SOURCE_DIR}/3rdparty/win32/*
+		${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/
+	)
 endif()
 
 add_compile_definitions(NAPI_CPP_EXCEPTIONS)
