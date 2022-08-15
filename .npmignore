@@ -1,5 +1,8 @@
 .idea
 .vscode
+.build
+.github
+3rdparty
 build/CMakeFiles
 build/cmake_install.cmake
 build/CMakeCache.txt
