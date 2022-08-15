@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.20)
 set(CMAKE_CXX_STANDARD 17)
 
 project(libnut)
@@ -43,7 +43,12 @@ if (WIN32)
 	add_custom_command(
 		TARGET ${PROJECT_NAME} POST_BUILD
 		COMMAND ${CMAKE_COMMAND} -E copy
-		${CMAKE_SOURCE_DIR}/3rdparty/win32/*
+		${CMAKE_SOURCE_DIR}/3rdparty/win32/msvcp140.dll 
+		${CMAKE_SOURCE_DIR}/3rdparty/win32/vcruntime140.dll 
+		${CMAKE_SOURCE_DIR}/3rdparty/win32/vcruntime140_1.dll 
+		${CMAKE_SOURCE_DIR}/3rdparty/win32/api-ms-win-crt-heap-l1-1-0.dll 
+		${CMAKE_SOURCE_DIR}/3rdparty/win32/api-ms-win-crt-runtime-l1-1-0.dll 
+		${CMAKE_SOURCE_DIR}/3rdparty/win32/api-ms-win-crt-string-l1-1-0.dll
 		${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}/
 	)
 endif()
