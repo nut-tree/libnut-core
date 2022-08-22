@@ -16,7 +16,12 @@ MMRect getScaledRect(MMRect input)
 	double scaleX = (double)(desktopWidth / (double)scaledDesktopWidth);
 	double scaleY = (double)(desktopHeight / (double)scaledDesktopHeight);
 
-	return MMRectMake(input.origin.x, input.origin.y, input.size.width / scaleX, input.size.height / scaleY);
+	return MMRectMake(
+		input.origin.x / scaleX, 
+		input.origin.y / scaleY, 
+		input.size.width / scaleX, 
+		input.size.height / scaleY
+	);
 }
 
 MMBitmapRef copyMMBitmapFromDisplayInRect(MMRect rect)
