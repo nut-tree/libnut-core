@@ -7,7 +7,7 @@
   "scripts": {
     "clean": "cmake-js clean",
     "patch": "node ./patch-packagename.js",
-    "build:debug": "cmake-js rebuild --debug",
+    "build:debug": "cmake-js rebuild --CDCMAKE_OSX_ARCHITECTURES=\"arm64;x86_64\" --debug",
     "build:release": "cmake-js rebuild --CDCMAKE_OSX_ARCHITECTURES=\"arm64;x86_64\"",
     "prepublishOnly": "npm run build:release",
     "publish:next": "npm publish --tag next"
