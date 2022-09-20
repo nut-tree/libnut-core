@@ -1,5 +1,4 @@
 #include "os.h"
-#include <CoreFoundation/CFBase.h>
 #include <iostream>
 
 #if defined(IS_MACOSX)
