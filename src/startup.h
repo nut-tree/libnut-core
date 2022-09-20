@@ -1,4 +1,5 @@
 #include "os.h"
+#include <CoreFoundation/CFBase.h>
 #include <iostream>
 
 #if defined(IS_MACOSX)
@@ -26,6 +27,9 @@ static void startupCheck(void)
 		std::cout << "##### WARNING! The application running this script is not allowed to capture screen content! Please visit https://github.com/nut-tree/nut.js#macos #####" << std::endl;
     
 	} 
+
+  CFRelease(showDialogNumber);
+  CFRelease(opts);
 }
 
 #endif
