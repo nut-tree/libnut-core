@@ -1,6 +1,6 @@
+#include <CoreGraphics/CGWindow.h>
 #import <Foundation/Foundation.h>
 #import <AppKit/AppKit.h>
-#import <ApplicationServices/ApplicationServices.h>
 #include "../window_manager.h"
 
 NSDictionary* getWindowInfo(int64_t windowHandle) {
@@ -88,7 +88,7 @@ std::string getWindowTitle(const WindowHandle windowHandle) {
   auto windowInfo = getWindowInfo(windowHandle);
   if (windowInfo != nullptr && windowHandle >= 0) {
     NSString *windowName = windowInfo[(id)kCGWindowName];
-    return [windowName UTF8String];
+    return std::string([windowName UTF8String], [windowName lengthOfBytesUsingEncoding:NSUTF8StringEncoding]);
   }
   return "";
 }

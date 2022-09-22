@@ -2,12 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.3.0
+
+- Bugfix: Segmentation Fault when retrieving window title [(nut-tree/nut-js#377)](https://github.com/nut-tree/nut.js/issues/377)
+- Enhancement: Automatically check and request required permissions on macOS [(nut-tree/nut-js#377)](https://github.com/nut-tree/nut.js/issues/377)
+
 ## 2.2.0
+
 - Enhancement: Add Windows runtime files [(PR #130)](https://github.com/nut-tree/libnut/pull/130)
 - Bugfix: Fix capture region x,y offset when DPI scaling on Windows [(PR #131)](https://github.com/nut-tree/libnut/pull/131)
 - Bugfix: Fix wrong keycode for CapsLock [(PR #132)](https://github.com/nut-tree/libnut/pull/132)
 
 ## 2.1.8
+
 - Bugfix: Modifier keys are not properly released on macOS [(nut-tree/nut-js#264)](https://github.com/nut-tree/nut.js/issues/264)
 - Bugfix: Fix mouse clicks with modifiers on macOS [(nut-tree/nut-js#273)](https://github.com/nut-tree/nut.js/issues/273)
 
