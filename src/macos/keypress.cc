@@ -6,6 +6,7 @@
 
 #include <ApplicationServices/ApplicationServices.h>
 #import <IOKit/hidsystem/IOHIDLib.h>
+#include <sys/_types/_size_t.h>
 #import <IOKit/hidsystem/ev_keymap.h>
 
 MMKeyFlags flagBuffer;
@@ -106,6 +107,8 @@ void tapKey(char c, MMKeyFlags flags) {
 }
 
 void typeString(const std::u16string &str) {
+  const bool hasMultipleCodePoints = str.length() > 1;
+
   CGEventSourceRef src = CGEventSourceCreate(kCGEventSourceStateHIDSystemState);
   for (auto it = str.begin(); it != str.end(); ++it) {
     UniChar c = *it;
@@ -119,7 +122,9 @@ void typeString(const std::u16string &str) {
 
     CFRelease(downEvent);
     CFRelease(upEvent);
-		microsleep(DEADBEEF_RANDRANGE(1, 10));
+    if (hasMultipleCodePoints) {
+      microsleep(DEADBEEF_RANDRANGE(1, 10));
+    }
   }
   CFRelease(src);
 }
