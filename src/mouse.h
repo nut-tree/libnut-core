@@ -9,10 +9,7 @@
 #endif
 
 #include <stdbool.h>
-#ifdef __cplusplus
-extern "C" 
-{
-#endif
+
 #if defined(IS_MACOSX)
 
 	#include <ApplicationServices/ApplicationServices.h>
@@ -85,7 +82,3 @@ void doubleClick(MMMouseButton button);
 void scrollMouse(int x, int y);
 
 #endif /* MOUSE_H */
-
-#ifdef __cplusplus
-}
-#endif
