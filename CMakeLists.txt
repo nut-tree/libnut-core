@@ -3,12 +3,14 @@ set(CMAKE_CXX_STANDARD 17)
 
 project(libnut)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Source
-set(SOURCE_FILES "src/main.cc" "src/deadbeef_rand.c" "src/MMBitmap.c")
+set(SOURCE_FILES "src/main.cc" "src/deadbeef_rand.cc" "src/MMBitmap.c")
 if (UNIX AND NOT APPLE)
     set(SOURCE_FILES "${SOURCE_FILES}" "src/linux/keycode.c" "src/linux/keypress.c" "src/linux/mouse.c" "src/linux/screen.c" "src/linux/screengrab.c" "src/linux/xdisplay.c" "src/linux/highlightwindow.c" "src/linux/window_manager.cc")
 elseif (UNIX AND APPLE)
-    set(SOURCE_FILES "${SOURCE_FILES}" "src/macos/keycode.c" "src/macos/keypress.c" "src/macos/mouse.c" "src/macos/mouse_utils.mm" "src/macos/screen.c" "src/macos/screengrab.c" "src/macos/highlightwindow.m" "src/macos/window_manager.mm")
+    set(SOURCE_FILES "${SOURCE_FILES}" "src/macos/keycode.c" "src/macos/keypress.cc" "src/macos/mouse.cc" "src/macos/mouse_utils.mm" "src/macos/screen.c" "src/macos/screengrab.c" "src/macos/highlightwindow.m" "src/macos/window_manager.mm")
 elseif (WIN32)
     set(SOURCE_FILES "${SOURCE_FILES}" "src/win32/keycode.c" "src/win32/keypress.c" "src/win32/mouse.c" "src/win32/screen.c" "src/win32/screengrab.c" "src/win32/highlightwindow.c" "src/win32/window_manager.cc")
 endif()
