@@ -12,7 +12,7 @@ if (UNIX AND NOT APPLE)
 elseif (UNIX AND APPLE)
     set(SOURCE_FILES "${SOURCE_FILES}" "src/macos/keycode.c" "src/macos/keypress.cc" "src/macos/mouse.cc" "src/macos/mouse_utils.mm" "src/macos/screen.c" "src/macos/screengrab.c" "src/macos/highlightwindow.m" "src/macos/window_manager.mm")
 elseif (WIN32)
-    set(SOURCE_FILES "${SOURCE_FILES}" "src/win32/keycode.c" "src/win32/keypress.c" "src/win32/mouse.c" "src/win32/screen.c" "src/win32/screengrab.c" "src/win32/highlightwindow.c" "src/win32/window_manager.cc")
+    set(SOURCE_FILES "${SOURCE_FILES}" "src/win32/keycode.c" "src/win32/keypress.cc" "src/win32/mouse.cc" "src/win32/screen.c" "src/win32/screengrab.c" "src/win32/highlightwindow.c" "src/win32/window_manager.cc")
 endif()
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${CMAKE_JS_SRC})
 

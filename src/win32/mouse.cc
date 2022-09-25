@@ -3,11 +3,7 @@
 #include "../microsleep.h"
 #include "../deadbeef_rand.h"
 
-#include <math.h> /* For floor() */
-
-#if !defined(M_SQRT2)
-	#define M_SQRT2 1.4142135623730950488016887 /* Fix for MSVC. */
-#endif
+#include <cmath> /* For floor() */
 
 /**
  * This constant is required as Windows divides the entire
