@@ -19,7 +19,7 @@ jobs:
           node-version: ${{matrix.node}}
       - name: Configure Linux environment
         if: ${{matrix.os == 'ubuntu-latest'}}
-        run: sudo apt-get install -y cmake libx10-dev libxtst-dev libxinerama-dev libxkbcommon-dev build-essential
+        run: sudo apt-get install -y cmake libx11-dev libxtst-dev libxinerama-dev libxkbcommon-dev build-essential
       - name: Install
         run: npm run patch && npm i
       - name: Build
