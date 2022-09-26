@@ -1,9 +1,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include "../window_manager.h"
-extern "C" {
-    #include "../xdisplay.h"
-}
+#include "../xdisplay.h"
 
 WindowHandle getActiveWindow() {
     Display* xServer = XGetMainDisplay();
