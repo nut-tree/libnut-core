@@ -1,6 +1,7 @@
 #include "MMBitmap.h"
 #include <assert.h>
 #include <string.h>
+#include <stdlib.h>
 
 MMBitmapRef createMMBitmap(uint8_t *buffer,
                            size_t width,

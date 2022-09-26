@@ -11,10 +11,6 @@
 #include <string>
 #include <stdbool.h>
 
-#ifdef __cplusplus
-extern "C" 
-{
-#endif
 #if defined(IS_MACOSX)
 
 	typedef enum  {
@@ -71,9 +67,5 @@ void tapKey(char c, MMKeyFlags flags);
 
 /* Sends a UTF-8 string without modifiers. */
 void typeString(const std::u16string &str);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* KEYPRESS_H */

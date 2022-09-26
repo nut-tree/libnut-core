@@ -6,7 +6,6 @@
 void showHighlightWindow(int32_t x, int32_t y, int32_t width, int32_t height, long duration, float opacity) {
     Display *d = XOpenDisplay(NULL);
     Window root = DefaultRootWindow(d);
-    int default_screen = XDefaultScreen(d);
 
     XSetWindowAttributes attrs;
     attrs.override_redirect = True;

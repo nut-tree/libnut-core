@@ -8,7 +8,7 @@
 #include "xdisplay.h"
 #endif
 
-#include <stdbool.h>
+#include <cstdbool>
 
 #if defined(IS_MACOSX)
 
