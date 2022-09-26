@@ -1,15 +1,10 @@
 #include "../screengrab.h"
 #include "../endian.h"
-#include <stdlib.h> /* malloc() */
 
 #include <ApplicationServices/ApplicationServices.h>
 
 MMBitmapRef copyMMBitmapFromDisplayInRect(MMRect rect)
 {
-	MMBitmapRef bitmap = NULL;
-	uint8_t *buffer = NULL;
-	size_t bufferSize = 0;
-
 	CGDirectDisplayID displayID = CGMainDisplayID();
 
 	CGImageRef image = CGDisplayCreateImageForRect(displayID,
@@ -24,12 +19,12 @@ MMBitmapRef copyMMBitmapFromDisplayInRect(MMRect rect)
 
 	if (!imageData) { return NULL; }
 
-	bufferSize = CFDataGetLength(imageData);
-	buffer = malloc(bufferSize);
+	size_t bufferSize = CFDataGetLength(imageData);
+	uint8_t *buffer = new uint8_t[bufferSize];
 
 	CFDataGetBytes(imageData, CFRangeMake(0,bufferSize), buffer);
 
-	bitmap = createMMBitmap(buffer,
+	MMBitmapRef bitmap = createMMBitmap(buffer,
 		CGImageGetWidth(image),
 		CGImageGetHeight(image),
 		CGImageGetBytesPerRow(image),

@@ -2,13 +2,10 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
-#include <stdint.h>
 #include "types.h"
 #if defined(USE_X11)
 #include "xdisplay.h"
 #endif
-
-#include <cstdbool>
 
 /* Returns the size of the main display. */
 MMSize getMainDisplaySize(void);
