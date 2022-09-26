@@ -1,16 +1,12 @@
 #include "../mouse.h"
 #include "../microsleep.h"
 
-#include <math.h> /* For floor() */
+#include <cmath> /* For floor() */
 
 #include <X11/Xlib.h>
 #include <X11/extensions/XTest.h>
-#include <stdlib.h>
+#include <cstdlib>
 #include "../xdisplay.h"
-
-#if !defined(M_SQRT2)
-#define M_SQRT2 1.4142135623730950488016887 /* Fix for MSVC. */
-#endif
 
 /**
  * Move the mouse to a specific point.

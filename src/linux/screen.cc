@@ -10,8 +10,8 @@ MMSize getMainDisplaySize(void)
 	Display *display = XGetMainDisplay();
 	const int screen = DefaultScreen(display);
 
-	return MMSizeMake((size_t)DisplayWidth(display, screen),
-	                  (size_t)DisplayHeight(display, screen));
+	return MMSizeMake(static_cast<size_t>(DisplayWidth(display, screen)),
+	                  static_cast<size_t>(DisplayHeight(display, screen)));
 }
 
 bool pointVisibleOnMainDisplay(MMPoint point)
