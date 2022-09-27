@@ -1,8 +1,9 @@
 #include <napi.h>
+#include <sstream>
+#include <string>
 
 #include "keypress.h"
 #include "microsleep.h"
-#include "MMBitmap.h"
 #include "mouse.h"
 #include "screen.h"
 #include "screengrab.h"
@@ -568,21 +569,9 @@ Napi::Number _typeString(const Napi::CallbackInfo &info)
 {
 	Napi::Env env = info.Env();
 
-	std::string stringToType = info[0].As<Napi::String>();
+	std::u16string stringToType = info[0].As<Napi::String>();
 
-	typeString(stringToType.c_str());
-
-	return Napi::Number::New(env, 1);
-}
-
-Napi::Number _typeStringDelayed(const Napi::CallbackInfo &info)
-{
-	Napi::Env env = info.Env();
-
-	std::string stringToType = info[0].As<Napi::String>();
-	size_t cpm = info[1].As<Napi::Number>().Int32Value();
-
-	typeStringDelayed(stringToType.c_str(), (unsigned int)cpm);
+	typeString(stringToType);
 
 	return Napi::Number::New(env, 1);
 }
@@ -768,27 +757,25 @@ Napi::Object _captureScreen(const Napi::CallbackInfo &info)
 		h = displaySize.height;
 	}
 
-	MMBitmapRef bitmap = copyMMBitmapFromDisplayInRect(MMRectMake(x, y, w, h));
+  try {
+    std::shared_ptr<Bitmap> bitmap = copyMMBitmapFromDisplayInRect(MMRectMake(x, y, w, h));
 
-	if (bitmap == NULL)
-	{
-		throw Napi::Error::New(env, "Error: Failed to capture screen");
-	}
+    Napi::Buffer<uint8_t> buffer = Napi::Buffer<uint8_t>::Copy(env, bitmap->getImageBuffer(), bitmap->getBufferSize());
 
-	uint64_t bufferSize = bitmap->bytewidth * bitmap->height;
-	Napi::Buffer<char> buffer = Napi::Buffer<char>::Copy(env, (char *)bitmap->imageBuffer, bufferSize);
+    Napi::Object obj = Napi::Object::New(env);
+    obj.Set(Napi::String::New(env, "width"), Napi::Number::New(env, bitmap->getWidth()));
+    obj.Set(Napi::String::New(env, "height"), Napi::Number::New(env, bitmap->getHeight()));
+    obj.Set(Napi::String::New(env, "byteWidth"), Napi::Number::New(env, bitmap->getByteWidth()));
+    obj.Set(Napi::String::New(env, "bitsPerPixel"), Napi::Number::New(env, bitmap->getBitsPerPixel()));
+    obj.Set(Napi::String::New(env, "bytesPerPixel"), Napi::Number::New(env, bitmap->getBytesPerPixel()));
+    obj.Set(Napi::String::New(env, "image"), buffer);
 
-	Napi::Object obj = Napi::Object::New(env);
-	obj.Set(Napi::String::New(env, "width"), Napi::Number::New(env, (double)bitmap->width));
-	obj.Set(Napi::String::New(env, "height"), Napi::Number::New(env, (double)bitmap->height));
-	obj.Set(Napi::String::New(env, "byteWidth"), Napi::Number::New(env, (double)bitmap->bytewidth));
-	obj.Set(Napi::String::New(env, "bitsPerPixel"), Napi::Number::New(env, bitmap->bitsPerPixel));
-	obj.Set(Napi::String::New(env, "bytesPerPixel"), Napi::Number::New(env, bitmap->bytesPerPixel));
-	obj.Set(Napi::String::New(env, "image"), buffer);
-
-	destroyMMBitmap(bitmap);
-
-	return obj;
+    return obj;
+  } catch (std::runtime_error &e) {
+    std::stringstream errorMessage;
+    errorMessage << "Error: Failed to capture screen. Reason: " << e.what();
+		throw Napi::Error::New(env, errorMessage.str());
+  }
 }
 
 Napi::Object Init(Napi::Env env, Napi::Object exports)
@@ -804,7 +791,6 @@ Napi::Object Init(Napi::Env env, Napi::Object exports)
 	exports.Set(Napi::String::New(env, "keyTap"), Napi::Function::New(env, _keyTap));
 	exports.Set(Napi::String::New(env, "keyToggle"), Napi::Function::New(env, _keyToggle));
 	exports.Set(Napi::String::New(env, "typeString"), Napi::Function::New(env, _typeString));
-	exports.Set(Napi::String::New(env, "typeStringDelayed"), Napi::Function::New(env, _typeStringDelayed));
 	exports.Set(Napi::String::New(env, "setKeyboardDelay"), Napi::Function::New(env, _setKeyboardDelay));
 
 	exports.Set(Napi::String::New(env, "getScreenSize"), Napi::Function::New(env, _getScreenSize));

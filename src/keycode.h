@@ -4,11 +4,6 @@
 
 #include "os.h"
 
-#ifdef __cplusplus
-extern "C" 
-{
-#endif
-
 #if defined(IS_MACOSX)
 
 #include <Carbon/Carbon.h> /* Really only need <HIToolbox/Events.h> */
@@ -300,10 +295,6 @@ typedef int MMKeyCode;
 /* Returns the keyCode corresponding to the current keyboard layout for the
  * given ASCII character. */
 MMKeyCode keyCodeForChar(const char c);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* KEYCODE_H */
 

@@ -1,6 +1,5 @@
 #include "../screengrab.h"
 #include "../endian.h"
-#include <stdlib.h> /* malloc() */
 
 MMRect getScaledRect(MMRect input)
 {
@@ -17,25 +16,25 @@ MMRect getScaledRect(MMRect input)
 	double scaleY = (double)(desktopHeight / (double)scaledDesktopHeight);
 
 	return MMRectMake(
-		input.origin.x / scaleX, 
-		input.origin.y / scaleY, 
-		input.size.width / scaleX, 
-		input.size.height / scaleY
-	);
+		input.origin.x / scaleX,
+		input.origin.y / scaleY,
+		input.size.width / scaleX,
+		input.size.height / scaleY);
 }
 
-MMBitmapRef copyMMBitmapFromDisplayInRect(MMRect rect)
+std::shared_ptr<Bitmap> copyMMBitmapFromDisplayInRect(MMRect rect)
 {
-	MMBitmapRef bitmap;
 	void *data;
-	HDC screen = NULL, screenMem = NULL;
+	HDC screen = NULL;
+	HDC screenMem = NULL;
 	HBITMAP dib;
 	BITMAPINFO bi;
 
 	screen = GetWindowDC(NULL); /* Get entire screen */
 	MMRect scaledRect = getScaledRect(rect);
 
-	if (screen == NULL) {
+	if (screen == NULL)
+	{
 		return NULL;
 	}
 
@@ -57,41 +56,39 @@ MMBitmapRef copyMMBitmapFromDisplayInRect(MMRect rect)
 
 	/* Copy the data into a bitmap struct. */
 	if ((screenMem = CreateCompatibleDC(screen)) == NULL ||
-	    SelectObject(screenMem, dib) == NULL ||
-	    !BitBlt(screenMem,
-		    (int)0,
-		    (int)0,
-		    (int)scaledRect.size.width,
-		    (int)scaledRect.size.height,
-		    screen,
-		    (int)scaledRect.origin.x,
-		    (int)scaledRect.origin.y,
-		    SRCCOPY))
+		SelectObject(screenMem, dib) == NULL ||
+		!BitBlt(screenMem,
+				(int)0,
+				(int)0,
+				(int)scaledRect.size.width,
+				(int)scaledRect.size.height,
+				screen,
+				(int)scaledRect.origin.x,
+				(int)scaledRect.origin.y,
+				SRCCOPY))
 	{
 
 		/* Error copying data. */
 		ReleaseDC(NULL, screen);
 		DeleteObject(dib);
-		if (screenMem != NULL) {
+		if (screenMem != NULL)
+		{
 			DeleteDC(screenMem);
 		}
 
 		return NULL;
 	}
 
-	bitmap = createMMBitmap(NULL,
-				scaledRect.size.width,
-				scaledRect.size.height,
-				4 * scaledRect.size.width,
-				(uint8_t)bi.bmiHeader.biBitCount,
-				4);
 
-	/* Copy the data to our pixel buffer. */
-	if (bitmap != NULL)
-	{
-		bitmap->imageBuffer = malloc(bitmap->bytewidth * bitmap->height);
-		memcpy(bitmap->imageBuffer, data, bitmap->bytewidth * bitmap->height);
-	}
+	size_t imageBufferSize = 4 * scaledRect.size.width * scaledRect.size.height;
+	uint8_t* imageBuffer = new uint8_t[imageBufferSize];
+	memcpy(imageBuffer, data, imageBufferSize);
+
+	std::shared_ptr<Bitmap> bitmap(new Bitmap(imageBuffer,
+							scaledRect.size.width,
+							scaledRect.size.height,
+							4 * scaledRect.size.width,
+							(uint8_t)bi.bmiHeader.biBitCount));
 
 	ReleaseDC(NULL, screen);
 	DeleteObject(dib);

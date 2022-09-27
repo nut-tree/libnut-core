@@ -57,8 +57,8 @@ CFStringRef createStringForKey(CGKeyCode keyCode)
 {
 	TISInputSourceRef currentKeyboard = TISCopyCurrentASCIICapableKeyboardInputSource();
 	CFDataRef layoutData =
-		TISGetInputSourceProperty(currentKeyboard,
-								  kTISPropertyUnicodeKeyLayoutData);
+		reinterpret_cast<CFDataRef>(TISGetInputSourceProperty(currentKeyboard,
+								  kTISPropertyUnicodeKeyLayoutData));
 	const UCKeyboardLayout *keyboardLayout =
 		(const UCKeyboardLayout *)CFDataGetBytePtr(layoutData);
 

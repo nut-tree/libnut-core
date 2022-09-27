@@ -5,7 +5,7 @@
 #include "mouse_utils.h"
 
 #include <ApplicationServices/ApplicationServices.h>
-#include <math.h> /* For floor() */
+#include <cmath> /* For floor() */
 
 static int32_t DEFAULT_DOUBLE_CLICK_INTERVAL_MS = 200;
 

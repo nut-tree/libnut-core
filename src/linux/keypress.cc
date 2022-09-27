@@ -2,7 +2,9 @@
 #include "../deadbeef_rand.h"
 #include "../microsleep.h"
 
-#include <ctype.h> /* For isupper() */
+#include <cctype> /* For isupper() */
+#include <locale>
+#include <codecvt>
 
 #include <X11/extensions/XTest.h>
 #include "../xdisplay.h"
@@ -74,71 +76,10 @@ void tapKey(char c, MMKeyFlags flags)
 	toggleKey(c, false, flags);
 }
 
-#define toggleUniKey(c, down) toggleKey(c, down, MOD_NONE)
-
-static void tapUniKey(char c)
+void typeString(const std::u16string &str)
 {
-	toggleUniKey(c, true);
-	toggleUniKey(c, false);
-}
+	std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> conv;
+	std::string utf8String = conv.to_bytes(str);
 
-void typeString(const char *str)
-{
-	unsigned short c;
-	unsigned short c1;
-	unsigned short c2;
-	unsigned short c3;
-	unsigned long n;
-
-	while (*str != '\0')
-	{
-		c = *str++;
-
-		// warning, the following utf8 decoder
-		// doesn't perform validation
-		if (c <= 0x7F)
-		{
-			// 0xxxxxxx one byte
-			n = c;
-		}
-		else if ((c & 0xE0) == 0xC0)
-		{
-			// 110xxxxx two bytes
-			c1 = (*str++) & 0x3F;
-			n = ((c & 0x1F) << 6) | c1;
-		}
-		else if ((c & 0xF0) == 0xE0)
-		{
-			// 1110xxxx three bytes
-			c1 = (*str++) & 0x3F;
-			c2 = (*str++) & 0x3F;
-			n = ((c & 0x0F) << 12) | (c1 << 6) | c2;
-		}
-		else if ((c & 0xF8) == 0xF0)
-		{
-			// 11110xxx four bytes
-			c1 = (*str++) & 0x3F;
-			c2 = (*str++) & 0x3F;
-			c3 = (*str++) & 0x3F;
-			n = ((c & 0x07) << 18) | (c1 << 12) | (c2 << 6) | c3;
-		}
-
-		toggleUniKey(n, true);
-		toggleUniKey(n, false);
-	}
-}
-
-void typeStringDelayed(const char *str, const unsigned cpm)
-{
-	/* Characters per second */
-	const double cps = (double)cpm / 60.0;
-
-	/* Average milli-seconds per character */
-	const double mspc = (cps == 0.0) ? 0.0 : 1000.0 / cps;
-
-	while (*str != '\0')
-	{
-		tapUniKey(*str++);
-		microsleep(mspc + (DEADBEEF_UNIFORM(0.0, 62.5)));
-	}
+	xdo_enter_text_window(get_xdo(), 0, utf8String.c_str(), 0);
 }

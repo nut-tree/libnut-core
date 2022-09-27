@@ -8,11 +8,9 @@
 #include "xdisplay.h"
 #endif
 
+#include <string>
 #include <stdbool.h>
-#ifdef __cplusplus
-extern "C" 
-{
-#endif
+
 #if defined(IS_MACOSX)
 
 	typedef enum  {
@@ -68,19 +66,6 @@ void toggleKey(char c, const bool down, MMKeyFlags flags);
 void tapKey(char c, MMKeyFlags flags);
 
 /* Sends a UTF-8 string without modifiers. */
-void typeString(const char *str);
-
-/* Macro to convert WPM to CPM integers.
- * (the average English word length is 5.1 characters.) */
-#define WPM_TO_CPM(WPM) (unsigned)(5.1 * WPM)
-
-/* Sends a string with partially random delays between each letter. Note that
- * deadbeef_srand() must be called before this function if you actually want
- * randomness. */
-void typeStringDelayed(const char *str, const unsigned cpm);
-
-#ifdef __cplusplus
-}
-#endif
+void typeString(const std::u16string &str);
 
 #endif /* KEYPRESS_H */

@@ -3,6 +3,7 @@
 #define XDISPLAY_H
 
 #include <X11/Xlib.h>
+#include "linux/libxdo/xdo.h"
 
 /* Returns the main display, closed either on exit or when closeMainDisplay()
  * is invoked. This removes a bit of the overhead of calling XOpenDisplay() &
@@ -14,16 +15,10 @@ Display *XGetMainDisplay(void);
 /* Closes the main display if it is open, or does nothing if not. */
 void XCloseMainDisplay(void);
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 char *getXDisplay(void);
 void setXDisplay(const char *name);
 
-#ifdef __cplusplus
-}
-#endif
+xdo_t *get_xdo(void);
+void free_xdo(void);
 
 #endif /* XDISPLAY_H */
