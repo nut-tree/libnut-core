@@ -3,7 +3,7 @@
 #define SCREENGRAB_H
 
 #include "types.h"
-#include "MMBitmap.h"
+#include "Bitmap.h"
 
 #if defined(USE_X11)
 #include "xdisplay.h"
@@ -11,6 +11,6 @@
 
 /* Returns a raw bitmap of screengrab of the display (to be destroyed()'d by
  * caller), or NULL on error. */
-MMBitmapRef copyMMBitmapFromDisplayInRect(MMRect rect);
+std::shared_ptr<Bitmap> copyMMBitmapFromDisplayInRect(MMRect rect);
 
 #endif /* SCREENGRAB_H */

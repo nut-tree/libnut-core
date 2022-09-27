@@ -1,9 +1,9 @@
 #include "../screengrab.h"
-#include "../endian.h"
 
 #include <ApplicationServices/ApplicationServices.h>
+#include <memory>
 
-MMBitmapRef copyMMBitmapFromDisplayInRect(MMRect rect)
+std::shared_ptr<Bitmap> copyMMBitmapFromDisplayInRect(MMRect rect)
 {
 	CGDirectDisplayID displayID = CGMainDisplayID();
 
@@ -13,23 +13,26 @@ MMBitmapRef copyMMBitmapFromDisplayInRect(MMRect rect)
 			rect.size.width,
 			rect.size.height));
 
-	if (!image) { return NULL; }
+	if (!image) { 
+    throw new std::runtime_error("Failed to fetch screen content");
+  }
 
 	CFDataRef imageData = CGDataProviderCopyData(CGImageGetDataProvider(image));
 
-	if (!imageData) { return NULL; }
+	if (!imageData) { 
+    throw new std::runtime_error("Failed to retrieve image data");
+  }
 
 	size_t bufferSize = CFDataGetLength(imageData);
-	uint8_t *buffer = new uint8_t[bufferSize];
+  uint8_t* buffer = new uint8_t[bufferSize];
 
 	CFDataGetBytes(imageData, CFRangeMake(0,bufferSize), buffer);
 
-	MMBitmapRef bitmap = createMMBitmap(buffer,
+  std::shared_ptr<Bitmap> bitmap(new Bitmap(buffer,
 		CGImageGetWidth(image),
 		CGImageGetHeight(image),
 		CGImageGetBytesPerRow(image),
-		CGImageGetBitsPerPixel(image),
-		CGImageGetBitsPerPixel(image) / 8);
+		CGImageGetBitsPerPixel(image)));
 
 	CFRelease(imageData);
 
