@@ -9,7 +9,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Source
 set(SOURCE_FILES "src/main.cc" "src/deadbeef_rand.cc" "src/Bitmap.cc")
 if (UNIX AND NOT APPLE)
-    set(SOURCE_FILES "${SOURCE_FILES}" "src/linux/keycode.c" "src/linux/keypress.cc" "src/linux/mouse.cc" "src/linux/screen.cc" "src/linux/screengrab.cc" "src/linux/xdisplay.cc" "src/linux/highlightwindow.cc" "src/linux/window_manager.cc" "src/linux/libxdo/xdo.c" "src/linux/libxdo/xdo_search.c")
+    set(SOURCE_FILES "${SOURCE_FILES}" "src/linux/keycode.cc" "src/linux/keypress.cc" "src/linux/mouse.cc" "src/linux/screen.cc" "src/linux/screengrab.cc" "src/linux/xdisplay.cc" "src/linux/highlightwindow.cc" "src/linux/window_manager.cc" "src/linux/libxdo/xdo.c" "src/linux/libxdo/xdo_search.c")
 elseif (UNIX AND APPLE)
     set(SOURCE_FILES "${SOURCE_FILES}" "src/macos/keycode.cc" "src/macos/keypress.cc" "src/macos/mouse.cc" "src/macos/mouse_utils.mm" "src/macos/screen.cc" "src/macos/screengrab.cc" "src/macos/highlightwindow.mm" "src/macos/window_manager.mm")
 elseif (WIN32)
