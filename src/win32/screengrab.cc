@@ -1,14 +1,21 @@
 #include "../screengrab.h"
 #include "../endian.h"
+#include <VersionHelpers.h>
 
 MMRect getScaledRect(MMRect input)
 {
-	// Configure DPI awareness to fetch unscaled display size
-	DPI_AWARENESS_CONTEXT initialDpiAwareness = SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
 	size_t scaledDesktopWidth = (size_t)GetSystemMetrics(SM_CXSCREEN);
 	size_t scaledDesktopHeight = (size_t)GetSystemMetrics(SM_CYSCREEN);
-	// Reset DPI awareness to avoid inconsistencies on future calls to copyMMBitmapFromDisplayInRect
-	SetThreadDpiAwarenessContext(initialDpiAwareness);
+	// Configure DPI awareness to fetch unscaled display size
+	if (IsWindows10OrGreater() && !IsWindowsServer()) {
+		// Re-query desktop dimensions after setting the DPI awareness context
+		// Only to this on Windows 10 client platforms, since earlier versions of Windows and Windows Server do not support this call
+		DPI_AWARENESS_CONTEXT initialDpiAwareness = SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+		scaledDesktopWidth = (size_t)GetSystemMetrics(SM_CXSCREEN);
+		scaledDesktopHeight = (size_t)GetSystemMetrics(SM_CYSCREEN);
+		// Reset DPI awareness to avoid inconsistencies on future calls to copyMMBitmapFromDisplayInRect
+		SetThreadDpiAwarenessContext(initialDpiAwareness);
+	}
 	size_t desktopWidth = (size_t)GetSystemMetrics(SM_CXSCREEN);
 	size_t desktopHeight = (size_t)GetSystemMetrics(SM_CYSCREEN);
 
