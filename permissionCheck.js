@@ -66,7 +66,8 @@ try {
         libnut[functionName] = askForScreenRecording(libnut[functionName], functionName);
     }
 } catch (e) {
-    console.warn(`Encountered error establishing macOS permission checks.`, e);
+    console.warn(`Encountered error establishing macOS permission checks:`, e.message);
+    console.warn(`Returning original module.`);
 } finally {
     module.exports = libnut;
 }
