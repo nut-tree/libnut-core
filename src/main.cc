@@ -8,7 +8,6 @@
 #include "screen.h"
 #include "screengrab.h"
 #include "window_manager.h"
-#include "startup.h"
 
 int mouseDelay = 10;
 int keyboardDelay = 10;
