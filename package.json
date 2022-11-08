@@ -40,7 +40,7 @@
     "node-addon-api": "5.0.0"
   },
   "optionalDependencies": {
-    "node-mac-permissions": "2.2.1"
+    "@nut-tree/node-mac-permissions": "2.2.1"
   },
   "engines": {
     "node": ">=10.15.3"

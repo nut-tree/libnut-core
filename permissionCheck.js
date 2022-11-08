@@ -1,7 +1,7 @@
 const libnut = require("bindings")("libnut");
 
 try {
-    const permissions = require("node-mac-permissions");
+    const permissions = require("@nut-tree/node-mac-permissions");
 
     const wrapWithWarning = (message, nativeFunction) => (...args) => {
         console.warn(message);
@@ -31,7 +31,7 @@ try {
             return nativeFunction;
         } else if (screenCaptureStatus === 'not determined' || screenCaptureStatus === 'denied') {
             permissions.askForScreenCaptureAccess();
-            return wrapWithWarning(`##### WARNING! The application running this script tries to access accessibility features to execute ${functionName}! Please grant the requested access and visit https://github.com/nut-tree/nut.js#macos for further information. #####`, nativeFunction);
+            return wrapWithWarning(`##### WARNING! The application running this script tries to screen recording features to execute ${functionName}! Please grant the requested access and visit https://github.com/nut-tree/nut.js#macos for further information. #####`, nativeFunction);
         }
     }
 
