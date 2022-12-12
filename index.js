@@ -27,6 +27,7 @@ module.exports.screen.highlight = function (x, y, width, height, duration, opaci
 }
 
 module.exports.screen.capture = function (x, y, width, height) {
+    let b;
     //If coords have been passed, use them.
     if (
         typeof x !== "undefined" &&
