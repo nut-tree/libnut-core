@@ -1,6 +1,6 @@
 {
   "name": "libnut",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "libnut is an N-API module for desktop automation with node",
   "main": "index.js",
   "typings": "index.d.ts",
@@ -12,9 +12,14 @@
     "prepublishOnly": "npm run build:release",
     "publish:next": "npm publish --tag next"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/nut-tree/libnut.git"
+  "homepage": "https://nutjs.dev",
+  "author": {
+    "name": "Simon Hofmann",
+    "email": "kontakt@s1h.org",
+    "url": "https://s1h.org"
+  },
+  "bugs": {
+    "url": "https://github.com/nut-tree/nut.js/issues"
   },
   "keywords": [
     "GUI",
@@ -28,16 +33,13 @@
     "recognition",
     "autohotkey"
   ],
-  "author": "Simon Hofmann <dev@simon-hofmann.org>",
   "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/nut-tree/libnut/issues"
-  },
-  "homepage": "https://github.com/nut-tree/libnut",
   "dependencies": {
-    "bindings": "1.5.0",
-    "cmake-js": "6.1.0",
-    "node-addon-api": "5.0.0"
+    "bindings": "1.5.0"
+  },
+  "devDependencies": {
+    "cmake-js": "7.1.1",
+    "node-addon-api": "5.1.0"
   },
   "optionalDependencies": {
     "@nut-tree/node-mac-permissions": "2.2.1"
