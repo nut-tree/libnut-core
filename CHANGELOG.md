@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.4.0
+
+- Bugfix: Fix `ReferenceError: b is not defined` [(PR#148)](https://github.com/nut-tree/libnut/pull/148)
+- Enhancement: Improved permission handling on macOS [(#141)](https://github.com/nut-tree/libnut/issues/141)
+- Bugfix: Limit calls to SetThreadDPIAwarenessContext to Windows 10 clients [(#136)](https://github.com/nut-tree/libnut/issues/136)
+
 ## 2.3.0
 
 - Bugfix: Segmentation Fault when retrieving window title [(nut-tree/nut-js#377)](https://github.com/nut-tree/nut.js/issues/377)

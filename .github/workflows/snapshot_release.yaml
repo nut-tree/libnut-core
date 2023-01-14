@@ -8,7 +8,7 @@ jobs:
   test:
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        os: [ ubuntu-20.04, macos-11, windows-2019 ]
     runs-on: ${{matrix.os}}
     steps:
       - name: Set up Git repository
@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: ${{matrix.node}}
       - name: Configure Linux environment
-        if: ${{matrix.os == 'ubuntu-latest'}}
+        if: ${{matrix.os == 'ubuntu-20.04'}}
         run: sudo apt-get install -y cmake libx11-dev zlib1g-dev libpng-dev libxtst-dev build-essential
       - name: Install
         run: npm run patch && npm i
@@ -40,7 +40,7 @@ jobs:
       - test
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
+        os: [ ubuntu-20.04, macos-11, windows-2019 ]
     runs-on: ${{matrix.os}}
     steps:
       - name: Set up Git repository
@@ -50,18 +50,18 @@ jobs:
         with:
           node-version: 14
       - name: Configure Linux environment
-        if: ${{matrix.os == 'ubuntu-latest'}}
+        if: ${{matrix.os == 'ubuntu-20.04'}}
         run: sudo apt-get install -y cmake libx11-dev zlib1g-dev libpng-dev libxtst-dev build-essential
       - name: Install
         run: npm run patch && npm i
       - name: Publish snapshot release
-        if: ${{matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest'}}
+        if: ${{matrix.os == 'ubuntu-20.04' || matrix.os == 'macos-11'}}
         run: ./.build/pre-release.sh
         shell: bash
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Publish Windows snapshot release
-        if: ${{matrix.os == 'windows-latest'}}
+        if: ${{matrix.os == 'windows-2019'}}
         run: ./.build/pre-release.ps1
         shell: powershell
         env:
@@ -70,7 +70,7 @@ jobs:
   dispatch:
     needs:
       - deploy
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Dispatch snapshot release
         uses: peter-evans/repository-dispatch@v1
