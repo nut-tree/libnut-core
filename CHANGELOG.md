@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.4.1
+
+- Bugfix: Update permission handling on macOS [(nut-tree/nut.js#469)](https://github.com/nut-tree/nut.js/issues/469)
+
 ## 2.4.0
 
 - Bugfix: Fix `ReferenceError: b is not defined` [(PR#148)](https://github.com/nut-tree/libnut/pull/148)

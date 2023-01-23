@@ -57,6 +57,7 @@ try {
     ];
     const screenCaptureAccess = [
         "getWindowTitle",
+        "captureScreen",
     ];
 
     for (const functionName of accessibilityAccess) {
