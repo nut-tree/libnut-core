@@ -1,5 +1,8 @@
 const libnut = require("bindings")("libnut");
 
+let hasScreenRecordingPermission = false;
+let hasAccessibilityPermission = false;
+
 try {
     const permissions = require("@nut-tree/node-mac-permissions");
 
@@ -9,12 +12,13 @@ try {
     };
 
     const askForAccessibility = (nativeFunction, functionName) => {
-        if (process.platform !== 'darwin') {
+        if (process.platform !== 'darwin' || hasAccessibilityPermission) {
             return nativeFunction;
         }
         const accessibilityStatus = permissions.getAuthStatus("accessibility");
 
         if (accessibilityStatus === 'authorized') {
+            hasAccessibilityPermission = true;
             return nativeFunction;
         } else if (accessibilityStatus === 'not determined' || accessibilityStatus === 'denied') {
             permissions.askForAccessibilityAccess();
@@ -22,12 +26,13 @@ try {
         }
     }
     const askForScreenRecording = (nativeFunction, functionName) => {
-        if (process.platform !== 'darwin') {
+        if (process.platform !== 'darwin' || hasScreenRecordingPermission) {
             return nativeFunction;
         }
         const screenCaptureStatus = permissions.getAuthStatus("screen");
 
         if (screenCaptureStatus === 'authorized') {
+            hasScreenRecordingPermission = true;
             return nativeFunction;
         } else if (screenCaptureStatus === 'not determined' || screenCaptureStatus === 'denied') {
             permissions.askForScreenCaptureAccess();
@@ -59,10 +64,12 @@ try {
     ];
 
     for (const functionName of accessibilityAccess) {
-        libnut[functionName] = askForAccessibility(libnut[functionName], functionName);
+        const originalFunction = libnut[functionName];
+        libnut[functionName] = (...args) => askForAccessibility(originalFunction, functionName)(...args);
     }
     for (const functionName of screenCaptureAccess) {
-        libnut[functionName] = askForScreenRecording(libnut[functionName], functionName);
+        const originalFunction = libnut[functionName];
+        libnut[functionName] = (...args) => askForScreenRecording(originalFunction, functionName)(...args);
     }
 } catch (e) {
     console.warn(`Encountered error establishing macOS permission checks:`, e.message);
