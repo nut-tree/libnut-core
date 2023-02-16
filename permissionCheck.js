@@ -1,4 +1,4 @@
-const libnut = require("bindings")("libnut");
+let libnut = require("bindings")("libnut");
 
 let hasScreenRecordingPermission = false;
 let hasAccessibilityPermission = false;
@@ -74,6 +74,7 @@ try {
 } catch (e) {
     console.warn(`Encountered error establishing macOS permission checks:`, e.message);
     console.warn(`Returning original module.`);
+    libnut = require("bindings")("libnut");
 } finally {
     module.exports = libnut;
 }
