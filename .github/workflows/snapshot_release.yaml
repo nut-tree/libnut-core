@@ -3,6 +3,12 @@ on:
   push:
     branches:
       - develop
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for the snapshot release'
+        required: true
+        default: 'Snapshot release'
 
 jobs:
   test:
