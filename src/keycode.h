@@ -161,7 +161,7 @@ enum _MMKeyCode {
 	K_META = XK_Super_L,
     K_RIGHTMETA = XK_Super_R,
     K_CMD = K_NOT_A_KEY,
-    K_RIGHTCMD = K_NOT_A_KEY
+    K_RIGHTCMD = K_NOT_A_KEY,
     K_WIN = XK_Super_L,
     K_RIGHTWIN = XK_Super_R,
     K_FUNCTION = K_NOT_A_KEY,
@@ -262,7 +262,7 @@ enum _MMKeyCode {
 	K_META = VK_LWIN,
     K_RIGHTMETA = VK_RWIN,
     K_CMD = K_NOT_A_KEY,
-    K_RIGHTCMD = K_NOT_A_KEY
+    K_RIGHTCMD = K_NOT_A_KEY,
     K_WIN = VK_LWIN,
     K_RIGHTWIN = VK_RWIN,
     K_FUNCTION = K_NOT_A_KEY,
