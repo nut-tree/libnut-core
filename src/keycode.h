@@ -5,7 +5,7 @@
 #include "os.h"
 
 #ifdef __cplusplus
-extern "C" 
+extern "C"
 {
 #endif
 
@@ -14,7 +14,7 @@ extern "C"
 #include <Carbon/Carbon.h> /* Really only need <HIToolbox/Events.h> */
 #include <ApplicationServices/ApplicationServices.h>
 #import <IOKit/hidsystem/ev_keymap.h>
-	
+
 enum _MMKeyCode {
 	K_NOT_A_KEY = 9999,
 	K_BACKSPACE = kVK_Delete,
@@ -55,8 +55,16 @@ enum _MMKeyCode {
 	K_F23 = K_NOT_A_KEY,
 	K_F24 = K_NOT_A_KEY,
 	K_META = kVK_Command,
-	K_ALT = kVK_Option,
-	K_CONTROL = kVK_Control,
+    K_RIGHTMETA = kVK_RightCommand,
+    K_CMD = kVK_Command,
+    K_RIGHTCMD = kVK_RightCommand,
+    K_WIN = K_NOT_A_KEY,
+    K_RIGHTWIN = K_NOT_A_KEY,
+    K_FUNCTION = kVK_Function,
+    K_ALT = kVK_Option,
+    K_RIGHTALT = kVK_RightOption,
+    K_CONTROL = kVK_Control,
+    K_RIGHTCONTROL = kVK_RightControl,
 	K_SHIFT = kVK_Shift,
 	K_RIGHTSHIFT = kVK_RightShift,
 	K_CAPSLOCK = kVK_CapsLock,
@@ -151,8 +159,16 @@ enum _MMKeyCode {
 	K_F23 = XK_F23,
 	K_F24 = XK_F24,
 	K_META = XK_Super_L,
-	K_ALT = XK_Alt_L,
-	K_CONTROL = XK_Control_L,
+    K_RIGHTMETA = XK_Super_R,
+    K_CMD = K_NOT_A_KEY,
+    K_RIGHTCMD = K_NOT_A_KEY,
+    K_WIN = XK_Super_L,
+    K_RIGHTWIN = XK_Super_R,
+    K_FUNCTION = K_NOT_A_KEY,
+    K_ALT = XK_Alt_L,
+    K_RIGHTALT = XK_Alt_R,
+    K_CONTROL = XK_Control_L,
+    K_RIGHTCONTROL = XK_Control_R,
 	K_SHIFT = XK_Shift_L,
 	K_RIGHTSHIFT = XK_Shift_R,
 	K_CAPSLOCK = XK_Caps_Lock,
@@ -244,10 +260,18 @@ enum _MMKeyCode {
 	K_F23 = VK_F23,
 	K_F24 = VK_F24,
 	K_META = VK_LWIN,
-	K_CONTROL = VK_CONTROL,
+    K_RIGHTMETA = VK_RWIN,
+    K_CMD = K_NOT_A_KEY,
+    K_RIGHTCMD = K_NOT_A_KEY,
+    K_WIN = VK_LWIN,
+    K_RIGHTWIN = VK_RWIN,
+    K_FUNCTION = K_NOT_A_KEY,
+    K_ALT = VK_LMENU,
+    K_RIGHTALT = VK_RMENU,
+    K_CONTROL = VK_LCONTROL,
+    K_RIGHTCONTROL = VK_RCONTROL,
 	K_SHIFT = VK_SHIFT,
 	K_RIGHTSHIFT = VK_RSHIFT,
-	K_ALT = VK_MENU,
 	K_CAPSLOCK = VK_CAPITAL,
 	K_NUMLOCK = VK_NUMLOCK,
 	K_SCROLL_LOCK = VK_SCROLL,
