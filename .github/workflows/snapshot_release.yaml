@@ -3,6 +3,12 @@ on:
   push:
     branches:
       - develop
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for the snapshot release'
+        required: true
+        default: 'Snapshot release'
 
 jobs:
   test:
@@ -30,6 +36,7 @@ jobs:
           working-directory: ./test/
           run: npm cit
       - name: Run window tests
+        if: ${{matrix.os == 'windows-2019'}}
         uses: GabrielBB/xvfb-action@v1
         with:
           working-directory: ./test/window-integration-tests
