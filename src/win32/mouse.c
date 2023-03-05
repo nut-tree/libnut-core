@@ -35,8 +35,8 @@ static int32_t DEFAULT_DOUBLE_CLICK_INTERVAL_MS = 200;
 MMPoint CalculateAbsoluteCoordinates(MMPoint point) {
     MMSize displaySize = getMainDisplaySize();
     return MMPointMake(
-            ceil(point.x * ABSOLUTE_COORD_CONST / displaySize.width),
-            ceil(point.y * ABSOLUTE_COORD_CONST / displaySize.height)
+            ceil((float)(point.x * ABSOLUTE_COORD_CONST) / displaySize.width),
+            ceil((float)(point.y * ABSOLUTE_COORD_CONST) / displaySize.height)
     );
 }
 
