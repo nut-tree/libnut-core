@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.5.1
+- Bugfix: Fix rounding to mouse move on Window to fix mouse drift [(#126)](https://github.com/nut-tree/libnut-core/issues/126)
+
 ## 2.5.0
 - Bugfix: Update permissionCheck.js to cache permission check results and only ask for permissions on actual function call by wrapping it in a HOF [(nut-tree/nut.js#477)](https://github.com/nut-tree/nut.js/issues/477)
 - Bugfix: Add rounding to mouse move on Window to fix mouse drift [(#126)](https://github.com/nut-tree/libnut-core/issues/126)
