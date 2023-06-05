@@ -55,13 +55,13 @@ void toggleKeyCode(MMKeyCode code, const bool down, MMKeyFlags flags) {
 
     // Check if keycode is one of the available modifier keys and set keyflags
     // accordingly
-    if (code == K_META) {
+    if (code == K_META || code == K_RIGHTMETA) {
       flags |= MOD_META;
     }
-    if (code == K_ALT) {
+    if (code == K_ALT || code == K_RIGHTALT) {
       flags |= MOD_ALT;
     }
-    if (code == K_CONTROL) {
+    if (code == K_CONTROL || code == K_RIGHTCONTROL) {
       flags |= MOD_CONTROL;
     }
     if (code == K_SHIFT || code == K_RIGHTSHIFT) {
