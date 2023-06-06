@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.5.2
+
+- Bugfix: Screen capture broken on macOS 13 [(nut-tree/nut.js#469)](https://github.com/nut-tree/nut.js/issues/469)
+- Enhancement: Enable newly introduced keys to be used as modifiers [(nut-tree/nut.js#490)](https://github.com/nut-tree/nut.js/issues/490)
+- Bugfix: screen.highlight closes Electron window [(nut-tree/nut.js#505)](https://github.com/nut-tree/nut.js/issues/505)
+
 ## 2.5.1
 - Bugfix: Fix rounding to mouse move on Window to fix mouse drift [(#126)](https://github.com/nut-tree/libnut-core/issues/126)
 
