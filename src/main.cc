@@ -644,6 +644,29 @@ Napi::String _getWindowTitle(const Napi::CallbackInfo &info) {
     return Napi::String::New(env, getWindowTitle(windowHandle));
 }
 
+Napi::Boolean _focusWindow(const Napi::CallbackInfo &info) {
+    Napi::Env env = info.Env();
+
+    WindowHandle windowHandle = info[0].As<Napi::Number>().Int64Value();
+    
+    bool result = focusWindow(windowHandle);
+    
+    return Napi::Boolean::New(env, result);
+}
+
+Napi::Boolean _resizeWindow(const Napi::CallbackInfo &info) {
+    Napi::Env env = info.Env();
+
+    WindowHandle windowHandle = info[0].As<Napi::Number>().Int64Value();
+    int width = info[1].As<Napi::Number>().Int32Value();
+    int height = info[2].As<Napi::Number>().Int32Value();
+    
+    bool result = resizeWindow(windowHandle, width, height);
+    
+    return Napi::Boolean::New(env, result);
+}
+
+
 Napi::Object _captureScreen(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
 
@@ -725,6 +748,8 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
     exports.Set(Napi::String::New(env, "getActiveWindow"), Napi::Function::New(env, _getActiveWindow));
     exports.Set(Napi::String::New(env, "getWindowRect"), Napi::Function::New(env, _getWindowRect));
     exports.Set(Napi::String::New(env, "getWindowTitle"), Napi::Function::New(env, _getWindowTitle));
+    exports.Set(Napi::String::New(env, "focusWindow"), Napi::Function::New(env, _focusWindow));
+    exports.Set(Napi::String::New(env, "resizeWindow"), Napi::Function::New(env, _resizeWindow));
     exports.Set(Napi::String::New(env, "captureScreen"), Napi::Function::New(env, _captureScreen));
     exports.Set(Napi::String::New(env, "getXDisplayName"), Napi::Function::New(env, _getXDisplayName));
     exports.Set(Napi::String::New(env, "setXDisplayName"), Napi::Function::New(env, _setXDisplayName));

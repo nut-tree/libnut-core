@@ -57,6 +57,8 @@ try {
         "getActiveWindow",
         "getWindowRect",
         "getWindowTitle",
+        "focusWindow",
+        "resizeWindow"
     ];
     const screenCaptureAccess = [
         "getWindowTitle",

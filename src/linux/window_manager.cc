@@ -68,3 +68,32 @@ MMRect getWindowRect(const WindowHandle windowHandle) {
     }
     return windowRect;
 }
+
+bool focusWindow(const WindowHandle windowHandle) {
+    Display* display = XGetMainDisplay();
+    if (display != NULL && windowHandle >= 0) {
+        // Try to set the window to the foreground
+        XSetInputFocus(display, windowHandle, RevertToParent, CurrentTime);
+        XRaiseWindow(display, windowHandle);
+        XFlush(display);
+
+        return true;
+    }
+    return false;
+}
+
+bool resizeWindow(const WindowHandle windowHandle, int width, int height) {
+    Display* display = XGetMainDisplay();
+    if (display != NULL && windowHandle >= 0) {
+        XWindowChanges changes;
+        changes.width = width;
+        changes.height = height;
+    
+        // Resize the window
+        XConfigureWindow(display, windowHandle, CWWidth | CWHeight, &changes);
+        XFlush(display);
+        
+        return true;
+    }
+    return false;
+}

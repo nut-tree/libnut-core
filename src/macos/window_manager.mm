@@ -92,3 +92,28 @@ std::string getWindowTitle(const WindowHandle windowHandle) {
   }
   return "";
 }
+
+BOOL focusWindow(NSWindow *window) {
+    if (window) {
+        // Restore the window if it's minimized
+        if ([window isMiniaturized]) {
+            [window deminiaturize:nil];
+        }
+        
+        // Try to set the window to the foreground
+        [window makeKeyAndOrderFront:nil];
+        
+        return YES;
+    }
+    return NO;
+}
+
+BOOL resizeWindow(NSWindow *window, int width, int height) {
+    if (window) {
+        NSRect frame = [window frame];
+        frame.size = NSMakeSize(width, height);
+        [window setFrame:frame display:YES animate:NO];
+        return YES;
+    }
+    return NO;
+}

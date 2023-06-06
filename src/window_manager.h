@@ -31,6 +31,25 @@ std::string getWindowTitle(const WindowHandle windowHandle);
  * That is, a window's top left position given as `x` and `y` coordinate, as well as it's window size given as `width` and `height`
  * The respective window handle may be aquired via `getWindows` or `getActiveWindow`
  */
+/**
+ * `focusWindow` focuses on the window specified by its window handle.
+ * It brings the specified window to the foreground and gives it input focus.
+ * The respective window handle may be acquired via `getWindows` or `getActiveWindow`.
+ * @param windowHandle The window handle of the window to be focused.
+ * @return Returns a boolean indicating whether the window focus operation was successful.
+ */
+bool focusWindow(const WindowHandle windowHandle);
+
+/**
+ * `resizeWindow` resizes the window specified by its window handle to the given width and height.
+ * The respective window handle may be acquired via `getWindows` or `getActiveWindow`.
+ * @param windowHandle The window handle of the window to be resized.
+ * @param width The new width of the window.
+ * @param height The new height of the window.
+ * @return Returns a boolean indicating whether the window resize operation was successful.
+ */
+bool resizeWindow(const WindowHandle windowHandle, int width, int height);
+
 MMRect getWindowRect(const WindowHandle windowHandle);
 
 #endif

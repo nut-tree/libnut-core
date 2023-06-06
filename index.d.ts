@@ -51,5 +51,7 @@ export function getWindows(): number[];
 export function getActiveWindow(): number;
 export function getWindowRect(handle: number): Rect;
 export function getWindowTitle(handle: number): string;
+export function focusWindow(handle: number): void;
+export function resizeWindow(handle: number, width: number, height: number): void;
 
 export const screen: Screen;

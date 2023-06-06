@@ -51,3 +51,30 @@ std::string getWindowTitle(const WindowHandle windowHandle) {
     }
     return "";
 }
+
+bool focusWindow(const WindowHandle windowHandle) {
+    HWND hWnd = reinterpret_cast<HWND>(windowHandle);
+    if (IsWindow(hWnd)) {
+        // Restore the window if it's minimized
+        if (IsIconic(hWnd)) {
+            ShowWindow(hWnd, SW_RESTORE);
+        }
+        
+        // Try to set the window to the foreground
+        return SetForegroundWindow(hWnd);
+    }
+    return false;
+}
+
+bool resizeWindow(const WindowHandle windowHandle, int width, int height) {
+    HWND hWnd = reinterpret_cast<HWND>(windowHandle);
+    if (IsWindow(hWnd)) {
+        RECT rect;
+        if (GetWindowRect(hWnd, &rect)) {
+            int x = rect.left;
+            int y = rect.top;
+            return MoveWindow(hWnd, x, y, width, height, TRUE);
+        }
+    }
+    return false;
+}
