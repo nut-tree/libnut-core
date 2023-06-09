@@ -654,16 +654,35 @@ Napi::Boolean _focusWindow(const Napi::CallbackInfo &info) {
     return Napi::Boolean::New(env, result);
 }
 
-Napi::Boolean _resizeWindow(const Napi::CallbackInfo &info) {
+Napi::Value _resizeWindow(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
 
-    WindowHandle windowHandle = info[0].As<Napi::Number>().Int64Value();
-    int width = info[1].As<Napi::Number>().Int32Value();
-    int height = info[2].As<Napi::Number>().Int32Value();
-    
-    bool result = resizeWindow(windowHandle, width, height);
-    
-    return Napi::Boolean::New(env, result);
+    if (info.Length() < 2 || !info[0].IsNumber() || !info[1].IsObject()) {
+        Napi::TypeError::New(env, "Invalid arguments. Expected handle (number) and rect (object).").ThrowAsJavaScriptException();
+        return Napi::Boolean::New(env, false);
+    }
+
+    int64_t handle = info[0].As<Napi::Number>().Int64Value();
+    Napi::Object rectObj = info[1].As<Napi::Object>();
+
+    int64_t x = 0;
+    int64_t y = 0;
+    int64_t width = 0;
+    int64_t height = 0;
+
+    if (rectObj.Has("x"))
+        x = rectObj.Get("x").As<Napi::Number>().Int64Value();
+    if (rectObj.Has("y"))
+        y = rectObj.Get("y").As<Napi::Number>().Int64Value();
+    if (rectObj.Has("width"))
+        width = rectObj.Get("width").As<Napi::Number>().Int64Value();
+    if (rectObj.Has("height"))
+        height = rectObj.Get("height").As<Napi::Number>().Int64Value();
+
+    MMRect rect = MMRectMake(x, y, width, height);
+    resizeWindow(handle, rect);
+
+    return Napi::Boolean::New(env, true);
 }
 
 
