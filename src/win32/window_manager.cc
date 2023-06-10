@@ -52,7 +52,7 @@ std::string getWindowTitle(const WindowHandle windowHandle) {
     return "";
 }
 
-bool focusWindow(const WindowHandle windowHandle) {
+std::bool focusWindow(const WindowHandle windowHandle) {
     HWND hWnd = reinterpret_cast<HWND>(windowHandle);
     if (IsWindow(hWnd)) {
         // Restore the window if it's minimized
@@ -66,7 +66,7 @@ bool focusWindow(const WindowHandle windowHandle) {
     return false;
 }
 
-bool resizeWindow(const WindowHandle windowHandle, const MMRect& rect) {
+std::bool resizeWindow(const WindowHandle windowHandle, const MMRect& rect) {
     HWND hWnd = reinterpret_cast<HWND>(windowHandle);
     if (IsWindow(hWnd)) {
         //size

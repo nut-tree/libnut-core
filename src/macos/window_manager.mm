@@ -93,35 +93,33 @@ std::string getWindowTitle(const WindowHandle windowHandle) {
   return "";
 }
 
-BOOL focusWindow(NSWindow *window) {
-    // if (window) {
-    //     // Restore the window if it's minimized
-    //     if ([window isMiniaturized]) {
-    //         [window deminiaturize:nil];
-    //     }
-        
-    //     // Try to set the window to the foreground
-    //     [window makeKeyAndOrderFront:nil];
-        
-    //     return YES;
-    // }
-    return NO;
+bool focusWindow(const WindowHandle windowHandle) {
+    CGWindowListOption listOptions = kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements;
+    CFArrayRef windowList = CGWindowListCopyWindowInfo(listOptions, kCGNullWindowID);
+
+    for (NSDictionary *info in (NSArray *)windowList) {
+        NSNumber *ownerPid = info[(id)kCGWindowOwnerPID];
+        NSNumber *windowNumber = info[(id)kCGWindowNumber];
+
+        if ([windowNumber intValue] == windowHandle) {
+            NSRunningApplication *app = [NSRunningApplication runningApplicationWithProcessIdentifier:[ownerPid intValue]];
+            [app activateWithOptions:NSApplicationActivateIgnoringOtherApps];
+            CFRelease(windowList);
+            return true;
+        }
+    }
+
+    if (windowList) {
+        CFRelease(windowList);
+    }
+    return false;
 }
 
-BOOL resizeWindow(NSWindow *window, MMRect rect) {
-    if (window) {
-        NSRect frame;
-        
-        //size
-        frame.size.width = rect.size.width;
-        frame.size.height = rect.size.height;
 
-        //origin
-        frame.origin.x = rect.origin.x;
-        frame.origin.y = rect.origin.y;
+bool resizeWindow(const WindowHandle windowHandle, MMRect rect) {
+  if (windowHandle < 0) {
+    return false;
+  }
 
-        [window setFrame:frame display:YES animate:NO];
-        return YES;
-    }
-    return NO;
+  return true;
 }
