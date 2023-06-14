@@ -1,11 +1,14 @@
+#include "../window_manager.h"
+#import <AppKit/AppKit.h>
+#import <ApplicationServices/ApplicationServices.h>
 #include <CoreGraphics/CGWindow.h>
 #import <Foundation/Foundation.h>
-#import <AppKit/AppKit.h>
-#include "../window_manager.h"
 
-NSDictionary* getWindowInfo(int64_t windowHandle) {
-  CGWindowListOption listOptions = kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements;
-  CFArrayRef windowList = CGWindowListCopyWindowInfo(listOptions, kCGNullWindowID);
+NSDictionary *getWindowInfo(int64_t windowHandle) {
+  CGWindowListOption listOptions =
+      kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements;
+  CFArrayRef windowList =
+      CGWindowListCopyWindowInfo(listOptions, kCGNullWindowID);
 
   for (NSDictionary *info in (NSArray *)windowList) {
     NSNumber *windowNumber = info[(id)kCGWindowNumber];
@@ -25,14 +28,17 @@ NSDictionary* getWindowInfo(int64_t windowHandle) {
 }
 
 WindowHandle getActiveWindow() {
-  CGWindowListOption listOptions = kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements;
-  CFArrayRef windowList = CGWindowListCopyWindowInfo(listOptions, kCGNullWindowID);
+  CGWindowListOption listOptions =
+      kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements;
+  CFArrayRef windowList =
+      CGWindowListCopyWindowInfo(listOptions, kCGNullWindowID);
 
   for (NSDictionary *info in (NSArray *)windowList) {
     NSNumber *ownerPid = info[(id)kCGWindowOwnerPID];
     NSNumber *windowNumber = info[(id)kCGWindowNumber];
 
-    auto app = [NSRunningApplication runningApplicationWithProcessIdentifier: [ownerPid intValue]];
+    auto app = [NSRunningApplication
+        runningApplicationWithProcessIdentifier:[ownerPid intValue]];
 
     if (![app isActive]) {
       continue;
@@ -49,8 +55,10 @@ WindowHandle getActiveWindow() {
 }
 
 std::vector<WindowHandle> getWindows() {
-  CGWindowListOption listOptions = kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements;
-  CFArrayRef windowList = CGWindowListCopyWindowInfo(listOptions, kCGNullWindowID);
+  CGWindowListOption listOptions =
+      kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements;
+  CFArrayRef windowList =
+      CGWindowListCopyWindowInfo(listOptions, kCGNullWindowID);
 
   std::vector<WindowHandle> windowHandles;
 
@@ -58,7 +66,8 @@ std::vector<WindowHandle> getWindows() {
     NSNumber *ownerPid = info[(id)kCGWindowOwnerPID];
     NSNumber *windowNumber = info[(id)kCGWindowNumber];
 
-    auto app = [NSRunningApplication runningApplicationWithProcessIdentifier: [ownerPid intValue]];
+    auto app = [NSRunningApplication
+        runningApplicationWithProcessIdentifier:[ownerPid intValue]];
     auto path = app ? [app.bundleURL.path UTF8String] : "";
 
     if (app && path != "") {
@@ -77,8 +86,10 @@ MMRect getWindowRect(const WindowHandle windowHandle) {
   auto windowInfo = getWindowInfo(windowHandle);
   if (windowInfo != nullptr && windowHandle >= 0) {
     CGRect windowRect;
-    if (CGRectMakeWithDictionaryRepresentation((CFDictionaryRef)windowInfo[(id)kCGWindowBounds], &windowRect)) {
-      return MMRectMake(windowRect.origin.x, windowRect.origin.y, windowRect.size.width, windowRect.size.height);
+    if (CGRectMakeWithDictionaryRepresentation(
+            (CFDictionaryRef)windowInfo[(id)kCGWindowBounds], &windowRect)) {
+      return MMRectMake(windowRect.origin.x, windowRect.origin.y,
+                        windowRect.size.width, windowRect.size.height);
     }
   }
   return MMRectMake(0, 0, 0, 0);
@@ -88,38 +99,42 @@ std::string getWindowTitle(const WindowHandle windowHandle) {
   auto windowInfo = getWindowInfo(windowHandle);
   if (windowInfo != nullptr && windowHandle >= 0) {
     NSString *windowName = windowInfo[(id)kCGWindowName];
-    return std::string([windowName UTF8String], [windowName lengthOfBytesUsingEncoding:NSUTF8StringEncoding]);
+    return std::string(
+        [windowName UTF8String],
+        [windowName lengthOfBytesUsingEncoding:NSUTF8StringEncoding]);
   }
   return "";
 }
 
 bool focusWindow(const WindowHandle windowHandle) {
-    CGWindowListOption listOptions = kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements;
-    CFArrayRef windowList = CGWindowListCopyWindowInfo(listOptions, kCGNullWindowID);
+  CGWindowListOption listOptions =
+      kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements;
+  CFArrayRef windowList =
+      CGWindowListCopyWindowInfo(listOptions, kCGNullWindowID);
 
-    for (NSDictionary *info in (NSArray *)windowList) {
-        NSNumber *ownerPid = info[(id)kCGWindowOwnerPID];
-        NSNumber *windowNumber = info[(id)kCGWindowNumber];
+  bool activated = false;
 
-        if ([windowNumber intValue] == windowHandle) {
-            NSRunningApplication *app = [NSRunningApplication runningApplicationWithProcessIdentifier:[ownerPid intValue]];
-            [app activateWithOptions:NSApplicationActivateIgnoringOtherApps];
-            CFRelease(windowList);
-            return true;
-        }
+  for (NSDictionary *info in (NSArray *)windowList) {
+    NSNumber *ownerPid = info[(id)kCGWindowOwnerPID];
+    NSNumber *windowNumber = info[(id)kCGWindowNumber];
+
+    if ([windowNumber intValue] == windowHandle) {
+      NSRunningApplication *app = [NSRunningApplication
+          runningApplicationWithProcessIdentifier:[ownerPid intValue]];
+      [app activateWithOptions:NSApplicationActivateIgnoringOtherApps];
+      activated = true;
     }
+  }
 
-    if (windowList) {
-        CFRelease(windowList);
-    }
-    return false;
+  if (windowList) {
+    CFRelease(windowList);
+  }
+
+  return activated;
 }
 
-
-bool resizeWindow(const WindowHandle windowHandle, MMRect rect) {
-  if (windowHandle < 0) {
-    return false;
-  }
+bool resizeWindow(int64_t windowHandle, MMRect rect) {
+  //this method is complicated due to the accessibility requirements on macos
 
   return true;
 }
