@@ -108,30 +108,57 @@ std::string getWindowTitle(const WindowHandle windowHandle) {
 }
 
 bool focusWindow(const WindowHandle windowHandle) {
-  CGWindowListOption listOptions =
-      kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements;
-  CFArrayRef windowList =
-      CGWindowListCopyWindowInfo(listOptions, kCGNullWindowID);
 
-  bool activated = false;
+  NSDictionary *windowInfo = getWindowInfo(windowHandle);
+  if (windowInfo == nullptr || windowHandle < 0) {
+    NSLog(@"Could not find window info for window handle %lld", windowHandle);
+    return false;
+  }
 
-  for (NSDictionary *info in (NSArray *)windowList) {
-    NSNumber *ownerPid = info[(id)kCGWindowOwnerPID];
-    NSNumber *windowNumber = info[(id)kCGWindowNumber];
+  pid_t pid = [[windowInfo objectForKey:(id)kCGWindowOwnerPID] intValue];
+  AXUIElementRef app = AXUIElementCreateApplication(pid);
 
-    if ([windowNumber intValue] == windowHandle) {
-      NSRunningApplication *app = [NSRunningApplication
-          runningApplicationWithProcessIdentifier:[ownerPid intValue]];
-      [app activateWithOptions:NSApplicationActivateIgnoringOtherApps];
-      activated = true;
+  NSString *targetWindowTitle = [windowInfo objectForKey:(id)kCGWindowName];
+
+  CFArrayRef windowArray;
+  AXError error = AXUIElementCopyAttributeValue(app, kAXWindowsAttribute,
+                                                (CFTypeRef *)&windowArray);
+  if (error == kAXErrorSuccess) {
+    CFIndex count = CFArrayGetCount(windowArray);
+    for (CFIndex i = 0; i < count; i++) {
+      AXUIElementRef window =
+          (AXUIElementRef)CFArrayGetValueAtIndex(windowArray, i);
+
+      CFTypeRef windowTitle;
+      AXUIElementCopyAttributeValue(window, kAXTitleAttribute, &windowTitle);
+      if (windowTitle && CFGetTypeID(windowTitle) == CFStringGetTypeID()) {
+        NSString *title = (__bridge NSString *)windowTitle;
+        if ([title isEqualToString:targetWindowTitle]) {
+          AXError error = AXUIElementPerformAction(window, kAXRaiseAction);
+          if (error == kAXErrorSuccess) {
+            NSLog(@"Successfully brought the window to front.");
+          } else {
+            NSLog(@"Failed to bring the window to front.");
+            NSLog(@"AXUIElementSetAttributeValue error: %d", error);
+          }
+          break;
+        }
+      }
+      if (windowTitle) {
+        CFRelease(windowTitle);
+      }
     }
+    CFRelease(windowArray);
+  } else {
+    NSLog(@"Failed to retrieve the window array.");
   }
 
-  if (windowList) {
-    CFRelease(windowList);
-  }
+  CFRelease(app);
 
-  return activated;
+  // log the window title
+  NSString *windowName = windowInfo[(id)kCGWindowName];
+  NSLog(@"attempted to focus window: %@", windowName);
+  return true;
 }
 
 /*
