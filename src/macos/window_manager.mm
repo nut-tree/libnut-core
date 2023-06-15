@@ -109,6 +109,25 @@ std::string getWindowTitle(const WindowHandle windowHandle) {
 
 bool focusWindow(const WindowHandle windowHandle) {
 
+  CGWindowListOption listOptions =
+      kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements;
+  CFArrayRef windowList =
+      CGWindowListCopyWindowInfo(listOptions, kCGNullWindowID);
+  bool activated = false;
+  for (NSDictionary *info in (NSArray *)windowList) {
+    NSNumber *ownerPid = info[(id)kCGWindowOwnerPID];
+    NSNumber *windowNumber = info[(id)kCGWindowNumber];
+    if ([windowNumber intValue] == windowHandle) {
+      NSRunningApplication *app = [NSRunningApplication
+          runningApplicationWithProcessIdentifier:[ownerPid intValue]];
+      [app activateWithOptions:NSApplicationActivateIgnoringOtherApps];
+      activated = true;
+    }
+  }
+  if (windowList) {
+    CFRelease(windowList);
+  }
+  
   NSDictionary *windowInfo = getWindowInfo(windowHandle);
   if (windowInfo == nullptr || windowHandle < 0) {
     NSLog(@"Could not find window info for window handle %lld", windowHandle);
