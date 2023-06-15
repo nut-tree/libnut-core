@@ -53,7 +53,7 @@ bool focusWindow(const WindowHandle windowHandle);
  * @param rect.height The new height of the window.
  * @return Returns a boolean indicating whether the window resize operation was successful.
  */
-bool resizeWindow(const WindowHandle windowHandle, const MMRect& rect);
+bool resizeWindow(const WindowHandle windowHandle, const MMRect rect);
 
 
 #endif

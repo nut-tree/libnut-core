@@ -1,5 +1,6 @@
 #include "../window_manager.h"
 #import <AppKit/AppKit.h>
+#import <AppKit/NSAccessibility.h>
 #import <ApplicationServices/ApplicationServices.h>
 #include <CoreGraphics/CGWindow.h>
 #import <Foundation/Foundation.h>
@@ -133,8 +134,50 @@ bool focusWindow(const WindowHandle windowHandle) {
   return activated;
 }
 
-bool resizeWindow(int64_t windowHandle, MMRect rect) {
-  //this method is complicated due to the accessibility requirements on macos
+/*
+  This function takes an input windowhandle (a kCGWindowNumber) and a rect (size
+  & origin) and resizes the window to the given rect.
+*/
+bool resizeWindow(const WindowHandle windowHandle, const MMRect rect) {
 
-  return true;
+  NSDictionary *windowInfo = getWindowInfo(windowHandle);
+  if (windowInfo == nullptr || windowHandle < 0) {
+    NSLog(@"Could not find window info for window handle %lld", windowHandle);
+    return false;
+  }
+
+  pid_t pid = [[windowInfo objectForKey:(id)kCGWindowOwnerPID] intValue];
+  AXUIElementRef app = AXUIElementCreateApplication(pid);
+  AXUIElementRef window;
+  AXError error = AXUIElementCopyAttributeValue(app, kAXFocusedWindowAttribute,
+                                                (CFTypeRef *)&window);
+
+  if (error == kAXErrorSuccess) {
+    AXValueRef positionValue = AXValueCreate((AXValueType)kAXValueCGPointType,
+                                             (const void *)&rect.origin);
+
+    // extract the size from the rect
+
+    CGSize size = CGSizeMake(rect.size.width, rect.size.height);
+    AXValueRef sizeValue =
+        AXValueCreate((AXValueType)kAXValueCGSizeType, (const void *)&size);
+
+    AXUIElementSetAttributeValue(window, kAXPositionAttribute, positionValue);
+    AXUIElementSetAttributeValue(window, kAXSizeAttribute, sizeValue);
+
+    // log the position and size of the window
+
+    CFRelease(positionValue);
+    CFRelease(sizeValue);
+    CFRelease(window);
+    CFRelease(app);
+
+    return true;
+  } else {
+    NSLog(@"Could not resize window with window handle %lld", windowHandle);
+    CFRelease(app);
+    return false;
+  }
+
+  return YES;
 }
