@@ -107,13 +107,30 @@ std::string getWindowTitle(const WindowHandle windowHandle) {
   return "";
 }
 
+/**
+ * Focuses on the window provided via its handle.
+ *
+ * This function collects a list of on-screen windows and matches the
+ * windowHandle with their window numbers. If found, the corresponding
+ * application is brought to foreground. The function then uses accessibility
+ * APIs to specifically focus the target window using its title.
+ *
+ * @param windowHandle Handle to the window that needs to be focused.
+ *
+ * @return bool If the function executes without any errors, it returns true.
+ *              If it can't retrieve window information or windowHandle is
+ *              invalid, it returns false.
+ */
 bool focusWindow(const WindowHandle windowHandle) {
 
+  // Collect list of on-screen windows
   CGWindowListOption listOptions =
       kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements;
   CFArrayRef windowList =
       CGWindowListCopyWindowInfo(listOptions, kCGNullWindowID);
   bool activated = false;
+
+  // Look for matching window and bring application to foreground
   for (NSDictionary *info in (NSArray *)windowList) {
     NSNumber *ownerPid = info[(id)kCGWindowOwnerPID];
     NSNumber *windowNumber = info[(id)kCGWindowNumber];
@@ -124,24 +141,31 @@ bool focusWindow(const WindowHandle windowHandle) {
       activated = true;
     }
   }
+
+  // Clean up window list
   if (windowList) {
     CFRelease(windowList);
   }
-  
+
+  // Retrieve window info
   NSDictionary *windowInfo = getWindowInfo(windowHandle);
   if (windowInfo == nullptr || windowHandle < 0) {
-    NSLog(@"Could not find window info for window handle %lld", windowHandle);
+    // NSLog(@"Could not find window info for window handle %lld", windowHandle);
     return false;
   }
 
+  // Create application object for accessibility
   pid_t pid = [[windowInfo objectForKey:(id)kCGWindowOwnerPID] intValue];
   AXUIElementRef app = AXUIElementCreateApplication(pid);
 
+  // Get target window title
   NSString *targetWindowTitle = [windowInfo objectForKey:(id)kCGWindowName];
 
   CFArrayRef windowArray;
   AXError error = AXUIElementCopyAttributeValue(app, kAXWindowsAttribute,
                                                 (CFTypeRef *)&windowArray);
+
+  // Iterate through windows to find target and bring it to front
   if (error == kAXErrorSuccess) {
     CFIndex count = CFArrayGetCount(windowArray);
     for (CFIndex i = 0; i < count; i++) {
@@ -155,75 +179,93 @@ bool focusWindow(const WindowHandle windowHandle) {
         if ([title isEqualToString:targetWindowTitle]) {
           AXError error = AXUIElementPerformAction(window, kAXRaiseAction);
           if (error == kAXErrorSuccess) {
-            NSLog(@"Successfully brought the window to front.");
+            // NSLog(@"Successfully brought the window to front.");
           } else {
-            NSLog(@"Failed to bring the window to front.");
-            NSLog(@"AXUIElementSetAttributeValue error: %d", error);
+            // NSLog(@"Failed to bring the window to front.");
+            // NSLog(@"AXUIElementSetAttributeValue error: %d", error);
           }
           break;
         }
       }
+
+      // Clean up window title
       if (windowTitle) {
         CFRelease(windowTitle);
       }
     }
+
+    // Clean up window array
     CFRelease(windowArray);
   } else {
-    NSLog(@"Failed to retrieve the window array.");
+    // NSLog(@"Failed to retrieve the window array.");
   }
 
+  // Clean up application object
   CFRelease(app);
 
-  // log the window title
-  NSString *windowName = windowInfo[(id)kCGWindowName];
-  NSLog(@"attempted to focus window: %@", windowName);
+  // Successfully executed
   return true;
 }
 
-/*
-  This function takes an input windowhandle (a kCGWindowNumber) and a rect (size
-  & origin) and resizes the window to the given rect.
-*/
+/**
+ * Resizes and repositions the window provided via its handle to the specified rectangle.
+ *
+ * This function retrieves window information using the provided window handle, then uses 
+ * macOS Accessibility APIs to resize and reposition the window to fit within the provided 
+ * rectangle dimensions and location.
+ *
+ * @param windowHandle Handle to the window that needs to be resized.
+ * @param rect The rectangle area to which the window should be resized and repositioned.
+ *
+ * @return bool If the function executes without any errors and successfully resizes the 
+ *              window, it returns true. If it can't retrieve window information or 
+ *              windowHandle is invalid, or the window resizing operation fails, it returns false.
+ */
 bool resizeWindow(const WindowHandle windowHandle, const MMRect rect) {
 
+  // Retrieve window info
   NSDictionary *windowInfo = getWindowInfo(windowHandle);
   if (windowInfo == nullptr || windowHandle < 0) {
-    NSLog(@"Could not find window info for window handle %lld", windowHandle);
+    // NSLog(@"Could not find window info for window handle %lld", windowHandle);
     return false;
   }
 
+  // Create application object for accessibility
   pid_t pid = [[windowInfo objectForKey:(id)kCGWindowOwnerPID] intValue];
   AXUIElementRef app = AXUIElementCreateApplication(pid);
   AXUIElementRef window;
+  
   AXError error = AXUIElementCopyAttributeValue(app, kAXFocusedWindowAttribute,
                                                 (CFTypeRef *)&window);
-
+  
+  // If no error occurred, proceed with the resize and reposition operations
   if (error == kAXErrorSuccess) {
+  
+    // Create AXValue objects for position and size
     AXValueRef positionValue = AXValueCreate((AXValueType)kAXValueCGPointType,
                                              (const void *)&rect.origin);
-
-    // extract the size from the rect
-
     CGSize size = CGSizeMake(rect.size.width, rect.size.height);
     AXValueRef sizeValue =
         AXValueCreate((AXValueType)kAXValueCGSizeType, (const void *)&size);
 
+    // Set new position and size
     AXUIElementSetAttributeValue(window, kAXPositionAttribute, positionValue);
     AXUIElementSetAttributeValue(window, kAXSizeAttribute, sizeValue);
 
-    // log the position and size of the window
-
+    // Clean up AXValue and AXUIElement objects
     CFRelease(positionValue);
     CFRelease(sizeValue);
     CFRelease(window);
     CFRelease(app);
 
+    // Return true to indicate successful resize
     return true;
   } else {
-    NSLog(@"Could not resize window with window handle %lld", windowHandle);
+    // NSLog(@"Could not resize window with window handle %lld", windowHandle);
     CFRelease(app);
     return false;
   }
 
   return YES;
 }
+
