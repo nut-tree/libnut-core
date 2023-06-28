@@ -304,11 +304,13 @@ static KeyNames key_names[] =
                 {"subtract",          K_SUBTRACT},
                 {"multiply",          K_MULTIPLY},
                 {"divide",            K_DIVIDE},
+                {"clear",             K_CLEAR},
 
                 {"add",               K_ADD},
                 {"subtract",          K_SUBTRACT},
                 {"multiply",          K_MULTIPLY},
                 {"divide",            K_DIVIDE},
+                {"clear",             K_CLEAR},
 
                 {"lights_mon_up",     K_LIGHTS_MON_UP},
                 {"lights_mon_down",   K_LIGHTS_MON_DOWN},
