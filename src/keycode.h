@@ -184,7 +184,7 @@ enum _MMKeyCode {
 	K_SUBTRACT = XK_KP_Subtract,
 	K_DIVIDE = XK_KP_Divide,
 	K_MULTIPLY  = XK_KP_Multiply,
-	K_CLEAR = K_NOT_A_KEY,
+	K_CLEAR = XK_Clear,
 
 	K_NUMPAD_0 = XK_KP_0,
 	K_NUMPAD_1 = XK_KP_1,
