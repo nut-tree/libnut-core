@@ -666,28 +666,24 @@ Napi::Boolean _resizeWindow(const Napi::CallbackInfo& info) {
     MMRect windowRect = getWindowRect(windowHandle);
     Napi::Object rectObj = info[1].As<Napi::Object>();
 
-    int64_t x = 0;
-    int64_t y = 0;
-    int64_t width = 0;
-    int64_t height = 0;
+    if (!rectObj.Has("x") || !rectObj.Has("y") || !rectObj.Has("width") || !rectObj.Has("height")) {
+        Napi::TypeError::New(env, "Invalid rect object. Must have 'x', 'y', 'width', and 'height' properties.").ThrowAsJavaScriptException();
+        return Napi::Boolean::New(env, false);
+    }
 
-    if (rectObj.Has("x"))
-        x = rectObj.Get("x").As<Napi::Number>().Int64Value();
-    if (rectObj.Has("y"))
-        y = rectObj.Get("y").As<Napi::Number>().Int64Value();
-    if (rectObj.Has("width"))
-        width = rectObj.Get("width").As<Napi::Number>().Int64Value();
-    if (rectObj.Has("height"))
-        height = rectObj.Get("height").As<Napi::Number>().Int64Value();
+    int64_t x = rectObj.Get("x").As<Napi::Number>().Int64Value();
+    int64_t y = rectObj.Get("y").As<Napi::Number>().Int64Value();
+    int64_t width = rectObj.Get("width").As<Napi::Number>().Int64Value();
+    int64_t height = rectObj.Get("height").As<Napi::Number>().Int64Value();
 
     windowRect.origin.x = x;
     windowRect.origin.y = y;
     windowRect.size.width = width;
     windowRect.size.height = height;
 
-    resizeWindow(windowHandle, windowRect);
+    bool resizeResult = resizeWindow(windowHandle, windowRect);
 
-    return Napi::Boolean::New(env, true);
+    return Napi::Boolean::New(env, resizeResult);
 }
 
 
