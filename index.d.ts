@@ -66,10 +66,6 @@ export function focusWindow(handle: number): void
 *
 * @param {number} handle - The handle ID of the window to be resized.
 * @param {Rect} rect - The new size of the window.
-* @param {number} rect.x - The new x coordinate of the window.
-* @param {number} rect.y - The new y coordinate of the window.
-* @param {number} rect.width - The new width of the window.
-* @param {number} rect.height - The new height of the window.
 * @returns {void}
 */
 export function resizeWindow(handle: number, rect: Rect): void 
