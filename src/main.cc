@@ -646,6 +646,49 @@ Napi::String _getWindowTitle(const Napi::CallbackInfo &info) {
     return Napi::String::New(env, getWindowTitle(windowHandle));
 }
 
+Napi::Boolean _focusWindow(const Napi::CallbackInfo &info) {
+    Napi::Env env = info.Env();
+
+    WindowHandle windowHandle = info[0].As<Napi::Number>().Int64Value();
+    
+    bool result = focusWindow(windowHandle);
+    
+    return Napi::Boolean::New(env, result);
+}
+
+Napi::Boolean _resizeWindow(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+
+    if (info.Length() < 2 || !info[0].IsNumber() || !info[1].IsObject()) {
+        Napi::TypeError::New(env, "Invalid arguments. Expected handle (number) and rect (object).").ThrowAsJavaScriptException();
+        return Napi::Boolean::New(env, false);
+    }
+
+    WindowHandle windowHandle = info[0].As<Napi::Number>().Int64Value();
+    MMRect windowRect = getWindowRect(windowHandle);
+    Napi::Object rectObj = info[1].As<Napi::Object>();
+
+    if (!rectObj.Has("x") || !rectObj.Has("y") || !rectObj.Has("width") || !rectObj.Has("height")) {
+        Napi::TypeError::New(env, "Invalid rect object. Must have 'x', 'y', 'width', and 'height' properties.").ThrowAsJavaScriptException();
+        return Napi::Boolean::New(env, false);
+    }
+
+    int64_t x = rectObj.Get("x").As<Napi::Number>().Int64Value();
+    int64_t y = rectObj.Get("y").As<Napi::Number>().Int64Value();
+    int64_t width = rectObj.Get("width").As<Napi::Number>().Int64Value();
+    int64_t height = rectObj.Get("height").As<Napi::Number>().Int64Value();
+
+    windowRect.origin.x = x;
+    windowRect.origin.y = y;
+    windowRect.size.width = width;
+    windowRect.size.height = height;
+
+    bool resizeResult = resizeWindow(windowHandle, windowRect);
+
+    return Napi::Boolean::New(env, resizeResult);
+}
+
+
 Napi::Object _captureScreen(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
 
@@ -727,6 +770,8 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
     exports.Set(Napi::String::New(env, "getActiveWindow"), Napi::Function::New(env, _getActiveWindow));
     exports.Set(Napi::String::New(env, "getWindowRect"), Napi::Function::New(env, _getWindowRect));
     exports.Set(Napi::String::New(env, "getWindowTitle"), Napi::Function::New(env, _getWindowTitle));
+    exports.Set(Napi::String::New(env, "focusWindow"), Napi::Function::New(env, _focusWindow));
+    exports.Set(Napi::String::New(env, "resizeWindow"), Napi::Function::New(env, _resizeWindow));
     exports.Set(Napi::String::New(env, "captureScreen"), Napi::Function::New(env, _captureScreen));
     exports.Set(Napi::String::New(env, "getXDisplayName"), Napi::Function::New(env, _getXDisplayName));
     exports.Set(Napi::String::New(env, "setXDisplayName"), Napi::Function::New(env, _setXDisplayName));
