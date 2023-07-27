@@ -80,6 +80,7 @@ enum _MMKeyCode {
 	K_DIVIDE = kVK_ANSI_KeypadDivide,
 	K_MULTIPLY  = kVK_ANSI_KeypadMultiply,
 	K_CLEAR = kVK_ANSI_KeypadClear,
+	K_ENTER = kVK_ANSI_KeypadEnter,
 
 	K_NUMPAD_0 = kVK_ANSI_Keypad0,
 	K_NUMPAD_1 = kVK_ANSI_Keypad1,
@@ -185,6 +186,7 @@ enum _MMKeyCode {
 	K_DIVIDE = XK_KP_Divide,
 	K_MULTIPLY  = XK_KP_Multiply,
 	K_CLEAR = XK_Clear,
+	K_ENTER = XK_Return,
 
 	K_NUMPAD_0 = XK_KP_0,
 	K_NUMPAD_1 = XK_KP_1,
@@ -287,6 +289,7 @@ enum _MMKeyCode {
 	K_DIVIDE = VK_DIVIDE,
 	K_MULTIPLY  = VK_MULTIPLY,
 	K_CLEAR = VK_CLEAR,
+	K_ENTER = VK_RETURN,
 
 	K_NUMPAD_0 = VK_NUMPAD0,
 	K_NUMPAD_1 = VK_NUMPAD1,
