@@ -65,9 +65,18 @@ export function focusWindow(handle: number): void
 * The window is moved to the x & y coordinates if specified.
 *
 * @param {number} handle - The handle ID of the window to be resized.
-* @param {Rect} rect - The new size of the window.
+* @param {Size} newSize - The new size of the window.
 * @returns {void}
 */
-export function resizeWindow(handle: number, rect: Rect): void 
+export function resizeWindow(handle: number, newSize: Size): void
+
+/**
+ * Moves a window by its handle to the given x and y coordinates.
+ *
+ * @param {number} handle - The handle ID of the window to be resized.
+ * @param {Point} newOrigin - The new size of the window.
+ * @returns {void}
+ */
+export function moveWindow(handle: number, newOrigin: Point): void
 
 export const screen: Screen;

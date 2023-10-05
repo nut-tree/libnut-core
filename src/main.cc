@@ -660,34 +660,49 @@ Napi::Boolean _resizeWindow(const Napi::CallbackInfo& info) {
     Napi::Env env = info.Env();
 
     if (info.Length() < 2 || !info[0].IsNumber() || !info[1].IsObject()) {
-        Napi::TypeError::New(env, "Invalid arguments. Expected handle (number) and rect (object).").ThrowAsJavaScriptException();
-        return Napi::Boolean::New(env, false);
+        throw Napi::TypeError::New(env, "Invalid arguments. Expected handle (number) and rect (object).");
     }
 
     WindowHandle windowHandle = info[0].As<Napi::Number>().Int64Value();
-    MMRect windowRect = getWindowRect(windowHandle);
-    Napi::Object rectObj = info[1].As<Napi::Object>();
+    auto sizeObject = info[1].As<Napi::Object>();
 
-    if (!rectObj.Has("x") || !rectObj.Has("y") || !rectObj.Has("width") || !rectObj.Has("height")) {
-        Napi::TypeError::New(env, "Invalid rect object. Must have 'x', 'y', 'width', and 'height' properties.").ThrowAsJavaScriptException();
-        return Napi::Boolean::New(env, false);
+    if (!sizeObject.Has("width") || !sizeObject.Has("height")) {
+        throw Napi::TypeError::New(env, "Invalid second parameter. Expected object of shape {width: number, height: number}");
     }
 
-    int64_t x = rectObj.Get("x").As<Napi::Number>().Int64Value();
-    int64_t y = rectObj.Get("y").As<Napi::Number>().Int64Value();
-    int64_t width = rectObj.Get("width").As<Napi::Number>().Int64Value();
-    int64_t height = rectObj.Get("height").As<Napi::Number>().Int64Value();
+    auto width = sizeObject.Get("width").As<Napi::Number>().Int64Value();
+    auto height = sizeObject.Get("height").As<Napi::Number>().Int64Value();
 
-    windowRect.origin.x = x;
-    windowRect.origin.y = y;
-    windowRect.size.width = width;
-    windowRect.size.height = height;
+    auto newSize = MMSizeMake(width, height);
 
-    bool resizeResult = resizeWindow(windowHandle, windowRect);
+    auto resizeResult = resizeWindow(windowHandle, newSize);
 
     return Napi::Boolean::New(env, resizeResult);
 }
 
+Napi::Boolean _moveWindow(const Napi::CallbackInfo& info) {
+    Napi::Env env = info.Env();
+
+    if (info.Length() < 2 || !info[0].IsNumber() || !info[1].IsObject()) {
+        throw Napi::TypeError::New(env, "Invalid arguments. Expected handle (number) and point (object).");
+    }
+
+    WindowHandle windowHandle = info[0].As<Napi::Number>().Int64Value();
+    auto rectObj = info[1].As<Napi::Object>();
+
+    if (!rectObj.Has("x") || !rectObj.Has("y")) {
+        throw Napi::TypeError::New(env, "Invalid second parameter. Expected object of shape {x: number, y: number}");
+    }
+
+    auto x = rectObj.Get("x").As<Napi::Number>().Int64Value();
+    auto y = rectObj.Get("y").As<Napi::Number>().Int64Value();
+
+    auto newOrigin = MMPointMake(x, y);
+
+    auto moveResult = moveWindow(windowHandle, newOrigin);
+
+    return Napi::Boolean::New(env, moveResult);
+}
 
 Napi::Object _captureScreen(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
@@ -772,6 +787,7 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
     exports.Set(Napi::String::New(env, "getWindowTitle"), Napi::Function::New(env, _getWindowTitle));
     exports.Set(Napi::String::New(env, "focusWindow"), Napi::Function::New(env, _focusWindow));
     exports.Set(Napi::String::New(env, "resizeWindow"), Napi::Function::New(env, _resizeWindow));
+    exports.Set(Napi::String::New(env, "moveWindow"), Napi::Function::New(env, _moveWindow));
     exports.Set(Napi::String::New(env, "captureScreen"), Napi::Function::New(env, _captureScreen));
     exports.Set(Napi::String::New(env, "getXDisplayName"), Napi::Function::New(env, _getXDisplayName));
     exports.Set(Napi::String::New(env, "setXDisplayName"), Napi::Function::New(env, _setXDisplayName));
@@ -779,4 +795,4 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
     return exports;
 }
 
-NODE_API_MODULE(libnut, Init)
+NODE_API_MODULE(libnut, Init);

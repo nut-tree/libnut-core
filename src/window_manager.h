@@ -24,14 +24,14 @@ WindowHandle getActiveWindow();
  * `getWindowTitle` returns an std::string holding the window title for a window adressed via its window handle.
  * The respective window handle may be aquired via `getWindows` or `getActiveWindow`
  */
-std::string getWindowTitle(const WindowHandle windowHandle);
+std::string getWindowTitle(WindowHandle windowHandle);
 /**
  * `getWindowRect` returns an MMRect struct representing the window's size and position.
  * Windows are adressed via their window handle.
  * That is, a window's top left position given as `x` and `y` coordinate, as well as it's window size given as `width` and `height`
  * The respective window handle may be aquired via `getWindows` or `getActiveWindow`
  */
-MMRect getWindowRect(const WindowHandle windowHandle);
+MMRect getWindowRect(WindowHandle windowHandle);
 
 /**
  * `focusWindow` focuses on the window specified by its window handle.
@@ -40,7 +40,18 @@ MMRect getWindowRect(const WindowHandle windowHandle);
  * @param windowHandle The window handle of the window to be focused.
  * @return Returns a boolean indicating whether the window focus operation was successful.
  */
-bool focusWindow(const WindowHandle windowHandle);
+bool focusWindow(WindowHandle windowHandle);
+
+/**
+ * `resizeWindow` resizes the window specified by its window handle to the given width and height.
+ * The respective window handle may be acquired via `getWindows` or `getActiveWindow`.
+ * @param windowHandle The window handle of the window to be resized.
+ * @param newSize The new size of the window.
+ * @param newSize.width The new width of the window.
+ * @param newSize.height The new height of the window.
+ * @return Returns a boolean indicating whether the window resize operation was successful.
+ */
+bool resizeWindow(WindowHandle windowHandle, MMSize newSize);
 
 /**
  * `resizeWindow` resizes the window specified by its window handle to the given width and height.
@@ -53,7 +64,6 @@ bool focusWindow(const WindowHandle windowHandle);
  * @param rect.height The new height of the window.
  * @return Returns a boolean indicating whether the window resize operation was successful.
  */
-bool resizeWindow(const WindowHandle windowHandle, const MMRect rect);
-
+bool moveWindow(WindowHandle windowHandle, MMPoint newOrigin);
 
 #endif
