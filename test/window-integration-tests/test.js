@@ -67,11 +67,11 @@ describe("getActiveWindow", () => {
         // GIVEN
         const xPosition = 42;
         const yPosition = 25;
-        await app.browserWindow.setPosition(xPosition, yPosition);
-        await sleep(1000);
 
         // WHEN
         const activeWindowHandle = libnut.getActiveWindow();
+        libnut.moveWindow(activeWindowHandle, { x: xPosition, y: yPosition });
+        await sleep(1000);
         const activeWindowRect = libnut.getWindowRect(activeWindowHandle);
 
         // THEN
@@ -83,11 +83,11 @@ describe("getActiveWindow", () => {
         // GIVEN
         const newWidth = 400;
         const newHeight = 250;
-        await app.browserWindow.setSize(newWidth, newHeight);
-        await sleep(1000);
 
         // WHEN
         const activeWindowHandle = libnut.getActiveWindow();
+        libnut.resizeWindow(activeWindowHandle, { width: newWidth, height: newHeight });
+        await sleep(1000);
         const activeWindowRect = libnut.getWindowRect(activeWindowHandle);
 
         // THEN
