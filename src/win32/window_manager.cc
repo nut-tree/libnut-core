@@ -66,16 +66,38 @@ bool focusWindow(const WindowHandle windowHandle) {
     return false;
 }
 
-bool resizeWindow(const WindowHandle windowHandle, const MMRect rect) {
+bool resizeWindow(const WindowHandle windowHandle, const MMSize newSize) {
     HWND hWnd = reinterpret_cast<HWND>(windowHandle);
     if (IsWindow(hWnd)) {
         //size
-        int width = rect.size.width;
-        int height = rect.size.height;
+        auto width = newSize.width;
+        auto height = newSize.height;
+
+        RECT currentPosition;
+        GetWindowRect(reinterpret_cast<HWND>(windowHandle), &currentPosition);
 
         //origin
-        int x = rect.origin.x;
-        int y = rect.origin.y;
+        auto x = currentPosition.left;
+        auto y = currentPosition.top;
+
+        return MoveWindow(hWnd, x, y, width, height, TRUE);
+    }
+    return false;
+}
+
+bool moveWindow(const WindowHandle windowHandle, const MMPoint newOrigin) {
+    HWND hWnd = reinterpret_cast<HWND>(windowHandle);
+    if (IsWindow(hWnd)) {
+        // origin
+        auto x = newOrigin.x;
+        auto y = newOrigin.y;
+
+        RECT currentPosition;
+        GetWindowRect(reinterpret_cast<HWND>(windowHandle), &currentPosition);
+
+        // size
+        auto width = currentPosition.right - currentPosition.left;
+        auto height = currentPosition.bottom - currentPosition.top;
 
         return MoveWindow(hWnd, x, y, width, height, TRUE);
     }
