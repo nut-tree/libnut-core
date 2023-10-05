@@ -1,7 +1,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include "../window_manager.h"
-#include <iostream>
 extern "C" {
     #include "../xdisplay.h"
 }
@@ -84,28 +83,21 @@ bool focusWindow(const WindowHandle windowHandle) {
 }
 
 bool resizeWindow(const WindowHandle windowHandle, const MMSize newSize) {
-    std::cout << "resizing" << std::endl;
     Display* display = XGetMainDisplay();
     if (display != NULL && windowHandle >= 0) {
-        XResizeWindow(display, windowHandle, newSize.width, newSize.height);
+        auto status = XResizeWindow(display, windowHandle, newSize.width, newSize.height);
         XFlush(display);
-            std::cout << "resized" << std::endl;
-
-        return true;
+        return status;
     }
     return false;
 }
 
 bool moveWindow(const WindowHandle windowHandle, const MMPoint newOrigin) {
-        std::cout << "moving" << std::endl;
-
     Display* display = XGetMainDisplay();
     if (display != NULL && windowHandle >= 0) {
-        XMoveWindow(display, windowHandle, newOrigin.x, newOrigin.y);
+        auto status = XMoveWindow(display, windowHandle, newOrigin.x, newOrigin.y);
         XFlush(display);
-                std::cout << "moved" << std::endl;
-
-        return true;
+        return status;
     }
     return false;
 }
