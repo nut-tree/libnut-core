@@ -1,6 +1,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include "../window_manager.h"
+#include <iostream>
 extern "C" {
     #include "../xdisplay.h"
 }
@@ -82,23 +83,28 @@ bool focusWindow(const WindowHandle windowHandle) {
     return false;
 }
 
-bool resizeWindow(const WindowHandle windowHandle, const MMRect& rect) {
+bool resizeWindow(const WindowHandle windowHandle, const MMSize newSize) {
+    std::cout << "resizing" << std::endl;
     Display* display = XGetMainDisplay();
     if (display != NULL && windowHandle >= 0) {
-        XWindowChanges changes;
-        
-        //size
-        changes.width = rect.size.width;
-        changes.height = rect.size.height;
-        
-        //origin
-        changes.x = rect.origin.x;
-        changes.y = rect.origin.y;
-    
-        // Resize and move the window
-        XConfigureWindow(display, windowHandle, CWX | CWY | CWWidth | CWHeight, &changes);
+        XResizeWindow(display, windowHandle, newSize.width, newSize.height);
         XFlush(display);
-        
+            std::cout << "resized" << std::endl;
+
+        return true;
+    }
+    return false;
+}
+
+bool moveWindow(const WindowHandle windowHandle, const MMPoint newOrigin) {
+        std::cout << "moving" << std::endl;
+
+    Display* display = XGetMainDisplay();
+    if (display != NULL && windowHandle >= 0) {
+        XMoveWindow(display, windowHandle, newOrigin.x, newOrigin.y);
+        XFlush(display);
+                std::cout << "moved" << std::endl;
+
         return true;
     }
     return false;
