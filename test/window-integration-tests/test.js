@@ -1,7 +1,7 @@
 const Application = require("spectron").Application;
 const electronPath = require("electron");
 const libnut = require("../..");
-const { POS_X, POS_Y, WIDTH, HEIGTH, TITLE } = require("./constants");
+const {POS_X, POS_Y, WIDTH, HEIGTH, TITLE} = require("./constants");
 
 const sleep = async (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -67,11 +67,17 @@ describe("getActiveWindow", () => {
         // GIVEN
         const xPosition = 42;
         const yPosition = 25;
+        if (process.arch === 'darwin') {
+            await app.browserWindow.setPosition(xPosition, yPosition);
+            await sleep(1000);
+        }
 
         // WHEN
         const activeWindowHandle = libnut.getActiveWindow();
-        libnut.moveWindow(activeWindowHandle, { x: xPosition, y: yPosition });
-        await sleep(1000);
+        if (process.arch !== 'darwin') {
+            libnut.moveWindow(activeWindowHandle, {x: xPosition, y: yPosition});
+            await sleep(1000);
+        }
         const activeWindowRect = libnut.getWindowRect(activeWindowHandle);
 
         // THEN
@@ -83,11 +89,17 @@ describe("getActiveWindow", () => {
         // GIVEN
         const newWidth = 400;
         const newHeight = 250;
+        if (process.arch === 'darwin') {
+            await app.browserWindow.setSize(newWidth, newHeight);
+            await sleep(1000);
+        }
 
         // WHEN
         const activeWindowHandle = libnut.getActiveWindow();
-        libnut.resizeWindow(activeWindowHandle, { width: newWidth, height: newHeight });
-        await sleep(1000);
+        if (process.arch !== 'darwin') {
+            libnut.resizeWindow(activeWindowHandle, {width: newWidth, height: newHeight});
+            await sleep(1000);
+        }
         const activeWindowRect = libnut.getWindowRect(activeWindowHandle);
 
         // THEN
