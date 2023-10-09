@@ -1,5 +1,6 @@
 #include "../window_manager.h"
 #import <AppKit/AppKit.h>
+#import <AppKit/NSAccessibility.h>
 #import <ApplicationServices/ApplicationServices.h>
 #import <CoreGraphics/CGWindow.h>
 #import <Foundation/Foundation.h>
@@ -25,6 +26,44 @@ NSDictionary *getWindowInfo(int64_t windowHandle) {
     }
 
     return nullptr;
+}
+
+AXUIElementRef getWindowByHandle(const WindowHandle windowHandle, pid_t *outPid) {
+    // Collect list of on-screen windows
+    CGWindowListOption listOptions =
+            kCGWindowListOptionOnScreenOnly | kCGWindowListExcludeDesktopElements;
+    CFArrayRef windowList =
+            CGWindowListCopyWindowInfo(listOptions, kCGNullWindowID);
+
+    AXUIElementRef targetWindow = nullptr;
+    // Look for matching window
+    for (NSDictionary *info in (NSArray *) windowList) {
+        NSNumber *windowNumber = info[(id) kCGWindowNumber];
+        if ([windowNumber intValue] == windowHandle) {
+            *outPid = [info[(id) kCGWindowOwnerPID] intValue];
+            AXUIElementRef app = AXUIElementCreateApplication(*outPid);
+
+            CFArrayRef windowArray;
+            AXError error = AXUIElementCopyAttributeValue(app, kAXWindowsAttribute, (CFTypeRef *) &windowArray);
+            if (error == kAXErrorSuccess) {
+                CFIndex count = CFArrayGetCount(windowArray);
+                for (CFIndex i = 0; i < count; i++) {
+                    auto window = static_cast<AXUIElementRef>(CFArrayGetValueAtIndex(windowArray, i));
+                    // Your logic here to match the window with the handle
+                    // Set targetWindow = window if it matches
+                }
+                CFRelease(windowArray);
+            }
+            CFRelease(app);
+            break;
+        }
+    }
+
+    if (windowList) {
+        CFRelease(windowList);
+    }
+
+    return targetWindow;
 }
 
 WindowHandle getActiveWindow() {
@@ -278,8 +317,9 @@ bool moveWindow(const WindowHandle windowHandle, const MMPoint newOrigin) {
     if (error == kAXErrorSuccess) {
 
         // Create AXValue objects for position and size
+        CGPoint point = CGPointMake(newOrigin.x, newOrigin.y);
         AXValueRef positionValue = AXValueCreate((AXValueType) kAXValueCGPointType,
-                                                 (const void *) &newOrigin);
+                                                 (const void *) &point);
 
         // Set new position and size
         AXUIElementSetAttributeValue(window, kAXPositionAttribute, positionValue);

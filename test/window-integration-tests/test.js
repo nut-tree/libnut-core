@@ -69,9 +69,8 @@ describe("getActiveWindow", () => {
         // WHEN
         const activeWindowHandle = libnut.getActiveWindow();
         libnut.moveWindow(activeWindowHandle, {x: xPosition, y: yPosition});
-        await sleep(10000);
+        await sleep(100);
         const activeWindowRect = libnut.getWindowRect(activeWindowHandle);
-        console.log(activeWindowRect);
 
         // THEN
         expect(activeWindowRect.x).toBe(xPosition);
@@ -86,9 +85,8 @@ describe("getActiveWindow", () => {
         // WHEN
         const activeWindowHandle = libnut.getActiveWindow();
         libnut.resizeWindow(activeWindowHandle, {width: newWidth, height: newHeight});
-        await sleep(1000);
+        await sleep(100);
         const activeWindowRect = libnut.getWindowRect(activeWindowHandle);
-        console.log(activeWindowRect);
 
         // THEN
         expect(activeWindowRect.width).toBe(newWidth);
