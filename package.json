@@ -1,6 +1,6 @@
 {
   "name": "libnut",
-  "version": "2.5.2",
+  "version": "2.6.0",
   "description": "libnut is an N-API module for desktop automation with node",
   "main": "index.js",
   "typings": "index.d.ts",
@@ -14,9 +14,9 @@
   },
   "homepage": "https://nutjs.dev",
   "author": {
-    "name": "Simon Hofmann",
-    "email": "kontakt@s1h.org",
-    "url": "https://s1h.org"
+    "name": "dry Software UG (haftungsbeschränkt)",
+    "email": "info@dry.software",
+    "url": "https://dry.software"
   },
   "bugs": {
     "url": "https://github.com/nut-tree/nut.js/issues"

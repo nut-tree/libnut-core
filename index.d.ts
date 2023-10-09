@@ -52,4 +52,31 @@ export function getActiveWindow(): number;
 export function getWindowRect(handle: number): Rect;
 export function getWindowTitle(handle: number): string;
 
+/**
+ * Sets the focus to a specific window using its handle.
+ *
+ * @param {number} handle - The handle ID of the window to be focused.
+ * @returns {void}
+ */
+export function focusWindow(handle: number): void
+
+/**
+* Resizes a window by its handle to the given width and height.
+* The window is moved to the x & y coordinates if specified.
+*
+* @param {number} handle - The handle ID of the window to be resized.
+* @param {Size} newSize - The new size of the window.
+* @returns {void}
+*/
+export function resizeWindow(handle: number, newSize: Size): void
+
+/**
+ * Moves a window by its handle to the given x and y coordinates.
+ *
+ * @param {number} handle - The handle ID of the window to be resized.
+ * @param {Point} newOrigin - The new size of the window.
+ * @returns {void}
+ */
+export function moveWindow(handle: number, newOrigin: Point): void
+
 export const screen: Screen;

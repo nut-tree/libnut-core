@@ -1,23 +1,20 @@
 {
   "name": "libnut-test",
-  "version": "2.0.0",
+  "version": "2.6.0",
   "description": "libnut test package",
   "main": "index.js",
   "typings": "index.d.ts",
   "scripts": {
-    "test": "run-script-os",
-    "test:it": "run-script-os",
-    "test:darwin:linux": "jasmine *.js",
-    "test:win32": "jasmine *.js",
-    "test:it:darwin:linux": "jasmine integration/*.js",
-    "test:it:win32": "jasmine integration/*.js"
+    "test": "jasmine *.js"
   },
-  "author": "Simon Hofmann <dev@simon-hofmann.org>",
+  "author": {
+    "name": "dry Software UG (haftungsbeschränkt)",
+    "email": "info@dry.software",
+    "url": "https://dry.software"
+  },
   "license": "Apache-2.0",
   "devDependencies": {
-    "jasmine": "3.5.0",
-    "run-script-os": "^1.1.1",
-    "targetpractice": "0.0.7"
+    "jasmine": "5.1.0"
   },
   "engines": {
     "node": ">=10.15.3"

@@ -51,3 +51,55 @@ std::string getWindowTitle(const WindowHandle windowHandle) {
     }
     return "";
 }
+
+bool focusWindow(const WindowHandle windowHandle) {
+    HWND hWnd = reinterpret_cast<HWND>(windowHandle);
+    if (IsWindow(hWnd)) {
+        // Restore the window if it's minimized
+        if (IsIconic(hWnd)) {
+            ShowWindow(hWnd, SW_RESTORE);
+        }
+        
+        // Try to set the window to the foreground
+        return SetForegroundWindow(hWnd);
+    }
+    return false;
+}
+
+bool resizeWindow(const WindowHandle windowHandle, const MMSize newSize) {
+    HWND hWnd = reinterpret_cast<HWND>(windowHandle);
+    if (IsWindow(hWnd)) {
+        //size
+        auto width = newSize.width;
+        auto height = newSize.height;
+
+        RECT currentPosition;
+        GetWindowRect(reinterpret_cast<HWND>(windowHandle), &currentPosition);
+
+        //origin
+        auto x = currentPosition.left;
+        auto y = currentPosition.top;
+
+        return MoveWindow(hWnd, x, y, width, height, TRUE);
+    }
+    return false;
+}
+
+bool moveWindow(const WindowHandle windowHandle, const MMPoint newOrigin) {
+    HWND hWnd = reinterpret_cast<HWND>(windowHandle);
+    if (IsWindow(hWnd)) {
+        // origin
+        auto x = newOrigin.x;
+        auto y = newOrigin.y;
+
+        RECT currentPosition;
+        GetWindowRect(reinterpret_cast<HWND>(windowHandle), &currentPosition);
+
+        // size
+        auto width = currentPosition.right - currentPosition.left;
+        auto height = currentPosition.bottom - currentPosition.top;
+
+        return MoveWindow(hWnd, x, y, width, height, TRUE);
+    }
+    return false;
+}
