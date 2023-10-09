@@ -82,24 +82,22 @@ bool focusWindow(const WindowHandle windowHandle) {
     return false;
 }
 
-bool resizeWindow(const WindowHandle windowHandle, const MMRect& rect) {
+bool resizeWindow(const WindowHandle windowHandle, const MMSize newSize) {
     Display* display = XGetMainDisplay();
     if (display != NULL && windowHandle >= 0) {
-        XWindowChanges changes;
-        
-        //size
-        changes.width = rect.size.width;
-        changes.height = rect.size.height;
-        
-        //origin
-        changes.x = rect.origin.x;
-        changes.y = rect.origin.y;
-    
-        // Resize and move the window
-        XConfigureWindow(display, windowHandle, CWX | CWY | CWWidth | CWHeight, &changes);
+        auto status = XResizeWindow(display, windowHandle, newSize.width, newSize.height);
         XFlush(display);
-        
-        return true;
+        return status;
+    }
+    return false;
+}
+
+bool moveWindow(const WindowHandle windowHandle, const MMPoint newOrigin) {
+    Display* display = XGetMainDisplay();
+    if (display != NULL && windowHandle >= 0) {
+        auto status = XMoveWindow(display, windowHandle, newOrigin.x, newOrigin.y);
+        XFlush(display);
+        return status;
     }
     return false;
 }
