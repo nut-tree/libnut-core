@@ -7,6 +7,7 @@
 #include "screen.h"
 #include "screengrab.h"
 #include "window_manager.h"
+#include <iostream>
 
 int mouseDelay = 10;
 int keyboardDelay = 10;
@@ -688,14 +689,15 @@ Napi::Boolean _moveWindow(const Napi::CallbackInfo& info) {
     }
 
     WindowHandle windowHandle = info[0].As<Napi::Number>().Int64Value();
-    auto rectObj = info[1].As<Napi::Object>();
 
+    auto rectObj = info[1].As<Napi::Object>();
     if (!rectObj.Has("x") || !rectObj.Has("y")) {
         throw Napi::TypeError::New(env, "Invalid second parameter. Expected object of shape {x: number, y: number}");
     }
 
     auto x = rectObj.Get("x").As<Napi::Number>().Int64Value();
     auto y = rectObj.Get("y").As<Napi::Number>().Int64Value();
+    std::cout << "moving to " << x << ", " << y << std::endl;
 
     auto newOrigin = MMPointMake(x, y);
 

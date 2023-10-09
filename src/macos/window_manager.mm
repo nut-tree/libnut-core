@@ -200,11 +200,7 @@ bool focusWindow(const WindowHandle windowHandle) {
 }
 
 /**
- * Resizes and repositions the window provided via its handle to the specified rectangle.
- *
- * This function retrieves window information using the provided window handle, then uses 
- * macOS Accessibility APIs to resize and reposition the window to fit within the provided 
- * rectangle dimensions and location.
+ * Resizes the window provided via its handle to the specified width/height.
  *
  * @param windowHandle Handle to the window that needs to be resized.
  * @param newSize The width/height to which the window should be resized.
@@ -255,11 +251,7 @@ bool resizeWindow(const WindowHandle windowHandle, const MMSize newSize) {
 }
 
 /**
- * Resizes and repositions the window provided via its handle to the specified rectangle.
- *
- * This function retrieves window information using the provided window handle, then uses
- * macOS Accessibility APIs to resize and reposition the window to fit within the provided
- * rectangle dimensions and location.
+ * Moves the window provided via its handle to the specified point.
  *
  * @param windowHandle Handle to the window that needs to be resized.
  * @param newOrigin The x/y coordinates to which the window should be repositioned.
@@ -280,8 +272,7 @@ bool moveWindow(const WindowHandle windowHandle, const MMPoint newOrigin) {
     AXUIElementRef app = AXUIElementCreateApplication(pid);
     AXUIElementRef window;
 
-    AXError error = AXUIElementCopyAttributeValue(app, kAXFocusedWindowAttribute,
-                                                  (CFTypeRef *) &window);
+    AXError error = AXUIElementCopyAttributeValue(app, kAXFocusedWindowAttribute, (CFTypeRef *) &window);
 
     // If no error occurred, proceed with the resize and reposition operations
     if (error == kAXErrorSuccess) {
@@ -299,12 +290,12 @@ bool moveWindow(const WindowHandle windowHandle, const MMPoint newOrigin) {
         CFRelease(app);
 
         // Return true to indicate successful resize
-        return true;
+        return YES;
     } else {
         // NSLog(@"Could not resize window with window handle %lld", windowHandle);
         CFRelease(app);
         return false;
     }
 
-    return true;
+    return YES;
 }

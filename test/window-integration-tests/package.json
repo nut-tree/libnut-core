@@ -12,9 +12,10 @@
     "test": "jest"
   },
   "license": "MIT",
-  "dependencies": {
-    "electron": "9.4.0",
-    "jest": "26.2.2",
-    "spectron": "11.1.0"
+  "devDependencies": {
+    "@playwright/test": "1.38.1",
+    "electron": "^26.3.0",
+    "jest": "^29.7.0",
+    "jest-playwright-preset": "^3.0.1"
   }
 }

@@ -1,5 +1,4 @@
-const Application = require("spectron").Application;
-const electronPath = require("electron");
+const { _electron: electron } = require('playwright');
 const libnut = require("../..");
 const {POS_X, POS_Y, WIDTH, HEIGTH, TITLE} = require("./constants");
 
@@ -8,21 +7,20 @@ const sleep = async (ms) => {
 };
 
 let app;
+let page;
+let windowHandle;
+
 const APP_TIMEOUT = 10000;
-jest.setTimeout(3 * APP_TIMEOUT)
 
 beforeEach(async () => {
-    app = new Application({
-        path: electronPath,
-        args: ['main.js'],
-        startTimeout: APP_TIMEOUT,
-        waitTimeout: APP_TIMEOUT,
+    app = await electron.launch({args: ['main.js']});
+    page = await app.firstWindow({timeout: APP_TIMEOUT});
+    windowHandle = await app.browserWindow(page);
+    await windowHandle.evaluate((win) => {
+        win.minimize();
+        win.restore();
+        win.focus();
     });
-    await app.start();
-    await app.client.waitUntilWindowLoaded();
-    await app.browserWindow.minimize();
-    await app.browserWindow.restore();
-    await app.browserWindow.focus();
 });
 
 describe("getWindows", () => {
@@ -65,20 +63,15 @@ describe("getActiveWindow", () => {
 
     it("should determine correct coordinates for our application after moving the window", async () => {
         // GIVEN
-        const xPosition = 42;
-        const yPosition = 25;
-        if (process.arch === 'darwin') {
-            await app.browserWindow.setPosition(xPosition, yPosition);
-            await sleep(1000);
-        }
+        const xPosition = 250;
+        const yPosition = 300;
 
         // WHEN
         const activeWindowHandle = libnut.getActiveWindow();
-        if (process.arch !== 'darwin') {
-            libnut.moveWindow(activeWindowHandle, {x: xPosition, y: yPosition});
-            await sleep(1000);
-        }
+        libnut.moveWindow(activeWindowHandle, {x: xPosition, y: yPosition});
+        await sleep(10000);
         const activeWindowRect = libnut.getWindowRect(activeWindowHandle);
+        console.log(activeWindowRect);
 
         // THEN
         expect(activeWindowRect.x).toBe(xPosition);
@@ -87,20 +80,15 @@ describe("getActiveWindow", () => {
 
     it("should determine correct window size for our application after resizing the window", async () => {
         // GIVEN
-        const newWidth = 400;
-        const newHeight = 250;
-        if (process.arch === 'darwin') {
-            await app.browserWindow.setSize(newWidth, newHeight);
-            await sleep(1000);
-        }
+        const newWidth = 800;
+        const newHeight = 650;
 
         // WHEN
         const activeWindowHandle = libnut.getActiveWindow();
-        if (process.arch !== 'darwin') {
-            libnut.resizeWindow(activeWindowHandle, {width: newWidth, height: newHeight});
-            await sleep(1000);
-        }
+        libnut.resizeWindow(activeWindowHandle, {width: newWidth, height: newHeight});
+        await sleep(1000);
         const activeWindowRect = libnut.getWindowRect(activeWindowHandle);
+        console.log(activeWindowRect);
 
         // THEN
         expect(activeWindowRect.width).toBe(newWidth);
@@ -109,7 +97,7 @@ describe("getActiveWindow", () => {
 });
 
 afterEach(async () => {
-    if (app && app.isRunning()) {
-        await app.stop();
+    if (app) {
+        await app.close();
     }
 });
