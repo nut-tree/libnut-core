@@ -697,7 +697,6 @@ Napi::Boolean _moveWindow(const Napi::CallbackInfo& info) {
 
     auto x = rectObj.Get("x").As<Napi::Number>().Int64Value();
     auto y = rectObj.Get("y").As<Napi::Number>().Int64Value();
-    std::cout << "moving to " << x << ", " << y << std::endl;
 
     auto newOrigin = MMPointMake(x, y);
 

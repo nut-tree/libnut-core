@@ -9,13 +9,14 @@
     "url": "https://simon-hofmann.org"
   },
   "scripts": {
+    "pretest": "npx playwright install --with-deps",
     "test": "jest"
   },
   "license": "MIT",
   "devDependencies": {
     "@playwright/test": "1.38.1",
-    "electron": "^26.3.0",
-    "jest": "^29.7.0",
+    "electron": "26.3.0",
+    "jest": "29.7.0",
     "jest-playwright-preset": "^3.0.1"
   }
 }
