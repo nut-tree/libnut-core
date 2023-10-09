@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.6.0
+
+- Feature: Move/focus/resize window [(#18)](https://github.com/nut-tree/libnut-core/issues/18) Contributed by [@ekrenzin](https://github.com/ekrenzin)
+- Enhancement: Adding support for numpad 'clear' key [PR #166)](https://github.com/nut-tree/libnut-core/pull/166) Contributed by [@smithkyle](https://github.com/smithkyle)
+- Maintenance: Version upgrades, CI updates, etc.
+
 ## 2.5.2
 
 - Bugfix: Screen capture broken on macOS 13 [(nut-tree/nut.js#469)](https://github.com/nut-tree/nut.js/issues/469)
