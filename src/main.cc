@@ -319,6 +319,16 @@ static KeyNames key_names[] =
                 {"lights_kbd_up",     K_LIGHTS_KBD_UP},
                 {"lights_kbd_down",   K_LIGHTS_KBD_DOWN},
 
+                {"oem_1",             K_OEM_1},
+                {"oem_2",             K_OEM_2},
+                {"oem_3",             K_OEM_3},
+                {"oem_4",             K_OEM_4},
+                {"oem_5",             K_OEM_5},
+                {"oem_6",             K_OEM_6},
+                {"oem_7",             K_OEM_7},
+                {"oem_8",             K_OEM_8},
+                {"oem_102",           K_OEM_102},
+
                 {NULL,                K_NOT_A_KEY} /* end marker */
         };
 
