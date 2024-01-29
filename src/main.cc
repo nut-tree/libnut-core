@@ -220,7 +220,7 @@ static KeyNames key_names[] =
         {
                 {"backspace",         K_BACKSPACE},
                 {"delete",            K_DELETE},
-                {"enter",             K_RETURN},
+                {"return",            K_RETURN},
                 {"tab",               K_TAB},
                 {"escape",            K_ESCAPE},
                 {"up",                K_UP},
@@ -306,12 +306,7 @@ static KeyNames key_names[] =
                 {"multiply",          K_MULTIPLY},
                 {"divide",            K_DIVIDE},
                 {"clear",             K_CLEAR},
-
-                {"add",               K_ADD},
-                {"subtract",          K_SUBTRACT},
-                {"multiply",          K_MULTIPLY},
-                {"divide",            K_DIVIDE},
-                {"clear",             K_CLEAR},
+                {"enter",             K_ENTER},
 
                 {"lights_mon_up",     K_LIGHTS_MON_UP},
                 {"lights_mon_down",   K_LIGHTS_MON_DOWN},
