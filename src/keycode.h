@@ -307,6 +307,7 @@ enum _MMKeyCode {
     K_DIVIDE = XK_KP_Divide,
     K_MULTIPLY = XK_KP_Multiply,
     K_ENTER = XK_KP_Enter,
+    K_CLEAR = XK_Clear,
 
     K_0 = XK_0,
     K_1 = XK_1,
@@ -318,8 +319,6 @@ enum _MMKeyCode {
     K_7 = XK_7,
     K_8 = XK_8,
     K_9 = XK_9,
-	K_ENTER = XK_Return,
-    K_CLEAR = XK_Clear,
 
     K_NUMPAD_0 = XK_KP_0,
     K_NUMPAD_1 = XK_KP_1,
@@ -529,7 +528,6 @@ enum _MMKeyCode {
   K_7 = VK_7,
   K_8 = VK_8,
   K_9 = VK_9,
-	K_ENTER = VK_RETURN,
 
   K_NUMPAD_0 = VK_NUMPAD0,
   K_NUMPAD_1 = VK_NUMPAD1,
