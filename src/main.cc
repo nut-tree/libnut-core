@@ -361,6 +361,8 @@ int CheckKeyFlags(std::string &flagString, MMKeyFlags *flags) {
         *flags = MOD_CONTROL;
     } else if (flagString == "shift" || flagString == "right_shift") {
         *flags = MOD_SHIFT;
+    } else if (flagString == "fn") {
+        *flags = MOD_FUNCTION;
     } else if (flagString == "none") {
         *flags = MOD_NONE;
     } else {
