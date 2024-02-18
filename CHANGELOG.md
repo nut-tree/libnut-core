@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+# 2.7.0
+- Enhancement: Adding support for numpad 'Enter' key [PR #168)](https://github.com/nut-tree/libnut-core/pull/168) Contributed by [@smithkyle](https://github.com/smithkyle)
+- Enhancement: Adding support for 'Fn' modifier key [PR #169)](https://github.com/nut-tree/libnut-core/pull/169) Contributed by [@smithkyle](https://github.com/smithkyle)
+- Maintenance: Version upgrades, CI updates, etc.
+
 ## 2.6.0
 
 - Feature: Move/focus/resize window [(#18)](https://github.com/nut-tree/libnut-core/issues/18) Contributed by [@ekrenzin](https://github.com/ekrenzin)
