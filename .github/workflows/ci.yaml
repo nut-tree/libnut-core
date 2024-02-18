@@ -11,13 +11,13 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-20.04, macos-11, windows-2019 ]
-        node: [ 16 ]
+        node: [ 18 ]
     runs-on: ${{matrix.os}}
     steps:
       - name: Set up Git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.1.1
       - name: Set up node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4.0.2
         with:
           node-version: ${{matrix.node}}
       - name: Configure Linux environment
