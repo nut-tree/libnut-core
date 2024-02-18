@@ -15,12 +15,13 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-20.04, macos-11, windows-2019 ]
+        node: [ 18 ]
     runs-on: ${{matrix.os}}
     steps:
       - name: Set up Git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.1.1
       - name: Set up node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4.0.2
         with:
           node-version: ${{matrix.node}}
       - name: Configure Linux environment
@@ -50,11 +51,11 @@ jobs:
     runs-on: ${{matrix.os}}
     steps:
       - name: Set up Git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.1.1
       - name: Set up node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4.0.2
         with:
-          node-version: 14
+          node-version: 18
       - name: Configure Linux environment
         if: ${{matrix.os == 'ubuntu-20.04'}}
         run: sudo apt-get install -y cmake libx11-dev zlib1g-dev libpng-dev libxtst-dev build-essential
@@ -82,5 +83,5 @@ jobs:
         uses: peter-evans/repository-dispatch@v1
         with:
           token: ${{ secrets.SNAPSHOT_DISPATCH_TOKEN }}
-          repository: nut-tree/libnut-install
+          repository: nut-tree/nut.js
           event-type: snapshot-release

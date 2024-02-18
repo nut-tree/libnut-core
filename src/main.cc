@@ -220,17 +220,73 @@ static KeyNames key_names[] =
         {
                 {"backspace",         K_BACKSPACE},
                 {"delete",            K_DELETE},
-                {"enter",             K_RETURN},
+                {"return",            K_RETURN},
                 {"tab",               K_TAB},
                 {"escape",            K_ESCAPE},
+
                 {"up",                K_UP},
                 {"down",              K_DOWN},
                 {"right",             K_RIGHT},
                 {"left",              K_LEFT},
+
                 {"home",              K_HOME},
                 {"end",               K_END},
                 {"pageup",            K_PAGEUP},
                 {"pagedown",          K_PAGEDOWN},
+
+                {"0",                 K_0},
+                {"1",                 K_1},
+                {"2",                 K_2},
+                {"3",                 K_3},
+                {"4",                 K_4},
+                {"5",                 K_5},
+                {"6",                 K_6},
+                {"7",                 K_7},
+                {"8",                 K_8},
+                {"9",                 K_9},
+
+                {"a",                 K_A},
+                {"b",                 K_B},
+                {"c",                 K_C},
+                {"d",                 K_D},
+                {"e",                 K_E},
+                {"f",                 K_F},
+                {"g",                 K_G},
+                {"h",                 K_H},
+                {"i",                 K_I},
+                {"j",                 K_J},
+                {"k",                 K_K},
+                {"l",                 K_L},
+                {"m",                 K_M},
+                {"n",                 K_N},
+                {"o",                 K_O},
+                {"p",                 K_P},
+                {"q",                 K_Q},
+                {"r",                 K_R},
+                {"s",                 K_S},
+                {"t",                 K_T},
+                {"u",                 K_U},
+                {"v",                 K_V},
+                {"w",                 K_W},
+                {"x",                 K_X},
+                {"y",                 K_Y},
+                {"z",                 K_Z},
+
+                {",",                 K_COMMA},
+                {".",                 K_PERIOD},
+                {"/",                 K_SLASH},
+
+                {";",                 K_SEMICOLON},
+                {"'",                 K_QUOTE},
+                {"[",                 K_LEFTBRACKET},
+                {"]",                 K_RIGHTBRACKET},
+                {"\\",                K_BACKSLASH},
+
+                {"-",                 K_MINUS},
+                {"=",                 K_EQUAL},
+
+                {"`",                 K_GRAVE},
+
                 {"f1",                K_F1},
                 {"f2",                K_F2},
                 {"f3",                K_F3},
@@ -255,22 +311,32 @@ static KeyNames key_names[] =
                 {"f22",               K_F22},
                 {"f23",               K_F23},
                 {"f24",               K_F24},
-                {"command",           K_META},
+
+                {"meta",              K_META},
+                {"right_meta",        K_RIGHTMETA},
+
                 {"cmd",               K_CMD},
                 {"right_cmd",         K_RIGHTCMD},
+
                 {"win",               K_WIN},
                 {"right_win",         K_RIGHTWIN},
+
                 {"alt",               K_ALT},
                 {"right_alt",         K_RIGHTALT},
+
                 {"control",           K_CONTROL},
                 {"right_control",     K_RIGHTCONTROL},
+
                 {"shift",             K_SHIFT},
                 {"right_shift",       K_RIGHTSHIFT},
+
                 {"space",             K_SPACE},
+
                 {"printscreen",       K_PRINTSCREEN},
                 {"insert",            K_INSERT},
                 {"menu",              K_MENU},
                 {"fn",                K_FUNCTION},
+                {"pause",             K_PAUSE},
 
                 {"caps_lock",         K_CAPSLOCK},
                 {"num_lock",          K_NUMLOCK},
@@ -300,25 +366,19 @@ static KeyNames key_names[] =
                 {"numpad_8",          K_NUMPAD_8},
                 {"numpad_9",          K_NUMPAD_9},
                 {"numpad_decimal",    K_NUMPAD_DECIMAL},
-
-                {"add",               K_ADD},
-                {"subtract",          K_SUBTRACT},
-                {"multiply",          K_MULTIPLY},
-                {"divide",            K_DIVIDE},
+                {"enter",             K_ENTER},
                 {"clear",             K_CLEAR},
 
                 {"add",               K_ADD},
                 {"subtract",          K_SUBTRACT},
                 {"multiply",          K_MULTIPLY},
                 {"divide",            K_DIVIDE},
-                {"clear",             K_CLEAR},
 
                 {"lights_mon_up",     K_LIGHTS_MON_UP},
                 {"lights_mon_down",   K_LIGHTS_MON_DOWN},
                 {"lights_kbd_toggle", K_LIGHTS_KBD_TOGGLE},
                 {"lights_kbd_up",     K_LIGHTS_KBD_UP},
                 {"lights_kbd_down",   K_LIGHTS_KBD_DOWN},
-
                 {NULL,                K_NOT_A_KEY} /* end marker */
         };
 
@@ -366,6 +426,8 @@ int CheckKeyFlags(std::string &flagString, MMKeyFlags *flags) {
         *flags = MOD_CONTROL;
     } else if (flagString == "shift" || flagString == "right_shift") {
         *flags = MOD_SHIFT;
+    } else if (flagString == "fn") {
+        *flags = MOD_FN;
     } else if (flagString == "none") {
         *flags = MOD_NONE;
     } else {
@@ -651,13 +713,13 @@ Napi::Boolean _focusWindow(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
 
     WindowHandle windowHandle = info[0].As<Napi::Number>().Int64Value();
-    
+
     bool result = focusWindow(windowHandle);
-    
+
     return Napi::Boolean::New(env, result);
 }
 
-Napi::Boolean _resizeWindow(const Napi::CallbackInfo& info) {
+Napi::Boolean _resizeWindow(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
 
     if (info.Length() < 2 || !info[0].IsNumber() || !info[1].IsObject()) {
@@ -668,7 +730,8 @@ Napi::Boolean _resizeWindow(const Napi::CallbackInfo& info) {
     auto sizeObject = info[1].As<Napi::Object>();
 
     if (!sizeObject.Has("width") || !sizeObject.Has("height")) {
-        throw Napi::TypeError::New(env, "Invalid second parameter. Expected object of shape {width: number, height: number}");
+        throw Napi::TypeError::New(env,
+                                   "Invalid second parameter. Expected object of shape {width: number, height: number}");
     }
 
     auto width = sizeObject.Get("width").As<Napi::Number>().Int64Value();
@@ -681,7 +744,7 @@ Napi::Boolean _resizeWindow(const Napi::CallbackInfo& info) {
     return Napi::Boolean::New(env, resizeResult);
 }
 
-Napi::Boolean _moveWindow(const Napi::CallbackInfo& info) {
+Napi::Boolean _moveWindow(const Napi::CallbackInfo &info) {
     Napi::Env env = info.Env();
 
     if (info.Length() < 2 || !info[0].IsNumber() || !info[1].IsObject()) {
@@ -796,4 +859,5 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
     return exports;
 }
 
-NODE_API_MODULE(libnut, Init);
+NODE_API_MODULE(libnut, Init
+);

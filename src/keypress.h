@@ -20,7 +20,8 @@ extern "C"
 		MOD_META = kCGEventFlagMaskCommand,
 		MOD_ALT = kCGEventFlagMaskAlternate,
 		MOD_CONTROL = kCGEventFlagMaskControl,
-		MOD_SHIFT = kCGEventFlagMaskShift
+		MOD_SHIFT = kCGEventFlagMaskShift,
+        MOD_FN = kCGEventFlagMaskSecondaryFn
 	} MMKeyFlags;
 
 	extern MMKeyFlags flagBuffer;
@@ -32,7 +33,8 @@ extern "C"
 		MOD_META = Mod4Mask,
 		MOD_ALT = Mod1Mask,
 		MOD_CONTROL = ControlMask,
-		MOD_SHIFT = ShiftMask
+		MOD_SHIFT = ShiftMask,
+        MOD_FN = 0
 	};
 
 	typedef unsigned int MMKeyFlags;
@@ -45,7 +47,8 @@ extern "C"
 		/* MOD_ALT = 0,
 		MOD_CONTROL = 0,
 		MOD_SHIFT = 0, */
-		MOD_META = MOD_WIN
+		MOD_META = MOD_WIN,
+        MOD_FN = 0
 	};
 
 	typedef unsigned int MMKeyFlags;

@@ -67,6 +67,9 @@ void toggleKeyCode(MMKeyCode code, const bool down, MMKeyFlags flags) {
     if (code == K_SHIFT || code == K_RIGHTSHIFT) {
       flags |= MOD_SHIFT;
     }
+    if (code == K_FUNCTION) {
+      flags |= MOD_FN;
+    }
 
     MMKeyFlags activeKeyFlags;
     if (down) {
