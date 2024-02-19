@@ -11,7 +11,7 @@ on:
         default: 'Snapshot release'
 
 jobs:
-  test:
+  deploy:
     strategy:
       matrix:
         os: [ ubuntu-20.04, macos-11, windows-2019 ]
@@ -41,26 +41,6 @@ jobs:
         with:
           working-directory: ./test/window-integration-tests
           run: npm cit
-
-  deploy:
-    needs:
-      - test
-    strategy:
-      matrix:
-        os: [ ubuntu-20.04, macos-11, windows-2019 ]
-    runs-on: ${{matrix.os}}
-    steps:
-      - name: Set up Git repository
-        uses: actions/checkout@v4.1.1
-      - name: Set up node
-        uses: actions/setup-node@v4.0.2
-        with:
-          node-version: 18
-      - name: Configure Linux environment
-        if: ${{matrix.os == 'ubuntu-20.04'}}
-        run: sudo apt-get install -y cmake libx11-dev zlib1g-dev libpng-dev libxtst-dev build-essential
-      - name: Install
-        run: npm run patch && npm i
       - name: Publish snapshot release
         if: ${{matrix.os == 'ubuntu-20.04' || matrix.os == 'macos-11'}}
         run: ./.build/pre-release.sh
