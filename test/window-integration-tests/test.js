@@ -101,9 +101,6 @@ describe("focusWindow", () => {
         const openWindowHandle = libnut.getActiveWindow();
 
         // WHEN
-        await windowHandle.evaluate((win) => {
-            win.minimize();
-        });
         const secondApp = await electron.launch({args: ['second.js']});
         const secondPage = await secondApp.firstWindow({timeout: APP_TIMEOUT});
 
