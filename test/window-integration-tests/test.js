@@ -95,6 +95,34 @@ describe("getActiveWindow", () => {
     });
 });
 
+describe("focusWindow", () => {
+    it("should properly focus the correct window", async () => {
+        // GIVEN
+        const openWindowHandle = libnut.getActiveWindow();
+
+        // WHEN
+        const secondApp = await electron.launch({args: ['second.js']});
+        const secondPage = await secondApp.firstWindow({timeout: APP_TIMEOUT});
+        const secondWindowHandle = await app.browserWindow(page);
+        await secondPage.waitForLoadState("domcontentloaded");
+        await secondWindowHandle.evaluate((win) => {
+            win.minimize();
+            win.restore();
+            win.focus();
+        });
+
+        libnut.focusWindow(openWindowHandle);
+
+        // THEN
+        const activeWindowHandle = libnut.getActiveWindow();
+        const activeWindowName = libnut.getWindowTitle(activeWindowHandle);
+        expect(activeWindowName).toBe(TITLE);
+        if (secondApp) {
+            await secondApp.close();
+        }
+    });
+});
+
 afterEach(async () => {
     if (app) {
         await app.close();
