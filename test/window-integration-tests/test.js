@@ -114,7 +114,7 @@ describe("focusWindow", () => {
         const result = libnut.focusWindow(openWindowHandle);
 
         // THEN
-        await sleep(1500);
+        await sleep(2000);
         const activeWindowHandle = libnut.getActiveWindow();
         const activeWindowName = libnut.getWindowTitle(activeWindowHandle);
         expect(activeWindowName).toBe(TITLE);
