@@ -158,6 +158,7 @@ enum _MMKeyCode {
     K_NUMPAD_8 = kVK_ANSI_Keypad8,
     K_NUMPAD_9 = kVK_ANSI_Keypad9,
     K_NUMPAD_DECIMAL = kVK_ANSI_KeypadDecimal,
+    K_NUMPAD_EQUAL = kVK_ANSI_KeypadEquals,
 
     K_AUDIO_VOLUME_MUTE = 1007,
     K_AUDIO_VOLUME_DOWN = 1001,
@@ -331,6 +332,7 @@ enum _MMKeyCode {
     K_NUMPAD_8 = XK_KP_8,
     K_NUMPAD_9 = XK_KP_9,
     K_NUMPAD_DECIMAL = XK_KP_Decimal,
+    K_NUMPAD_EQUAL = XK_KP_Equal,
 
     K_AUDIO_VOLUME_DOWN = XF86XK_AudioLowerVolume,
     K_AUDIO_VOLUME_UP = XF86XK_AudioRaiseVolume,
@@ -540,6 +542,7 @@ enum _MMKeyCode {
   K_NUMPAD_8 = VK_NUMPAD8,
   K_NUMPAD_9 = VK_NUMPAD9,
   K_NUMPAD_DECIMAL = VK_DECIMAL,
+  K_NUMPAD_EQUAL = K_NOT_A_KEY,
 
   K_AUDIO_VOLUME_MUTE = VK_VOLUME_MUTE,
   K_AUDIO_VOLUME_DOWN = VK_VOLUME_DOWN,

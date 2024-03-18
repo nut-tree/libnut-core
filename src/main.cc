@@ -366,6 +366,7 @@ static KeyNames key_names[] =
                 {"numpad_8",          K_NUMPAD_8},
                 {"numpad_9",          K_NUMPAD_9},
                 {"numpad_decimal",    K_NUMPAD_DECIMAL},
+                {"numpad_equal",      K_NUMPAD_EQUAL},
                 {"enter",             K_ENTER},
                 {"clear",             K_CLEAR},
 
