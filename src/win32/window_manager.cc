@@ -22,7 +22,7 @@ std::vector<WindowHandle> getWindows() {
 }
 
 WindowHandle getActiveWindow() {
-    HWND foregroundWindow = GetForegroundWindow();
+    auto foregroundWindow = GetForegroundWindow();
     if (IsWindow(foregroundWindow)) {
         return reinterpret_cast<WindowHandle>(foregroundWindow);
     }
@@ -30,7 +30,7 @@ WindowHandle getActiveWindow() {
 }
 
 MMRect getWindowRect(const WindowHandle windowHandle) {
-    HWND hWnd = reinterpret_cast<HWND>(windowHandle);
+    auto hWnd = reinterpret_cast<HWND>(windowHandle);
     RECT windowRect;
     if (IsWindow(hWnd) && GetWindowRect(hWnd, &windowRect)) {
         return MMRectMake(windowRect.left, windowRect.top, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top);
@@ -39,13 +39,13 @@ MMRect getWindowRect(const WindowHandle windowHandle) {
 }
 
 std::string getWindowTitle(const WindowHandle windowHandle) {
-    HWND hWnd = reinterpret_cast<HWND>(windowHandle);
+    auto hWnd = reinterpret_cast<HWND>(windowHandle);
     if (IsWindow(hWnd)) {
         auto BUFFER_SIZE = GetWindowTextLength(hWnd) + 1;
         if (BUFFER_SIZE) {
-            LPSTR windowTitle = new CHAR[BUFFER_SIZE];
+            auto windowTitle = new CHAR[BUFFER_SIZE];
             if (GetWindowText(hWnd, windowTitle, BUFFER_SIZE)) {
-                return std::string(windowTitle);
+                return {windowTitle};
             }
         }
     }
@@ -53,32 +53,38 @@ std::string getWindowTitle(const WindowHandle windowHandle) {
 }
 
 bool focusWindow(const WindowHandle windowHandle) {
-    HWND hWnd = reinterpret_cast<HWND>(windowHandle);
+    auto hWnd = reinterpret_cast<HWND>(windowHandle);
     if (IsWindow(hWnd)) {
         // Restore the window if it's minimized
         if (IsIconic(hWnd)) {
             ShowWindow(hWnd, SW_RESTORE);
         }
-        
+
+        auto processId = GetCurrentProcessId();
+        // const auto allowSetForeground = AllowSetForegroundWindow(ASFW_ANY);
+        const auto allowSetForeground = AllowSetForegroundWindow(processId);
+        const auto setTopLevel = BringWindowToTop(hWnd);
+        const auto setForeground = SetForegroundWindow(hWnd);
+
         // Try to set the window to the foreground
-        return SetForegroundWindow(hWnd);
+        return allowSetForeground && setTopLevel && setForeground;
     }
     return false;
 }
 
 bool resizeWindow(const WindowHandle windowHandle, const MMSize newSize) {
-    HWND hWnd = reinterpret_cast<HWND>(windowHandle);
+    auto hWnd = reinterpret_cast<HWND>(windowHandle);
     if (IsWindow(hWnd)) {
         //size
-        auto width = newSize.width;
-        auto height = newSize.height;
+        const auto width = newSize.width;
+        const auto height = newSize.height;
 
         RECT currentPosition;
         GetWindowRect(reinterpret_cast<HWND>(windowHandle), &currentPosition);
 
         //origin
-        auto x = currentPosition.left;
-        auto y = currentPosition.top;
+        const auto x = currentPosition.left;
+        const auto y = currentPosition.top;
 
         return MoveWindow(hWnd, x, y, width, height, TRUE);
     }
@@ -86,18 +92,18 @@ bool resizeWindow(const WindowHandle windowHandle, const MMSize newSize) {
 }
 
 bool moveWindow(const WindowHandle windowHandle, const MMPoint newOrigin) {
-    HWND hWnd = reinterpret_cast<HWND>(windowHandle);
+    auto hWnd = reinterpret_cast<HWND>(windowHandle);
     if (IsWindow(hWnd)) {
         // origin
-        auto x = newOrigin.x;
-        auto y = newOrigin.y;
+        const auto x = newOrigin.x;
+        const auto y = newOrigin.y;
 
         RECT currentPosition;
         GetWindowRect(reinterpret_cast<HWND>(windowHandle), &currentPosition);
 
         // size
-        auto width = currentPosition.right - currentPosition.left;
-        auto height = currentPosition.bottom - currentPosition.top;
+        const auto width = currentPosition.right - currentPosition.left;
+        const auto height = currentPosition.bottom - currentPosition.top;
 
         return MoveWindow(hWnd, x, y, width, height, TRUE);
     }
