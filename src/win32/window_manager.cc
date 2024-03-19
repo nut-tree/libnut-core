@@ -54,6 +54,9 @@ std::string getWindowTitle(const WindowHandle windowHandle) {
 
 bool focusWindow(const WindowHandle windowHandle) {
     auto hWnd = reinterpret_cast<HWND>(windowHandle);
+    if (GetForegroundWindow() == hWnd) {
+        return true;
+    }
     if (IsWindow(hWnd)) {
         // Restore the window if it's minimized
         if (IsIconic(hWnd)) {
