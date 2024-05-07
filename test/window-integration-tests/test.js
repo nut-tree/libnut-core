@@ -111,6 +111,7 @@ describe("focusWindow", () => {
             win.focus();
         });
 
+        await sleep(3000);
         const result = libnut.focusWindow(openWindowHandle);
 
         // THEN

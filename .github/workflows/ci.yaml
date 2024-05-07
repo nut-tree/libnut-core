@@ -12,6 +12,8 @@ jobs:
       matrix:
         os: [ ubuntu-20.04, macos-11, windows-2019 ]
         node: [ 18 ]
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     runs-on: ${{matrix.os}}
     steps:
       - name: Set up Git repository
@@ -20,6 +22,7 @@ jobs:
         uses: actions/setup-node@v4.0.2
         with:
           node-version: ${{matrix.node}}
+          registry-url: https://registry.npmjs.org
       - name: Configure Linux environment
         if: ${{matrix.os == 'ubuntu-20.04'}}
         run: sudo apt-get install -y cmake libx11-dev zlib1g-dev libpng-dev libxtst-dev build-essential
@@ -28,12 +31,12 @@ jobs:
       - name: Build
         run: npm run build:release
       - name: Run tests
-        uses: GabrielBB/xvfb-action@v1
+        uses: coactions/setup-xvfb@v1
         with:
           working-directory: ./test/
           run: npm cit
       - name: Run window tests
-        uses: GabrielBB/xvfb-action@v1
+        uses: coactions/setup-xvfb@v1
         with:
           working-directory: ./test/window-integration-tests
           run: npm cit
