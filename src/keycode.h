@@ -176,7 +176,17 @@ enum _MMKeyCode {
     K_LIGHTS_MON_DOWN = 1003,
     K_LIGHTS_KBD_TOGGLE = 1023,
     K_LIGHTS_KBD_UP = 1021,
-    K_LIGHTS_KBD_DOWN = 1022
+    K_LIGHTS_KBD_DOWN = 1022,
+
+    K_OEM_1 = K_NOT_A_KEY,
+    K_OEM_2 = K_NOT_A_KEY,
+    K_OEM_3 = K_NOT_A_KEY,
+    K_OEM_4 = K_NOT_A_KEY,
+    K_OEM_5 = K_NOT_A_KEY,
+    K_OEM_6 = K_NOT_A_KEY,
+    K_OEM_7 = K_NOT_A_KEY,
+    K_OEM_8 = K_NOT_A_KEY,
+    K_OEM_102 = K_NOT_A_KEY
 };
 
 typedef CGKeyCode MMKeyCode;
@@ -349,7 +359,17 @@ enum _MMKeyCode {
     K_LIGHTS_MON_UP = XF86XK_MonBrightnessUp,
     K_LIGHTS_KBD_TOGGLE = XF86XK_KbdLightOnOff,
     K_LIGHTS_KBD_DOWN = XF86XK_KbdBrightnessDown,
-    K_LIGHTS_KBD_UP = XF86XK_KbdBrightnessUp
+    K_LIGHTS_KBD_UP = XF86XK_KbdBrightnessUp,
+
+    K_OEM_1 = K_NOT_A_KEY,
+    K_OEM_2 = K_NOT_A_KEY,
+    K_OEM_3 = K_NOT_A_KEY,
+    K_OEM_4 = K_NOT_A_KEY,
+    K_OEM_5 = K_NOT_A_KEY,
+    K_OEM_6 = K_NOT_A_KEY,
+    K_OEM_7 = K_NOT_A_KEY,
+    K_OEM_8 = K_NOT_A_KEY,
+    K_OEM_102 = K_NOT_A_KEY
 };
 
 typedef KeySym MMKeyCode;
@@ -559,6 +579,16 @@ enum _MMKeyCode {
   K_LIGHTS_KBD_TOGGLE = K_NOT_A_KEY,
   K_LIGHTS_KBD_UP = K_NOT_A_KEY,
   K_LIGHTS_KBD_DOWN = K_NOT_A_KEY,
+
+  K_OEM_1 = VK_OEM_1,
+  K_OEM_2 = VK_OEM_2,
+  K_OEM_3 = VK_OEM_3,
+  K_OEM_4 = VK_OEM_4,
+  K_OEM_5 = VK_OEM_5,
+  K_OEM_6 = VK_OEM_6,
+  K_OEM_7 = VK_OEM_7,
+  K_OEM_8 = VK_OEM_8,
+  K_OEM_102 = VK_OEM_102
 };
 
 typedef int MMKeyCode;
