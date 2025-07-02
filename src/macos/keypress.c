@@ -16,7 +16,7 @@ static io_connect_t _getAuxiliaryKeyDriver(void) {
   kern_return_t kr;
 
   if (!sEventDrvrRef) {
-    kr = IOMasterPort(bootstrap_port, &masterPort);
+    kr = IOMainPort(MACH_PORT_NULL, &masterPort);
     assert(KERN_SUCCESS == kr);
     kr = IOServiceGetMatchingServices(
         masterPort, IOServiceMatching(kIOHIDSystemClass), &iter);
@@ -125,9 +125,10 @@ void toggleUnicodeKey(unsigned long ch, const bool down) {
     unsigned short surrogates[] = {0xD800 + ((ch - 0x10000) >> 10),
                                    0xDC00 + (ch & 0x3FF)};
 
-    CGEventKeyboardSetUnicodeString(keyEvent, 2, &surrogates);
+    CGEventKeyboardSetUnicodeString(keyEvent, 2, (const UniChar *)surrogates);
   } else {
-    CGEventKeyboardSetUnicodeString(keyEvent, 1, &ch);
+    UniChar unichar = (UniChar)ch;
+    CGEventKeyboardSetUnicodeString(keyEvent, 1, &unichar);
   }
 
   CGEventPost(kCGHIDEventTap, keyEvent);

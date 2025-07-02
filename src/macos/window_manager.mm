@@ -109,7 +109,7 @@ std::vector<WindowHandle> getWindows() {
                 runningApplicationWithProcessIdentifier:[ownerPid intValue]];
         auto path = app ? [app.bundleURL.path UTF8String] : "";
 
-        if (app && path != "") {
+        if (app && strcmp(path, "") != 0) {
             windowHandles.push_back([windowNumber intValue]);
         }
     }
@@ -175,7 +175,14 @@ bool focusWindow(const WindowHandle windowHandle) {
         if ([windowNumber intValue] == windowHandle) {
             NSRunningApplication *app = [NSRunningApplication
                     runningApplicationWithProcessIdentifier:[ownerPid intValue]];
-            [app activateWithOptions:NSApplicationActivateIgnoringOtherApps];
+            if (@available(macOS 14.0, *)) {
+                [app activateWithOptions:NSApplicationActivateAllWindows];
+            } else {
+                #pragma clang diagnostic push
+                #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+                [app activateWithOptions:NSApplicationActivateIgnoringOtherApps];
+                #pragma clang diagnostic pop
+            }
         }
     }
 

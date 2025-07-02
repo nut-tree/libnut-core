@@ -52,6 +52,8 @@ set(INCLUDES "")
 
 if (UNIX AND APPLE)
     message(STATUS "macOS build")
+    # Set macOS deployment target to allow using older APIs
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15")
     list(APPEND LIBS "-framework ApplicationServices" "-framework Cocoa")
 elseif (WIN32)
     message(STATUS "Windows build")
