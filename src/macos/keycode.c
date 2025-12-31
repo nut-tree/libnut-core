@@ -34,7 +34,7 @@ MMKeyCode keyCodeForChar(const char c)
 			CFStringRef string = createStringForKey((CGKeyCode)i);
 			if (string != NULL)
 			{
-				CFDictionaryAddValue(charToCodeDict, string, (const void *)i);
+				CFDictionaryAddValue(charToCodeDict, string, (const void *)(uintptr_t)i);
 				CFRelease(string);
 			}
 		}
@@ -42,9 +42,14 @@ MMKeyCode keyCodeForChar(const char c)
 
 	charStr = CFStringCreateWithCharacters(kCFAllocatorDefault, &character, 1);
 
-	/* Our values may be NULL (0), so we need to use this function. */
-	if (!CFDictionaryGetValueIfPresent(charToCodeDict, charStr,
-									   (const void **)&code))
+	/* Our values may be NULL (0), so we need to use this function.
+	 * Use void* to match pointer size on 64-bit systems, then cast to CGKeyCode. */
+	void *value = NULL;
+	if (CFDictionaryGetValueIfPresent(charToCodeDict, charStr, (const void **)&value))
+	{
+		code = (CGKeyCode)(uintptr_t)value;
+	}
+	else
 	{
 		code = UINT16_MAX; /* Error */
 	}
@@ -56,9 +61,18 @@ MMKeyCode keyCodeForChar(const char c)
 CFStringRef createStringForKey(CGKeyCode keyCode)
 {
 	TISInputSourceRef currentKeyboard = TISCopyCurrentASCIICapableKeyboardInputSource();
+	if (currentKeyboard == NULL) {
+		return NULL;
+	}
+
 	CFDataRef layoutData =
 		TISGetInputSourceProperty(currentKeyboard,
 								  kTISPropertyUnicodeKeyLayoutData);
+	if (layoutData == NULL) {
+		CFRelease(currentKeyboard);
+		return NULL;
+	}
+
 	const UCKeyboardLayout *keyboardLayout =
 		(const UCKeyboardLayout *)CFDataGetBytePtr(layoutData);
 
