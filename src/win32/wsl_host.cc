@@ -1,7 +1,4 @@
-#define NOMINMAX
-#include "../keycode.h"
-#include <winrt/Windows.Foundation.Collections.h>
-#include <winrt/Windows.Data.Json.h>
+#include "wsl_host_support.h"
 #include <fcntl.h>
 #include <io.h>
 #include <algorithm>
@@ -106,45 +103,6 @@ class Host {
         if (!down) heldButtons.erase(value);
     }
 
-    static WORD keyCode(const std::string& name) {
-        static const std::map<std::string, int> keys = {
-            {"escape", K_ESCAPE}, {"backspace", K_BACKSPACE}, {"tab", K_TAB},
-            {"return", K_RETURN}, {"enter", K_ENTER}, {"space", K_SPACE},
-            {"delete", K_DELETE}, {"insert", K_INSERT}, {"home", K_HOME},
-            {"end", K_END}, {"pageup", K_PAGEUP}, {"pagedown", K_PAGEDOWN},
-            {"left", K_LEFT}, {"right", K_RIGHT}, {"up", K_UP}, {"down", K_DOWN},
-            {"shift", K_SHIFT}, {"right_shift", K_RIGHTSHIFT},
-            {"control", K_CONTROL}, {"right_control", K_RIGHTCONTROL},
-            {"alt", K_ALT}, {"right_alt", K_RIGHTALT},
-            {"command", K_WIN}, {"win", K_WIN}, {"cmd", K_WIN}, {"meta", K_WIN},
-            {"right_win", K_RIGHTWIN}, {"right_cmd", K_RIGHTWIN}, {"right_meta", K_RIGHTWIN},
-            {"caps_lock", K_CAPSLOCK}, {"num_lock", K_NUMLOCK}, {"scroll_lock", K_SCROLL_LOCK},
-            {"printscreen", K_PRINTSCREEN}, {"pause", K_PAUSE}, {"menu", K_MENU},
-            {"clear", K_CLEAR}, {"add", K_ADD}, {"subtract", K_SUBTRACT},
-            {"multiply", K_MULTIPLY}, {"divide", K_DIVIDE}, {"numpad_decimal", K_NUMPAD_DECIMAL},
-            {"audio_mute", K_AUDIO_VOLUME_MUTE}, {"audio_vol_down", K_AUDIO_VOLUME_DOWN},
-            {"audio_vol_up", K_AUDIO_VOLUME_UP}, {"audio_play", K_AUDIO_PLAY},
-            {"audio_pause", K_AUDIO_PAUSE}, {"audio_stop", K_AUDIO_STOP},
-            {"audio_prev", K_AUDIO_PREV}, {"audio_next", K_AUDIO_NEXT}
-        };
-        auto found = keys.find(name);
-        if (found != keys.end() && found->second != K_NOT_A_KEY) return static_cast<WORD>(found->second);
-        if (name.size() == 1) {
-            SHORT code = VkKeyScanExA(name[0], GetKeyboardLayout(0));
-            require(code != -1, "Key is unavailable in the active Windows keyboard layout");
-            return static_cast<WORD>(code & 0xff);
-        }
-        if (name.size() >= 2 && name[0] == 'f') {
-            size_t consumed = 0;
-            int value = std::stoi(name.substr(1), &consumed);
-            require(consumed == name.size() - 1 && value >= 1 && value <= 24, "Invalid function key");
-            return static_cast<WORD>(VK_F1 + value - 1);
-        }
-        if (name.size() == 8 && name.substr(0, 7) == "numpad_" && name[7] >= '0' && name[7] <= '9')
-            return static_cast<WORD>(VK_NUMPAD0 + name[7] - '0');
-        throw std::runtime_error("Unsupported Windows key: " + name);
-    }
-
     static INPUT keyboardInput(WORD code, bool down) {
         INPUT input{};
         input.type = INPUT_KEYBOARD;
@@ -179,6 +137,20 @@ class Host {
         RECT rect{};
         checked(GetWindowRect(hwnd, &rect), "GetWindowRect");
         return rect;
+    }
+
+    template <typename Ready>
+    static bool waitForWindow(HWND hwnd, Ready ready) {
+        checkConnection();
+        return wsl::waitForState([&] {
+            require(IsWindow(hwnd), "Window handle is no longer valid");
+            return ready();
+        }, [](DWORD milliseconds) { wait(milliseconds); }, [] { return GetTickCount64(); });
+    }
+
+    static bool showWindow(HWND hwnd, bool minimize) {
+        if (!ShowWindowAsync(hwnd, minimize ? SW_MINIMIZE : SW_RESTORE)) return false;
+        return waitForWindow(hwnd, [&] { return (IsIconic(hwnd) != FALSE) == minimize; });
     }
 
     JsonValue clipboard(const JsonObject& args, bool write) {
@@ -265,6 +237,7 @@ class Host {
         require(previous != nullptr && previous != HGDI_ERROR, "SelectObject failed");
         struct Restore { HDC dc; HGDIOBJ object; ~Restore() { SelectObject(dc, object); } } restore{memory, previous};
         checked(BitBlt(memory, 0, 0, width, height, screen, x, y, SRCCOPY | CAPTUREBLT), "BitBlt");
+        checked(GdiFlush(), "GdiFlush");
         const uint8_t* start = static_cast<const uint8_t*>(data);
         pixels.assign(start, start + bytes);
         for (size_t index = 3; index < bytes; index += 4) pixels[index] = 255;
@@ -290,21 +263,21 @@ public:
     }
 
     ~Host() {
-        releaseInput();
+        if (!releaseInput()) std::cerr << "libnut Windows host: Windows rejected releasing held input during shutdown\n";
         if (owner) DestroyWindow(owner);
         UnregisterClassW(L"LibnutWslHost", GetModuleHandleW(nullptr));
     }
 
-    void releaseInput() noexcept {
-        for (WORD code : heldKeys) {
+    bool releaseInput() noexcept {
+        bool keysReleased = wsl::releaseHeldInputs(heldKeys, [](WORD code) {
             INPUT input = keyboardInput(code, false);
-            SendInput(1, &input, sizeof(input));
-        }
-        for (int value : heldButtons) {
+            return SendInput(1, &input, sizeof(input)) == 1;
+        });
+        bool buttonsReleased = wsl::releaseHeldInputs(heldButtons, [](int value) {
             INPUT input{}; input.type = INPUT_MOUSE; input.mi.dwFlags = buttonFlag(value, false);
-            SendInput(1, &input, sizeof(input));
-        }
-        heldKeys.clear(); heldButtons.clear();
+            return SendInput(1, &input, sizeof(input)) == 1;
+        });
+        return keysReleased && buttonsReleased;
     }
 
     IJsonValue execute(const hstring& command, const JsonObject& args, std::vector<uint8_t>& pixels) {
@@ -345,7 +318,7 @@ public:
             JsonArray names = args.GetNamedArray(L"keys");
             require(names.Size() > 0 && names.Size() <= 32, "Expected 1 to 32 keys");
             std::vector<WORD> codes;
-            for (const auto& name : names) codes.push_back(keyCode(to_string(name.GetString())));
+            for (const auto& name : names) codes.push_back(wsl::keyCode(to_string(name.GetString())));
             bool down = command == L"keyClick" || args.GetNamedBoolean(L"down");
             if (!down) std::reverse(codes.begin(), codes.end());
             try {
@@ -396,21 +369,27 @@ public:
             return rectangle(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
         } else if (command == L"focusWindow") {
             HWND hwnd = window(args);
-            if (IsIconic(hwnd)) ShowWindow(hwnd, SW_RESTORE);
+            if (IsIconic(hwnd) && !showWindow(hwnd, false)) return JsonValue::CreateBooleanValue(false);
             SetForegroundWindow(hwnd);
-            return JsonValue::CreateBooleanValue(GetForegroundWindow() == hwnd);
+            return JsonValue::CreateBooleanValue(waitForWindow(hwnd, [&] { return GetForegroundWindow() == hwnd; }));
         } else if (command == L"moveWindow" || command == L"resizeWindow") {
             HWND hwnd = window(args); RECT rect = windowRect(hwnd);
             int x = command == L"moveWindow" ? integer(args, L"x") : rect.left;
             int y = command == L"moveWindow" ? integer(args, L"y") : rect.top;
             int width = command == L"resizeWindow" ? integer(args, L"width", 1) : rect.right - rect.left;
             int height = command == L"resizeWindow" ? integer(args, L"height", 1) : rect.bottom - rect.top;
-            return JsonValue::CreateBooleanValue(MoveWindow(hwnd, x, y, width, height, TRUE) != FALSE);
+            UINT flags = SWP_ASYNCWINDOWPOS | SWP_NOACTIVATE | SWP_NOZORDER |
+                (command == L"moveWindow" ? SWP_NOSIZE : SWP_NOMOVE);
+            if (!SetWindowPos(hwnd, nullptr, x, y, width, height, flags)) return JsonValue::CreateBooleanValue(false);
+            return JsonValue::CreateBooleanValue(waitForWindow(hwnd, [&] {
+                RECT current = windowRect(hwnd);
+                return command == L"moveWindow" ? current.left == x && current.top == y :
+                    current.right - current.left == width && current.bottom - current.top == height;
+            }));
         } else if (command == L"minimizeWindow" || command == L"restoreWindow") {
             HWND hwnd = window(args);
-            ShowWindow(hwnd, command == L"minimizeWindow" ? SW_MINIMIZE : SW_RESTORE);
-            return JsonValue::CreateBooleanValue(command == L"minimizeWindow" ? IsIconic(hwnd) != FALSE : IsIconic(hwnd) == FALSE);
-        } else if (command == L"releaseInput") releaseInput();
+            return JsonValue::CreateBooleanValue(showWindow(hwnd, command == L"minimizeWindow"));
+        } else if (command == L"releaseInput") require(releaseInput(), "Windows rejected releasing held input; failed releases remain tracked for another attempt");
         else throw std::runtime_error("Unknown Windows host command");
         if (postDelay) wait(postDelay);
         return JsonValue::CreateNullValue();
@@ -453,8 +432,7 @@ int main() {
                 response.SetNamedValue(L"error", JsonValue::CreateStringValue(to_hstring(error.what())));
                 pixels.clear();
             }
-            response.SetNamedValue(L"byteLength", JsonValue::CreateNumberValue(static_cast<double>(pixels.size())));
-            std::cout << to_string(response.Stringify()) << '\n';
+            std::cout << wsl::responseLine(response, pixels) << '\n';
             if (!pixels.empty()) std::cout.write(reinterpret_cast<const char*>(pixels.data()), static_cast<std::streamsize>(pixels.size()));
             std::cout.flush();
             require(std::cout.good(), "Writing the response failed");

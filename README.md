@@ -47,6 +47,11 @@ input. Build the helper for the same processor architecture as the Windows
 native package. `LIBNUT_BUILD_WSL_HOST=OFF` disables this target when it is not
 needed.
 
+Add `-DLIBNUT_BUILD_WSL_TESTS=ON` to configure the native support tests, then run
+`ctest --test-dir build -C Release --output-on-failure` after building. These
+tests check key mappings, failed-release tracking, reply limits and bounded
+window waits without sending input or capturing the desktop.
+
 The helper must run in the signed-in user's interactive Windows session. A
 service or SSH session is not a substitute. Windows may block input into
 elevated applications or the secure desktop. Coordinates are physical pixels;
@@ -68,10 +73,21 @@ byte length. The `hello` result reports protocol version 1; clients must check
 it before sending desktop commands.
 
 Requests execute in order. Mouse clicks and keyboard clicks are single helper
-commands. Requests are limited to 1 MiB and captured pixel data to 128 MiB.
+commands. Requests and JSON reply lines are limited to 1 MiB; captured pixel
+data is limited to 128 MiB. An oversized reply is replaced with a bounded error
+for that request, so subsequent commands can still use the connection.
 Diagnostic messages go to standard error, never into the reply stream.
 
-Closing the input pipe cancels long typing or highlight operations and releases
-keys and mouse buttons held by the helper. Clients must not automatically retry
-an interrupted command: its input may already have reached an application.
+Key names map to the same fixed US keyboard codes as the native backend. Text
+uses Unicode input instead. Window changes are requested asynchronously and
+wait at most five seconds for each state change, returning false if it does not
+complete. The waits also check whether the caller has disconnected.
+
+Closing the input pipe cancels long typing or highlight operations and attempts
+to release keys and mouse buttons held by the helper. Failed releases remain
+tracked for another attempt while the helper runs. The explicit `releaseInput`
+command reports failure, and shutdown reports rejected releases on standard
+error. Windows restrictions can prevent cleanup from succeeding.
+Clients must not automatically retry an interrupted command: its input may
+already have reached an application.
 The helper opens no network listener and performs no runtime compilation.

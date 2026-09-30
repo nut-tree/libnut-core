@@ -11,6 +11,11 @@ build/*.vcxproj*
 build/*.sln
 build/x64/
 build/libnut.dir/
+build/libnut-wsl-host.dir/
+build/libnut-wsl-host-tests.dir/
+build/Release/libnut-wsl-host-tests.exe
+build/Debug/libnut-wsl-host-tests.exe
+build-wsl-tests/
 CMakeFiles
 src
 test
