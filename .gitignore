@@ -1,4 +1,5 @@
 build/
+build-wsl-tests/
 node_modules/
 prebuilds/
 .idea

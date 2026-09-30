@@ -27,6 +27,17 @@ jobs:
         run: npm run patch && npm i
       - name: Build
         run: npm run build:release
+      - name: Test Windows host support
+        if: runner.os == 'Windows'
+        run: |
+          cmake -S . -B build-wsl-tests -DLIBNUT_BUILD_ADDON=OFF -DLIBNUT_BUILD_WSL_TESTS=ON
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          cmake --build build-wsl-tests --config Release
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          ctest --test-dir build-wsl-tests -C Release --output-on-failure
+      - name: Test Windows host protocol
+        if: runner.os == 'Windows'
+        run: npm run test:wsl-host
       - name: Run tests
         uses: GabrielBB/xvfb-action@v1
         with:

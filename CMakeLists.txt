@@ -3,6 +3,32 @@ set(CMAKE_CXX_STANDARD 17)
 
 project(libnut)
 
+option(LIBNUT_BUILD_ADDON "Build the Node-API addon" ON)
+option(LIBNUT_BUILD_WSL_HOST "Build the persistent Windows host executable" ${WIN32})
+
+if (LIBNUT_BUILD_WSL_HOST)
+    if (NOT WIN32)
+        message(FATAL_ERROR "The WSL host must be built with a Windows toolchain")
+    endif()
+    add_executable(libnut-wsl-host src/win32/wsl_host.cc)
+    target_link_libraries(libnut-wsl-host PRIVATE windowsapp user32 gdi32)
+    target_compile_options(libnut-wsl-host PRIVATE /W4 /EHsc /utf-8)
+    set_property(TARGET libnut-wsl-host PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    option(LIBNUT_BUILD_WSL_TESTS "Build Windows host support tests" OFF)
+    if (LIBNUT_BUILD_WSL_TESTS)
+        add_executable(libnut-wsl-host-tests test/wsl-host-unit.cc)
+        target_link_libraries(libnut-wsl-host-tests PRIVATE windowsapp user32)
+        target_compile_options(libnut-wsl-host-tests PRIVATE /W4 /EHsc /utf-8)
+        set_property(TARGET libnut-wsl-host-tests PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+        enable_testing()
+        add_test(NAME wsl-host-support COMMAND libnut-wsl-host-tests)
+    endif()
+endif()
+
+if (NOT LIBNUT_BUILD_ADDON)
+    return()
+endif()
+
 # Source
 set(SOURCE_FILES
         src/main.cc
