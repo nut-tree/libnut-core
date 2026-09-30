@@ -27,6 +27,9 @@ jobs:
         run: npm run patch && npm i
       - name: Build
         run: npm run build:release
+      - name: Test Windows host protocol
+        if: runner.os == 'Windows'
+        run: npm run test:wsl-host
       - name: Run tests
         uses: GabrielBB/xvfb-action@v1
         with:
